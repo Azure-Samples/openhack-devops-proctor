@@ -1,0 +1,5 @@
+  - teamId: "$teamId"
+    serviceId: "$serviceId"
+    endpoint: "$endpoint"
+    port: 80
+    apiURL: "$apiurl"
