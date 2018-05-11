@@ -86,7 +86,11 @@ fi
 echo "Installing Kubernetes CLI..."
 (
     set -x
-    sudo az aks install-cli 1> /dev/null
+    type -p kubectl 
+    if [ ! $? == 0 ]; then
+        # The kubectl will be installed in the system an need root priviledges
+        sudo az aks install-cli 1> /dev/null
+    fi
 )
 
 if [ $? == 0 ];

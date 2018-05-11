@@ -8,17 +8,18 @@ IFS=$'\n\t'
 #script requires latest version of .netcore to be installed ()
 
 
-usage() { echo "Usage: build_deploy_poi.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_poi.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name> -g <acr registry name>" 1>&2; exit 1; }
 
 declare buildFlavor=""
 declare resourceGroupName=""
 declare imageTag=""
 declare relativeSaveLocation=""
 declare dnsUrl=""
-declare teamName""
+declare teamName=""
+declare registryName=""
 
 # Initialize parameters specified from command line
-while getopts ":b:r:t:s:d:n:" arg; do
+while getopts ":b:r:t:s:d:n:g:" arg; do
     case "${arg}" in
         b)
             buildFlavor=${OPTARG}
@@ -37,6 +38,9 @@ while getopts ":b:r:t:s:d:n:" arg; do
         ;;
         n)
             teamName=${OPTARG}
+        ;;
+        g)  
+            registryName=${OPTARG}
         ;;
     esac
 done
@@ -95,15 +99,16 @@ echo $relativeSaveLocation
 echo $dnsUrl
 echo -e '\n'
 
-ACR=`az acr list -g $resourceGroupName --query "[].{acrName:name}" --output json | jq .[].acrName | sed 's/\"//g'`
-
-#login to ACR
-az acr login --name $ACR
-
 #get the acr repsotiory id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
 
 echo "ACR ID: "$ACR_ID
+
+#Get the acr admin password and login to the registry
+acrPassword=$(az acr credential show -n $registryName -o json | jq -r '[.passwords[0].value] | .[]')
+
+docker login $ACR_ID -u $registryName -p $acrPassword
+echo "Authenticated to ACR with username and password"
 
 TAG=$ACR_ID"/devopsoh/"$imageTag
 

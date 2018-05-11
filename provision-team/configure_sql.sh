@@ -10,7 +10,7 @@ usage() { echo "Usage: deploy_app_aks.sh -s <relative save location> -g <resourc
 
 declare relativeSaveLocation=""
 declare resourceGroupName=""
-declare sqlUser=""
+declare sqlServerUsername=""
 declare teamName=""
 declare keyVaultName=""
 
@@ -24,7 +24,7 @@ while getopts ":s:g:n:u:k:" arg; do
             resourceGroupName=${OPTARG}
         ;;
         u)
-            sqlUser=${OPTARG}
+            sqlServerUsername=${OPTARG}
         ;;
         n)
             teamName=${OPTARG}
@@ -48,9 +48,9 @@ if [[ -z "$resourceGroupName" ]]; then
     [[ "${relativeSaveLocation:?}" ]]
 fi
 
-if [[ -z "$sqlUser" ]]; then
+if [[ -z "$sqlServerUsername" ]]; then
     echo "Enter the sql server user name:"
-    read sqlUser
+    read sqlServerUsername
     [[ "${relativeSaveLocation:?}" ]]
 fi
 
@@ -67,7 +67,7 @@ fi
 INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 # Get the name of the SQL server
-sqlServer=$(az keyvault secret show --vault-name $keyVaultName --name shared-sqlServerName -o tsv --query value)
+sqlServer=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerName -o tsv --query value)
 
 # Add firewall rule to allow APIs to connect to SQL server database
 az sql server firewall-rule create -n allow-k8s-ingress -g $resourceGroupName -s $sqlServer --start-ip-address $INGRESS_IP --end-ip-address $INGRESS_IP
@@ -75,13 +75,13 @@ az sql server firewall-rule create -n allow-k8s-ingress -g $resourceGroupName -s
 echo -e "\n\nSQL Server Firewall rule added to allow $INGRESS_IP."
 
 # Get the values to update the SQL Server secrets yaml file and create it on the cluster
-sqlServerFQDN=$(az keyvault secret show --vault-name $keyVaultName --name shared-sqlServerFullyQualifiedDomainName -o tsv --query value)
-sqlPassword=$(az keyvault secret show --vault-name $keyVaultName --name shared-sqlServerAdminPassword -o tsv --query value)
+sqlServerFQDN=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerFQDN -o tsv --query value)
+sqlPassword=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerPassword -o tsv --query value)
 
 # Base64 encode the values are required for K8s secrets
 sqlServerFQDNbase64=$(echo $sqlServerFQDN | base64)
 sqlPasswordbase64=$(echo $sqlPassword | base64)
-sqlUserbase64=$(echo $sqlUser | base64)
+sqlUserbase64=$(echo $sqlServerUsername | base64)
 
 # Replace the secrets file with encoded values and create the secret on the cluster
 cat "./sql-secret.yaml" \

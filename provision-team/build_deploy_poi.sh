@@ -7,17 +7,18 @@ IFS=$'\n\t'
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 #script requires latest version of .netcore to be installed ()
 
-usage() { echo "Usage: build_deploy_poi.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_poi.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name> -g <registry name>" 1>&2; exit 1; }
 
 declare buildFlavor=""
 declare resourceGroupName=""
 declare imageTag=""
 declare relativeSaveLocation=""
 declare dnsUrl=""
-declare teamName""
+declare teamName=""
+declare registryName=""
 
 # Initialize parameters specified from command line
-while getopts ":b:r:t:s:d:n:" arg; do
+while getopts ":b:r:t:s:d:n:g:" arg; do
     case "${arg}" in
         b)
             buildFlavor=${OPTARG}
@@ -36,6 +37,9 @@ while getopts ":b:r:t:s:d:n:" arg; do
         ;;
         n)
             teamName=${OPTARG}
+        ;;
+        g)  
+            registryName=${OPTARG}
         ;;
     esac
 done
@@ -93,35 +97,36 @@ echo $imageTag
 echo $relativeSaveLocation
 echo $dnsUrl
 
-ACR=`az acr list -g $resourceGroupName --query "[].{acrName:name}" --output json | jq .[].acrName | sed 's/\"//g'`
-echo "$ACR"
-#login to ACR
-az acr login --name $ACR
-
 #get the acr repository id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
 
 echo "ACR ID: "$ACR_ID
 
+#Get the acr admin password and login to the registry
+acrPassword=$(az acr credential show -n $registryName -o json | jq -r '[.passwords[0].value] | .[]')
+
+docker login $ACR_ID -u $registryName -p $acrPassword
+echo "Authenticated to ACR with username and password"
+
 TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/src/MobileAppServiceV2/MyDriving.POIService.v2
+pushd $relativeSaveLocation/openhack-devops/src/MobileAppServiceV2/MyDriving.POIService.v2
 
-# dotnet build -c $buildFlavor -o ./bin/
+dotnet build -c $buildFlavor -o ./bin/
 
-# sed -i -e 's/bin\//..\/bin\//g' ./bin/GetAllPOIs/function.json
+sed -i -e 's/bin\//..\/bin\//g' ./bin/GetAllPOIs/function.json
 
-# docker build . -t $TAG
+docker build . -t $TAG
 
-# docker push $TAG
+docker push $TAG
 
 echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-pushd $relativeSaveLocation/src/MobileAppServiceV2/MyDriving.POIService.v2/helm
+pushd $relativeSaveLocation/openhack-devops/src/MobileAppServiceV2/MyDriving.POIService.v2/helm
 echo -e "\nhelm install from: " $PWD "\n\n"
 
 cat "./values.yaml" \

@@ -77,5 +77,13 @@ then
     echo "Azure Container Registry" $registryName "created successfully..."
 fi
 
+# This step so that we don't need to do role assignement
+echo "Enable Registry for admin authentication" 
+(
+    az acr update -n $registryName --admin-enabled true
+)
 
-
+if [ $? == 0 ];
+then
+    echo "Azure Container Registry" $registryName "successfully enabled for admin..."
+fi
