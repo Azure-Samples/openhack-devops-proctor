@@ -1,0 +1,8 @@
+﻿{
+  "team01": {
+    "endpoint": "http://YOUR_ENDPOINT_HERE"
+  },
+  "team02": {
+    "endpoint": "https://YOUR_ENDPOINT_HERE"
+  }
+}
