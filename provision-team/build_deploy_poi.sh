@@ -112,7 +112,7 @@ TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/openhack-devops/src/MobileAppServiceV2/MyDriving.POIService.v2
+pushd $relativeSaveLocation/openhack-devops-team/apis/poi/MyDriving.POIService.v2
 
 dotnet build -c $buildFlavor -o ./bin/
 
@@ -126,7 +126,7 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-pushd $relativeSaveLocation/openhack-devops/src/MobileAppServiceV2/MyDriving.POIService.v2/helm
+pushd $relativeSaveLocation/openhack-devops-team/apis/poi/MyDriving.POIService.v2/helm
 echo -e "\nhelm install from: " $PWD "\n\n"
 
 cat "./values.yaml" \
