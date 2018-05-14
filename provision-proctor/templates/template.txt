@@ -1,0 +1,7 @@
+image:
+  repository: tsuyoshiushio/sentinel
+  tag: latest
+  pullPolicy: Always
+serviceSize: $teamNum
+services:
+$services
