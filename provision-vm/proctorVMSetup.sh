@@ -7,9 +7,9 @@ sudo apt-get install -y apt-transport-https
 sudo apt-get update
 sudo apt-get install -y azure-cli=2.0.31-1~xenial
 
-echo "############### Installing Helm v2.9.0 ###############"
-sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.9.0-linux-amd64.tar.gz
+echo "############### Installing Helm v2.9.1 ###############"
+sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing Dotnet SDK v2.1.4 ###############"
@@ -28,4 +28,4 @@ echo "############### Installing Git ###############"
 sudo apt-get install -y git
 
 echo "############### Pulling Openhack-tools from Github "###############
-sudo git clone https://github.com/Azure-Samples/openhack-devops-tools.git /home/azureuser/openhack-devops-tools
+sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
