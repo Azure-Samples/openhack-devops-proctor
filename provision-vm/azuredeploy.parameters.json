@@ -1,0 +1,21 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "StorageAccountName": {
+        "value": "YOUR STORAGE ACCOUNT"
+      },
+      "adminUsername": {
+        "value": "VM ADMIN USERNAME"
+      },
+      "adminPassword": {
+        "value": "ADMIN PASSWORD"
+      },
+      "dnsNameForPublicIP": {
+        "value": "DNS NAME FOR PUBLIC IP"
+      },
+      "ubuntuOSVersion": {
+        "value": "16.04.0-LTS"
+      }
+    }
+  }

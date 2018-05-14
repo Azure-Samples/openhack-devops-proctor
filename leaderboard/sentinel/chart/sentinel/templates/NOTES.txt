@@ -1,0 +1,12 @@
+1. Get the application URL by running these commands:
+
+kubectl get pods
+
+You have {{ .Values.serviceSize }} pods on the default namespace. 
+
+TeamID | ServiceID | EndPoint                       | Port   | ApiURL
+{{- range .Values.services }}
+{{ .teamId }}     | {{ .serviceId }}      | {{ .endpoint }}                       | {{ .port }}   | {{ .apiURL }}
+{{- end }}
+
+Happy Sentinel
