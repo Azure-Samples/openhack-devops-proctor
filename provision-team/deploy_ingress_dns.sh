@@ -114,7 +114,7 @@ else
     existingEnv="$(<$HOME/team_env/teamConfig.json)"
     teamEndPoint="{
         \"$teamName\": {
-         \"endpoint\": \"$DNS_HOSTMANE\"
+         \"endpoint\": \"$DNS_HOSTNAME\"
     }
 }"
 echo $teamEndPoint $existingEnv | jq -s add > $HOME/team_env/teamConfig.json
