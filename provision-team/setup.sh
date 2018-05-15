@@ -149,7 +149,7 @@ bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName
 #bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation
 
 echo "4-Clone repo"
-bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops -s ./test_fetch_build
+bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s ./test_fetch_build
 
 echo "5-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${random4Chars})"
 bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${random4Chars}

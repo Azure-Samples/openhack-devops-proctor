@@ -114,7 +114,7 @@ TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/openhack-devops/src/MobileAppServiceV2/TripService
+pushd $relativeSaveLocation/openhack-devops-team/apis/trips
 
 docker build . -t $TAG
 
@@ -123,7 +123,7 @@ echo "Successfully pushed image: "$TAG
 
 popd
 
-installPath=$relativeSaveLocation"/openhack-devops/src/MobileAppServiceV2/TripService/helm"
+installPath=$relativeSaveLocation"/openhack-devops-team/apis/trips/helm"
 echo -e "\nhelm install ... from: " $installPath
 
 sed -i -e "s/dnsurlreplace/$dnsUrl/g" $installPath"/values.yaml"

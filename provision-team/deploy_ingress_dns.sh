@@ -61,11 +61,6 @@ while [ $tiller != "Running" ]; do
         sleep 5
 done
 
-# Temporary fix until helm 2.9.1 patch https://github.com/kubernetes/helm/issues/3985
-kubectl -n kube-system patch deployment tiller-deploy -p '{"spec": {"template": {"spec": {"automountServiceAccountToken": true}}}}'
-echo "Sleeping for 30 seconds to wait for tiller patch to complete"
-sleep 30
-
 echo "tiller upgrade complete."
 
 echo "Updating repo information"
