@@ -1,0 +1,25 @@
+{{- range .Values.services }}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sentinel-{{ .serviceId }}
+spec:
+  containers:
+  - name: sentinel
+    image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+    imagePullPolicy: {{ $.Values.image.pullPolicy }}
+    env:
+    - name: SENTINEL_TEAM_ID
+      value: "{{ .teamId }}"
+    - name: SENTINEL_SERVICE_ID
+      value: "{{ .serviceId }}"
+    - name: SENTINEL_ENDPOINT
+      value: "{{ .endpoint }}"
+    - name: "SENTINEL_PORT"
+      value: "{{ .port }}"
+    - name: SENTINEL_API_URL
+      value: "{{ .apiURL }}"
+{{- end }}
+
