@@ -27,14 +27,14 @@ done
 shift $((OPTIND-1))
 
 # Check if kubectl is installed or that we can install it
-type -p kubectl 
-if [ ! $? == 0 ]; then 
+type -p kubectl
+if [ ! $? == 0 ]; then
     # we need to install kubectl therefore root is needed
-    if [[ ! $EUID == 0 ]]; then 
+    if [[ ! $EUID == 0 ]]; then
         echo "The script must run elevated to install kubectl"
         exit 1
     fi
-fi 
+fi
 
 #Prompt for parameters is some required parameters are missing
 if [[ -z "$subscriptionId" ]]; then
@@ -144,7 +144,7 @@ bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupTeam -r $registryNam
 echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation)"
 bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation
 
-# Remove do to the permission with the role assignment 
+# Remove do to the permission with the role assignment
 echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation
 
@@ -162,7 +162,7 @@ bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServe
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${teamName}${random4Chars}'.'$resourceGroupLocation'.cloudapp.azure.com'
-echo -e "DNS URL for "${teamName}" is:\n"$dnsURL 
+echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
 echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
@@ -173,6 +173,6 @@ bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTe
 echo "10-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
 bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
 
-echo "10- Clean the working environment"
+echo "11-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}
 
