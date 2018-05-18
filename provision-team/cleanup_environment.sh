@@ -20,7 +20,7 @@ if [ -z "$teamName" ] ; then
     usage
 fi
 
-if [ ! -d "$HOME/team-env" ]; then
+if [ ! -d "$HOME/team_env" ]; then
     mkdir $HOME/team_env
 fi
 
@@ -37,5 +37,4 @@ fi
 # fi
 
 # 3- Delete the working directory
-
-# rm -rf ./test_fetch_build
+rm -rf ./test_fetch_build
