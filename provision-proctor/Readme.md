@@ -11,7 +11,7 @@ Login-AzureRmAccount
 ```
 
 Create a public key using this format:
-ssh-keygen -t rsa -b 2048 -C "proctor@microsoft.com" -f ./id_rsa
+`ssh-keygen -t rsa -b 2048 -C "proctor@microsoft.com" -f ./id_rsa`
 
 Change `YOUR_NUMBER`, `YOUR_PUBLIC_KEY`, and `YOUR_LOCATION` below.
 The whole deployment takes time and will stop if there are any errors.
