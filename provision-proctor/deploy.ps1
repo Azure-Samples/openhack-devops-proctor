@@ -1,55 +1,49 @@
 Param(
-    [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
-    [string] [Parameter(Mandatory=$true)] $Location,
-    [string] [Parameter(Mandatory=$true)] $EnvironmentHeader,
-    [string] [Parameter(Mandatory=$true)] $CosmosdbAccountName,
-    [string] [Parameter(Mandatory=$true)] $FunctionAppBaseName,
-    [string] [Parameter(Mandatory=$true)] $PackageUrl,
-    [string] [parameter(Mandatory=$true)] $KeyVaultName,
-    [string] [parameter(Mandatory=$true)] $ADAppName,
-    [string] [parameter(Mandatory=$true)] $ADAppPass,
-    [string] [parameter(Mandatory=$true)] $AKSPublicKeyPath,
-    [string] [parameter(Mandatory=$true)] $AKSDnsNamePrefix,
-    [string] [parameter(Mandatory=$true)] $ACRName,
-    [string] [parameter(Mandatory=$true)] $ProctorVMHostName,
-    [string] [parameter(Mandatory=$true)] $AdminUser,
-    [string] [parameter(Mandatory=$true)] $AdminPassword,
-    [string] [parameter(Mandatory=$true)] $ExternalKeyVaultName,
-    [int] [Parameter(Mandatory=$true)] $teamNum,
-    [int] [Parameter(Mandatory=$true)] $servicesPerTeam
+     [string] [Parameter(Mandatory=$true)] $Location,
+     [string] [parameter(Mandatory=$true)] $Number,
+     [string] [parameter(Mandatory=$true)] $PublicKey
 )
 
+$ErrorActionPreference = 'Stop'
+
+# Input your values here if desired to manally specify instead of passing as parameters
+$num = $Number
+$publicKey = $PublicKey
+$location = $Location 
+
+# Leave the rest of the script alone
+$resourceGroupName = "ProctorResource" + $num
+$environmentHeader = "procoh"
+$cosmosdbAccountName = $environmentHeader + "db" + $num
+$functionName = $environmentHeader + "fn" + $num
+$keyvaultName = $environmentHeader + "kv" + $num
+$ADAppName = $environmentHeader + "app" + $num
+$ADAppPass = $environmentHeader + "pass" + $num
+$AKSDnsNamePrefix = "procohaks" + $num
+$acrName = "procohacr" + $num
+$PackageUrl =  "https://github.com/Azure-Samples/openhack-devops-proctor/blob/master/leaderboard/api/Binaries/backend-1.0.0.zip?raw=true"
 
 # Register services
-
 Register-AzureRmResourceProvider -ProviderNamespace Microsoft.DocumentDB
 Register-AzureRmResourceProvider -ProviderNamespace Microsoft.ContainerRegistry
 
-# NOTE: Since this script works on the VSTS, I skip the login script.
-# Login-AzureRmAccount
+$RGNameCosmosDB = $ResourceGroupName + '-cosmosdb' 
+Get-AzureRmResourceGroup -Name $RGNameCosmosDB -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
-# Create or update the resource group using the specified template file and template parameters file
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Creating the resource group..."
-Write-Output "**************************************************************************************************"
-
-Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorVariable notPresent -ErrorAction SilentlyContinue
-
-if(!$notPresent)
+if($notPresent)
 {
-    Remove-AzureRmResourceGroup -Name $ResourceGroupName -Force
+    Write-Output ""
+    Write-Output "**************************************************************************************************"
+    Write-Output "* Creating the resource group for CosmosDB..."
+    Write-Output "**************************************************************************************************"    
+    New-AzureRmResourceGroup -Name $RGNameCosmosDB -Location $Location
 }
-
-New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force
 
 # Creating CosmosDB
 Write-Output ""
 Write-Output "**************************************************************************************************"
 Write-Output "* Creating a CosmosDB..."
 Write-Output "**************************************************************************************************"
-
-
 
 Function Get-PrimaryKey
 {
@@ -63,7 +57,7 @@ Function Get-PrimaryKey
     try
     {
   
-        $keys=Invoke-AzureRmResourceAction -Action listKeys -ResourceType "Microsoft.DocumentDb/databaseAccounts" -ApiVersion $DocumentDBApi -ResourceGroupName $ResourceGroupName -Name $CosmosdbAccountName -Force
+        $keys=Invoke-AzureRmResourceAction -Action listKeys -ResourceType "Microsoft.DocumentDb/databaseAccounts" -ApiVersion $DocumentDBApi -ResourceGroupName $RGNameCosmosDB -Name $CosmosdbAccountName -Force
         $connectionKey=$keys[0].primaryMasterKey
         return $connectionKey
     }
@@ -73,37 +67,34 @@ Function Get-PrimaryKey
     }
 }
 
-
-$locations = @(@{"locationName"="japaneast"; "failoverPriority"=0})
+$locations = @(@{"locationName"=$Location; "failoverPriority"=0})
 
 $consistencyPolicy = @{"defaultConsistencyLevel"="Session";
                         "maxIntervalInSeconds"="10";
                         "maxStalenessPrefix"="200"}
 
 $DBProperties = @{"databaseAccountOfferType"="Standard";
-                    "locations"=$Locations;
+                    "locations"=$locations;
                     "consistencyPolicy"=$consistencyPolicy
                     }
 
-$ResourceName = $CosmosdbAccountName
-$DBProperties
 New-AzureRmResource -ResourceType "Microsoft.DocumentDb/databaseAccounts"`
                     -ApiVersion "2015-04-08"`
-                    -ResourceGroupName $ResourceGroupName `
+                    -ResourceGroupName $RGNameCosmosDB `
                     -Location $Location `
-                    -Name $CosmosdbAccountName `
+                    -Name $cosmosdbAccountName `
                     -Properties $DBProperties `
                     -Force
 
 ## Retrive CosmosDB ConnectionString
-$cosmosPrimaryKey = Get-PrimaryKey -DocumentDBApi "2015-04-08" -ResourceGroupName $ResourceGroupName -CosmosdbAccountName $CosmosdbAccountName
-$cosmosDBConnectionString = "AccountEndpoint=https://" + $CosmosdbAccountName + ".documents.azure.com:443/;AccountKey=" + $cosmosPrimaryKey + ";"
-$cosmosDBEndpoint = "https://" + $CosmosdbAccountName + ".documents.azure.com:443/"
+$cosmosPrimaryKey = Get-PrimaryKey -DocumentDBApi "2015-04-08" -ResourceGroupName $RGNameCosmosDB -CosmosdbAccountName $cosmosdbAccountName
+$cosmosDBConnectionString = "AccountEndpoint=https://" + $cosmosdbAccountName + ".documents.azure.com:443/;AccountKey=" + $cosmosPrimaryKey + ";"
+$cosmosDBEndpoint = "https://" + $cosmosdbAccountName + ".documents.azure.com:443/"
 
 # Storage Account for downloading function within the ARM template
 Write-Output ""
 Write-Output "**************************************************************************************************"
-Write-Output "* Provisioning Storage Account for donwloading contents ..."
+Write-Output "* Provisioning Storage Account for downloading contents ..."
 Write-Output "**************************************************************************************************"
 
 $random = Get-Random -minimum 1000000 -maximum 9999999;([String]$random).SubString(1,6)
@@ -111,8 +102,7 @@ $storageName = $FunctionAppBaseName + $random
 
 $contentsStorageName = $EnvironmentHeader + $random
 
-$contentsStorage = New-AzureRmStorageAccount -ResourceGroupName $ResourceGroupName -Name $contentsStorageName -Location $Location -SkuName Standard_LRS
-
+New-AzureRmStorageAccount -ResourceGroupName $RGNameCosmosDB -Name $contentsStorageName -Location $Location -SkuName Standard_LRS
 
 # Create a Function App with Function App V2
 # This ARM temaplate create Azure Functions with a Service Principal to access the KeyVault.
@@ -123,7 +113,7 @@ Write-Output "* Provisioning Azure Functions (v2)..."
 Write-Output "**************************************************************************************************"
 
 $currentSubscriptionId = (Get-AzureRmContext).Subscription.Id
-$hostingPlanName = $FunctionAppBaseName + "Plan"
+$hostingPlanName = $functionName + "Plan"
 
 # Install Newton to handle json
 # You need Admin Priviledge
@@ -139,12 +129,12 @@ if(!$module)
 # compose KeyVault url
 $keyVaultUrl = "https://" + $KeyVaultName + ".vault.azure.net"
 
-
-New-AzureRmResourceGroupDeployment -Name LeaderBoardBackendDeployment -ResourceGroup $ResourceGroupName -Templatefile scripts/template.json -functionName $FunctionAppBaseName -storageName $StorageName -hostingPlanName $hostingPlanName -location $Location -sku Standard -workerSize 0 -serverFarmResourceGroup $ResourceGroupName -skuCode "S1" -subscriptionId $currentSubscriptionId -cosmosDBEndpoint $cosmosDBEndpoint -cosmosPrimaryKey $cosmosPrimaryKey -keyVaultUrl $keyVaultUrl -packageUrl $PackageUrl
+$functionTemplate = $PSScriptRoot + '\scripts\template.json'
+New-AzureRmResourceGroupDeployment -Name LeaderBoardBackendDeployment -ResourceGroup $RGNameCosmosDB -Templatefile $functionTemplate -functionName $functionName -storageName $StorageName -hostingPlanName $hostingPlanName -location $Location -sku Standard -workerSize 0 -serverFarmResourceGroup $RGNameCosmosDB -skuCode "S1" -subscriptionId $currentSubscriptionId -cosmosDBEndpoint $cosmosDBEndpoint -cosmosPrimaryKey $cosmosPrimaryKey -keyVaultUrl $keyVaultUrl -packageUrl $PackageUrl 
 
 # Get the Principal Id and Tenant Id
 
-# If we can't use the Preview Release, this staretgy comes.
+# If we can't use the Preview Release, this strategy comes.
 # Export-AzureRmResourceGroup -ResourceGroupName $ResourceGroupName -Path "$pwd\.current.json"
 
 # It requires Preview Release of WebSites
@@ -158,7 +148,7 @@ if(!$module)
     Install-Module AzureRM.Websites -Repository PSGallery -AllowPrerelease -Force
 }
 
-$app = Get-AzureRmWebApp -ResourceGroupName $ResourceGroupName -Name $FunctionAppBaseName
+$app = Get-AzureRmWebApp -ResourceGroupName $RGNameCosmosDB -Name $functionName
 
 
 # Create and Configure KeyVault
@@ -169,7 +159,7 @@ Write-Output "******************************************************************
 
 # Set some Secrets
 
-$keyvault = New-AzureRmKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroupName -Location $Location
+New-AzureRmKeyVault -Name $KeyVaultName -ResourceGroupName $RGNameCosmosDB -Location $Location
 
 # Add Service Principal To the KeyVault
 
@@ -182,7 +172,7 @@ Set-AzureRmKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $app.Identity
 # Upload Secrets
 
 $cosmosDBConnectionStringSecretValue = ConvertTo-SecureString $cosmosDBConnectionString -AsPlainText -Force
-$cosmosDBConnectionStringSecret = Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'shared-cosmosDB-ConnectionString' -SecretValue $cosmosDBConnectionStringSecretValue
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'shared-cosmosDB-ConnectionString' -SecretValue $cosmosDBConnectionStringSecretValue
 
 # Set KeyVault URl 
 
@@ -210,62 +200,88 @@ Write-Output "******************************************************************
 Write-Output "* Provisioning a Service Principal for the AKS Cluster..."
 Write-Output "**************************************************************************************************"
 
-$IdentifierUris = "http://" + $ADAppName
-
 $secureStringPassword = ConvertTo-SecureString -String $ADAppPass -AsPlainText -Force
+#$IdentifierUris = "http://" + $ADAppName
 #$ADApplication = New-AzureRmADApplication -DisplayName $ADAppName -HomePage "http://www.microsoft.com" -IdentifierUris $IdentifierUris -Password $secureStringPassword
 #Add-Type -AssemblyName System.Web
 #$password = [System.Web.Security.Membership]::GeneratePassword(16,3)
 #$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApplication.ApplicationId -Password $password
 
-$servicePrincipal = New-AzureRmADServicePrincipal -DisplayName $ADAppName -Password $secureStringPassword
+$servicePrincipal = Get-AzureRmADServicePrincipal -DisplayName $ADAppName 
+
+if (!$servicePrincipal)
+{
+    # If the service principal doesn't exist yet, create it
+    $servicePrincipal = New-AzureRmADServicePrincipal -DisplayName $ADAppName -Password $secureStringPassword
+}
+
 $ADApplication = Get-AzureRmADApplication -ApplicationId $servicePrincipal.ApplicationId
 
 Write-Output $servicePrincipal
 
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Assinging Contributor role for the Resource Group..."
-Write-Output "**************************************************************************************************"
+# Write-Output ""
+# Write-Output "**************************************************************************************************"
+# Write-Output "* Assinging Contributor role for the Resource Group..."
+# Write-Output "**************************************************************************************************"
 
 Write-Output "Waiting for Service Principal is generated..."
 Start-Sleep -Seconds 30
 
-# Create an AKS
+$RGNameAKS = $ResourceGroupName + '-aks' 
+Get-AzureRmResourceGroup -Name $RGNameAKS -ErrorVariable notPresent -ErrorAction SilentlyContinue
+
+if($notPresent)
+{
+    Write-Output ""
+    Write-Output "**************************************************************************************************"
+    Write-Output "* Creating the resource group for AKS Cluster..."
+    Write-Output "**************************************************************************************************"
+    New-AzureRmResourceGroup -Name $RGNameAKS -Location $Location -Force   
+}
+
 Write-Output ""
 Write-Output "**************************************************************************************************"
 Write-Output "* Provisioning the AKS Cluster..."
 Write-Output "**************************************************************************************************"
 
-$AKSPublicKey = Get-Content -Path $AKSPublicKeyPath
-$secureStringPublicKey = ConvertTo-SecureString -String $AKSPublicKey -AsPlainText -Force
+# $AKSPublicKey = Get-Content -Path $AKSPublicKeyPath
+$secureStringPublicKey = ConvertTo-SecureString -String $publicKey -AsPlainText -Force
 $secureStringServicePrincipalId = ConvertTo-SecureString -string $ADApplication.ApplicationId -AsPlainText -Force
 $secureStringServicePrincipalPass = ConvertTo-SecureString -string $ADAppPass -AsPlainText -Force
-$result = New-AzureRmResourceGroupDeployment -Name LeaderBoardAKSDeployment -ResourceGroup $ResourceGroupName -Templatefile .\scripts\aks.json -dnsNamePrefix $AKSDnsNamePrefix -sshRSAPublicKey $secureStringPublicKey -servicePrincipalClientId $secureStringServicePrincipalId -servicePrincipalClientSecret $secureStringServicePrincipalPass  -DeploymentDebugLogLevel All
 
-# Create an ACR
+$aksTemplate = $PSScriptRoot + '\scripts\aks.json'
+New-AzureRmResourceGroupDeployment -Name LeaderBoardAKSDeployment -ResourceGroup $RGNameAKS -Templatefile $aksTemplate -dnsNamePrefix $AKSDnsNamePrefix -sshRSAPublicKey $secureStringPublicKey -servicePrincipalClientId $secureStringServicePrincipalId -servicePrincipalClientSecret $secureStringServicePrincipalPass  -DeploymentDebugLogLevel All
+
+$RGNameACR = $ResourceGroupName + '-acr' 
+Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
+
+if($notPresent)
+{
+    Write-Output ""
+    Write-Output "**************************************************************************************************"
+    Write-Output "* Creating the resource group for ACR..."
+    Write-Output "**************************************************************************************************"
+    New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
+}
+
 Write-Output ""
 Write-Output "**************************************************************************************************"
 Write-Output "* Provisioning the ACR..."
 Write-Output "**************************************************************************************************"
+$ACRTemplate = $PSScriptRoot + '\scripts\acr.json'
+New-AzureRmResourceGroupDeployment -Name LeaderBoardACRDeployment -ResourceGroup $RGNameACR -Templatefile $ACRTemplate -acrName $ACRName 
 
-New-AzureRmResourceGroupDeployment -Name LeaderBoardACRDeployment -ResourceGroup $ResourceGroupName -Templatefile .\scripts\acr.json -acrName $ACRName 
-
-$message =  "Done! Please refer " + $ResourceGroupName + " On your subscription"
+$message =  "Done! Please refer " + $RGNameACR + " On your subscription"
 Write-Output $message
 
+$RGNameACR = $ResourceGroupName + '-acr' 
+Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
-# Create a Proctor VM
-
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Provisioning the Proctor VM..."
-Write-Output "**************************************************************************************************"
-
-$vmStorageName = $ProctorVMHostName + $random
-New-AzureRmStorageAccount -Name $vmStorageName -ResourceGroupName $ResourceGroupName -Location $Location -SkuName Premium_LRS -Kind Storage
-
-New-AzureRmResourceGroupDeployment -Name "ProctorVMDeployment" -ResourceGroup $ResourceGroupName -Templatefile .\scripts\proctor.json -StorageAccountName $vmStorageName -adminUsername $AdminUser -adminPassword (ConvertTo-SecureString $AdminPassword -AsPlainText -Force) -dnsNameForPublicIP $ProctorVMHostName -ubuntuOSVersion "16.04.0-LTS"
-
-
-
+if($notPresent)
+{
+    Write-Output ""
+    Write-Output "**************************************************************************************************"
+    Write-Output "* Creating the resource group for ACR..."
+    Write-Output "**************************************************************************************************"
+    New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
+}
