@@ -36,6 +36,15 @@ if [ ! $? == 0 ]; then
     fi
 fi
 
+# Check if az is installed and that we can install it
+type -p az 
+if [ ! $? == 0 ]; then
+    # is az is not present we need to install it
+    echo "The script need the az command line to be installed\n"
+    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
+    exit 1
+fi
+
 #Prompt for parameters is some required parameters are missing
 if [[ -z "$subscriptionId" ]]; then
     echo "Your subscription ID can be looked up with the CLI using: az account show --out json "

@@ -91,11 +91,11 @@ if [[ -z "$teamName" ]]; then
 fi
 
 #DEBUG
-echo $buildFlavor
-echo $resourceGroupName
-echo $imageTag
-echo $relativeSaveLocation
-echo $dnsUrl
+echo "Build Flavor:" $buildFlavor
+echo "Resource Group:" $resourceGroupName
+echo "Image:" $imageTag
+echo "Relative save location:" $relativeSaveLocation
+echo "DNS Url:" $dnsUrl
 
 #get the acr repository id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
@@ -131,15 +131,12 @@ echo -e "\nhelm install from: " $PWD "\n\n"
 
 cat "./values.yaml" \
     | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | sed "s/acrreplace/$ACR_ID/g" \
-    | sed "s/imagetagreplace/$imageTag/g" \
+    | sed "s/acrreplace.azurecr.io/$ACR_ID/g" \
+    | sed "s/imagereplace/$imageTag/g" \
     | tee "./values-poi-$teamName.yaml"
 
-echo "replacing values file in chart"
-mv "./values-poi-$teamName.yaml" "./values.yaml"
-
 echo "deploying POI Service chart"
-helm install . --name api-poi --set image.repository=$TAG
+helm install . --name api-poi -f ./values-poi-$teamName.yaml --set image.repository=$TAG
 
 popd
 
