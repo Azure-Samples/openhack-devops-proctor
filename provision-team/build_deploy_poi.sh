@@ -135,11 +135,8 @@ cat "./values.yaml" \
     | sed "s/imagereplace/$imageTag/g" \
     | tee "./values-poi-$teamName.yaml"
 
-echo "replacing values file in chart"
-mv "./values-poi-$teamName.yaml" "./values.yaml"
-
 echo "deploying POI Service chart"
-helm install . --name api-poi -f ./values.yaml --set image.repository=$TAG
+helm install . --name api-poi -f ./values-poi-$teamName.yaml --set image.repository=$TAG
 
 popd
 
