@@ -37,7 +37,7 @@ if [ ! $? == 0 ]; then
 fi
 
 # Check if az is installed and that we can install it
-type -p az 
+type -p az
 if [ ! $? == 0 ]; then
     # is az is not present we need to install it
     echo "The script need the az command line to be installed\n"
@@ -91,7 +91,7 @@ declare hostingPlanName="${teamName}plan${random4Chars}"
 declare mobileAppName="${teamName}app${random4Chars}"
 declare sqlServerUsername="${teamName}sa${random4Chars}"
 declare sqlServerPassword="${teamName}pwd-${random4Chars}"
-declare sqlDBName="${teamName}db${random4Chars}"
+declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
 echo " VARIABLES"
