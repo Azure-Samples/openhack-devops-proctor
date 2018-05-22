@@ -72,3 +72,4 @@ Import-Module AzureRM.Netcore
 Import-Module AzureRM.Profile.Netcore
 # Exit out of pwsh so bash can complete
 exit
+
