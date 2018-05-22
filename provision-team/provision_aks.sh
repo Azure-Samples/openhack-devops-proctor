@@ -83,16 +83,6 @@ then
     echo "Cluster AKS:" $clusterName "created successfully..."
 fi
 
-echo "Installing Kubernetes CLI..."
-(
-    set -x
-    type -p kubectl 
-    if [ ! $? == 0 ]; then
-        # The kubectl will be installed in the system an need root priviledges
-        sudo az aks install-cli 1> /dev/null
-    fi
-)
-
 if [ $? == 0 ];
 then
     echo "kubernetes CLI for AKS:" $clusterName "installed successfully..."
@@ -108,5 +98,3 @@ if [ $? == 0 ];
 then
     echo "Credentials for AKS: "$clusterName" retrieved successfully..."
 fi
-
-
