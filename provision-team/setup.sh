@@ -29,9 +29,8 @@ shift $((OPTIND-1))
 # Check if kubectl is installed or that we can install it
 type -p kubectl
 if [ ! $? == 0 ]; then
-    # we need to install kubectl therefore root is needed
     if [[ ! $EUID == 0 ]]; then
-        echo "The script must run elevated to install kubectl"
+        echo "kubectl not found, install and re-run setup."
         exit 1
     fi
 fi

@@ -12,6 +12,11 @@ sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-am
 sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
+echo "############### Installing kubectl ###############"
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.7/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
 echo "############### Installing Dotnet SDK v2.1.4 ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
@@ -31,7 +36,7 @@ echo "############### Installing SQL cmd line tools ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 sudo apt-get update
-sudo apt-get install -y mssql-tools unixodbc-dev
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
 
 #pick up changes to bash profile
@@ -39,6 +44,7 @@ source ~/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo chown azureuser -R ./openhack-devops-proctor
 
 echo "############### Install Powershell Core and AzureRM modules "###############
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
