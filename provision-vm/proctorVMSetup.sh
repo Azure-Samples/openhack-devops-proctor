@@ -56,6 +56,11 @@ sudo apt-get install -y powershell
 # Start PowerShell and install AzureRm modules
 # https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
 sudo pwsh
+
+#Change trust policy on powershell gallery to Trusted for unattended install
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+
+#Install AzureRM Modules
 Install-Module AzureRM.NetCore
 Import-Module AzureRM.Netcore
 Import-Module AzureRM.Profile.Netcore
