@@ -167,7 +167,7 @@ echo "6-Provision SQL & Mobile App  (bash ./provision_sql_mobileapp.sh -s ./test
 bash ./provision_sql_mobileapp.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
 
 echo "7-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName)"
-bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName
+bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName -d $sqlDBName
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${teamName}${random4Chars}'.'$resourceGroupLocation'.cloudapp.azure.com'
