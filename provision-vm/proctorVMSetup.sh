@@ -29,3 +29,22 @@ sudo apt-get install -y git
 
 echo "############### Pulling Openhack-tools from Github "###############
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+
+echo "############### Install Powershell Core and AzureRM modules "###############
+# https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
+# Import the public repository GPG keys
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+# Register the Microsoft Ubuntu repository
+sudo curl -o /etc/apt/sources.list.d/microsoft.list https://packages.microsoft.com/config/ubuntu/16.04/prod.list
+# Update the list of products
+sudo apt-get update
+# Install PowerShell
+sudo apt-get install -y powershell
+# Start PowerShell and install AzureRm modules
+# https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
+sudo pwsh
+Install-Module AzureRM.NetCore
+Import-Module AzureRM.Netcore
+Import-Module AzureRM.Profile.Netcore
+# Exit out of pwsh so bash can complete
+exit

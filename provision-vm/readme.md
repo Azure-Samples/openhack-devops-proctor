@@ -4,8 +4,17 @@
 
 Login with your PowerShell console.
 
+For a Windows machine it will be:
+
 ```shell
 Login-AzureRmAccount
+```
+
+For Ubuntu it will be:
+
+```shell
+pwsh
+Connect-AzureRmAccount
 ```
 
 Change `YOUR_NUMBER`, `YOUR_PUBLIC_KEY`, and `YOUR_LOCATION` below.
