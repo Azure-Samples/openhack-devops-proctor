@@ -27,7 +27,19 @@ sudo apt-get install -y jq
 echo "############### Installing Git ###############"
 sudo apt-get install -y git
 
-echo "############### Pulling Openhack-tools from Github "###############
+echo "############### Installing SQL cmd line tools ###############"
+curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+sudo apt-get update
+sudo apt-get install mssql-tools unixodbc-dev
+sudo apt-get update
+sudo apt-get install mssql-tools
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+
+#pick up changes to bash profile
+source ~/.bashrc
+
+echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 
 echo "############### Install Powershell Core and AzureRM modules "###############
