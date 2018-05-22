@@ -90,3 +90,13 @@ cat "./sql-secret.yaml" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
     | tee $relativeSaveLocation"/sql-secret-$teamName.yaml"
 kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml"
+
+
+#Create firewall rule to run schema create
+az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName -s $sqlServer --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.254
+
+#Create schema in db
+sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MYDrivingDB.sql
+
+#Remove firewall rule
+az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
