@@ -5,7 +5,6 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO 
 sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
 sudo apt-get install -y apt-transport-https
 sudo apt-get update
-sudo apt-get install -y azure-cli=2.0.31-1~xenial
 
 echo "############### Installing Helm v2.9.1 ###############"
 sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
@@ -69,5 +68,6 @@ sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
 sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
 sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
+sudo apt-get install -y azure-cli=2.0.31-1~xenial
+
 sudo apt-get upgrade -y
-sudo reboot
