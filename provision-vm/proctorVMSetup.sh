@@ -22,7 +22,6 @@ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microso
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 
-sudo apt-get install -y apt-transport-https
 sudo apt-get update
 sudo apt-get install -y dotnet-sdk-2.1.4
 
@@ -36,7 +35,7 @@ echo "############### Installing SQL cmd line tools ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 sudo apt-get update
-sudo apt-get install -y mssql-tools unixodbc-dev
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
 
 #pick up changes to bash profile
@@ -61,15 +60,11 @@ echo "############### Install Powershell Core and AzureRM modules "#############
 sudo apt-get install -y powershell
 # Start PowerShell and install AzureRm modules
 # https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
-sudo pwsh
 
 #Change trust policy on powershell gallery to Trusted for unattended install
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
 
 #Install AzureRM Modules
-Install-Module AzureRM.NetCore
-Import-Module AzureRM.Netcore
-Import-Module AzureRM.Profile.Netcore
-# Exit out of pwsh so bash can complete
-exit
-
+sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
+sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
+sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
