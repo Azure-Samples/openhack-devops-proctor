@@ -1,8 +1,7 @@
 Param(
      [string] [Parameter(Mandatory=$true)] $Location,
      [string] [parameter(Mandatory=$true)] $Number,
-     [string] [parameter(Mandatory=$true)] $PublicKey,
-     [string] [parameter(Mandatory=$true)] $AdminPassword
+     [string] [parameter(Mandatory=$true)] $PublicKey
 )
 
 $num = $Number #"116"
@@ -31,4 +30,4 @@ New-AzureRmStorageAccount -Name $vmStorageName -ResourceGroupName $RGNameVM -Loc
 
 $vmTemplate = $PSScriptRoot + '\azuredeploy.json'
 
-New-AzureRmResourceGroupDeployment -Name "ProctorVMDeployment" -ResourceGroup $RGNameVM -Templatefile $vmTemplate -StorageAccountName $vmStorageName -adminUsername $AdminUser -adminPassword (ConvertTo-SecureString $adminPassword -AsPlainText -Force) -dnsNameForPublicIP $proctorVMName -ubuntuOSVersion "16.04.0-LTS"
+New-AzureRmResourceGroupDeployment -Name "ProctorVMDeployment" -ResourceGroup $RGNameVM -Templatefile $vmTemplate -StorageAccountName $vmStorageName -adminUsername $AdminUser  -dnsNameForPublicIP $proctorVMName -sshKeyData $PublicKey
