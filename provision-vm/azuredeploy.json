@@ -14,12 +14,6 @@
                 "description": "Username for the Virtual Machine."
             }
         },
-        "adminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine."
-            }
-        },
         "dnsNameForPublicIP": {
             "type": "string",
             "metadata": {
@@ -33,22 +27,30 @@
                 "description": "VM size for the Docker host."
             }
         },
+        "sshKeyData": {
+            "type": "string",
+            "metadata": {
+              "description": "SSH rsa public key file as a string."
+            }
+        },
         "ubuntuOSVersion": {
             "type": "string",
-            "defaultValue": "16.04.0-LTS",
+            "defaultValue": "16.04-DAILY-LTS",
             "metadata": {
                 "description": "The Ubuntu version for deploying the Docker containers. This will pick a fully patched image of this given Ubuntu version. Allowed values: 14.04.4-LTS, 15.10, 16.04.0-LTS"
             },
             "allowedValues": [
-                "14.04.4-LTS",
-                "15.10",
-                "16.04.0-LTS"
+                "14.04.5-LTS",
+                "16.04-DAILY-LTS",
+                "16.04-LTS",
+                "18.04-LTS"
             ]
         }
     },
     "variables": {
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
+        "skuversion": "16.04.201805220",
         "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
         "extensionName": "DockerExtension",
@@ -62,6 +64,7 @@
         "vmName": "proctorVM",
         "virtualNetworkName": "proctorVMVNET",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
     },
     "resources": [
@@ -150,14 +153,24 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                          "publicKeys": [
+                            {
+                              "path": "[variables('sshKeyPath')]",
+                              "keyData": "[parameters('sshKeyData')]"
+                            }
+                          ]
+                        }
+                      }
                 },
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[variables('imagePublisher')]",
                         "offer": "[variables('imageOffer')]",
                         "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
+                        "version": "[variables('skuversion')]"
                     },
                     "osDisk": {
                         "name": "osdisk1",
@@ -209,7 +222,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/fixvmscript/provision-vm/proctorVMSetup.sh"
                     ],
                     "commandToExecute": "sh proctorVMSetup.sh"
                 }
