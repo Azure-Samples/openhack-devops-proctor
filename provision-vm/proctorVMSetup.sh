@@ -42,6 +42,7 @@ source ~/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+# This doesn't actually take effect for some reason and have to run same command after login.
 sudo chown azureuser -R ./openhack-devops-proctor
 
 echo "############### Install Powershell Core and AzureRM modules "###############
@@ -68,6 +69,7 @@ sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
 sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
 sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
+# Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
 sudo apt-get install -y azure-cli=2.0.31-1~xenial
 
 sudo apt-get upgrade -y
