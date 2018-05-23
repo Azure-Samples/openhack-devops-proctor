@@ -13,7 +13,7 @@ Login-AzureRmAccount
 For Ubuntu it will be:
 
 ```shell
-pwsh
+sudo pwsh
 Connect-AzureRmAccount
 ```
 
@@ -24,6 +24,7 @@ Run this from the root of the `provision-vm` folder.
 $YOUR_LOCATION = 'eastus'
 $YOUR_NUMBER = '' # 3940
 $YOUR_PUBLIC_KEY = '' # ssh-rsa AAAAB3NzaC1yc2EAAAADA... @microsoft.com
-$YOUR_PASSWORD = 'ComplexPassw0rdyo!'
-.\deploy.ps1 -Location $YOUR_LOCATION -Number $YOUR_NUMBER -PublicKey $YOUR_PUBLIC_KEY -AdminPassword $YOUR_PASSWORD
+.\deploy.ps1 -Location $YOUR_LOCATION -Number $YOUR_NUMBER -PublicKey $YOUR_PUBLIC_KEY
 ```
+
+After provisioning, login to the VM with the public IP address attached to the VM and the SSH key provided.

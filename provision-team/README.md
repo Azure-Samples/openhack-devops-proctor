@@ -4,8 +4,8 @@
 
 ## Pre-requisites
 
-- Access to [MyDriving github repository](https://github.com/Azure-Samples/openhack-devops)
-- Generete ssh key to get openhack-team-cli https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+- Access to [MyDriving github repository](https://github.com/Azure-Samples/openhack-devops-team)
+- Generate ssh key to get openhack-team-cli https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 - [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 - Azure [AZ cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [.net core 2.0.4](https://www.microsoft.com/net/download/) [Linux install](https://www.microsoft.com/net/download/linux-package-manager/ubuntu16-04/sdk-current)
@@ -26,4 +26,7 @@
 
 An example command to provision might look like the following:
 
-`./setup.sh -i e57679d8-3a04-4828-97e6-35169ea30349 -l eastus -n devopsoh`
+`./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh`
+
+If running from the proctor VM, please first execute:
+`sudo chown azureuser -R ./openhack-devops-proctor`

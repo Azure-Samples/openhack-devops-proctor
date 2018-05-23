@@ -5,7 +5,6 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO 
 sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
 sudo apt-get install -y apt-transport-https
 sudo apt-get update
-sudo apt-get install -y azure-cli=2.0.31-1~xenial
 
 echo "############### Installing Helm v2.9.1 ###############"
 sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
@@ -22,7 +21,6 @@ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microso
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 
-sudo apt-get install -y apt-transport-https
 sudo apt-get update
 sudo apt-get install -y dotnet-sdk-2.1.4
 
@@ -36,7 +34,7 @@ echo "############### Installing SQL cmd line tools ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
 sudo apt-get update
-sudo apt-get install -y mssql-tools unixodbc-dev
+sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
 
 #pick up changes to bash profile
@@ -44,6 +42,7 @@ source ~/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+# This doesn't actually take effect for some reason and have to run same command after login.
 sudo chown azureuser -R ./openhack-devops-proctor
 
 echo "############### Install Powershell Core and AzureRM modules "###############
@@ -61,15 +60,16 @@ echo "############### Install Powershell Core and AzureRM modules "#############
 sudo apt-get install -y powershell
 # Start PowerShell and install AzureRm modules
 # https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
-sudo pwsh
 
 #Change trust policy on powershell gallery to Trusted for unattended install
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
 
 #Install AzureRM Modules
-Install-Module AzureRM.NetCore
-Import-Module AzureRM.Netcore
-Import-Module AzureRM.Profile.Netcore
-# Exit out of pwsh so bash can complete
-exit
+sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
+sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
+sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
+# Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
+sudo apt-get install -y azure-cli=2.0.31-1~xenial
+
+sudo apt-get upgrade -y
