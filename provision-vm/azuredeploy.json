@@ -222,7 +222,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/fixvmscript/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
                     "commandToExecute": "sh proctorVMSetup.sh"
                 }
