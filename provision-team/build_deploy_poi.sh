@@ -130,7 +130,7 @@ cat "./values.yaml" \
     | tee "./values-poi-$teamName.yaml"
 
 echo "deploying POI Service chart"
-helm install . --name api-poi -f ./values-poi-$teamName.yaml --set image.repository=$TAG
+helm install . --name api-poi -f ./values-poi-$teamName.yaml --set repository.image=$TAG
 
 popd
 
