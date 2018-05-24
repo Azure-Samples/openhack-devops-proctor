@@ -35,6 +35,12 @@ if [ ! $? == 0 ]; then
     fi
 fi
 
+type -p sqlcmd
+if [ ! $? == 0 ]; then
+    echo "sqlcmd not found, install and re-run setup."
+    exit 1
+fi
+
 # Check if az is installed and that we can install it
 type -p az
 if [ ! $? == 0 ]; then
