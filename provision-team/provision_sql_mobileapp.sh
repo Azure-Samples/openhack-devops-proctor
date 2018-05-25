@@ -135,7 +135,7 @@ echo "$(tput setaf 3)Adding values to Key Vault...$(tput sgr 0)"
     sqlServerFQDN=$(az sql server show -g $resourceGroupName -n $sqlServerName --query "fullyQualifiedDomainName" --output tsv)
     az keyvault secret set --vault-name $keyVaultName --name 'sqlServerName' --value $sqlServerName
     az keyvault secret set --vault-name $keyVaultName --name 'sqlDBName' --value $sqlDBName
-    az keyvault secret set --vault-name $keyVaultName --name 'sqlServerUsername' --value $sqlServerUsername
+    az keyvault secret set --vault-name $keyVaultName --name 'sqlServerUsername' --value $sqlServerUsername'@'$sqlServerFQDN
     az keyvault secret set --vault-name $keyVaultName --name 'sqlServerPassword' --value $sqlServerPassword
     az keyvault secret set --vault-name $keyVaultName --name 'sqlServerFQDN' --value $sqlServerFQDN
     az keyvault secret set --vault-name $keyVaultName --name 'mobileAppName' --value $mobileAppName
