@@ -42,7 +42,22 @@ namespace Leaderboard
                     await service.UpdateDocumentAsync<Service>(targetService);
                     var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
                     targetTeam.UpdateService(targetService);
+                    await targetTeam.UpdateCurrentStateWithFunctionAsync(async () =>
+                    {
+                        // This method is called when CurrentStatus is changing. 
+                        var statusHistory = new StatusHistory
+                        {
+                            TeamId = targetTeam.Id,
+                            Date = DateTime.UtcNow,
+                            // CurrentStatus is not updated in this time period
+                            // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
+                            // If it is false, then it means go to the failure state.
+                            Status = targetTeam.GetTotalStatus() ? DowntimeStatus.Finished : DowntimeStatus.Started
+                        };
+                        await service.CreateDocumentAsync<StatusHistory>(statusHistory);
+                    });
                     await service.UpdateDocumentAsync<Team>(targetTeam);
+                   
 
                 }
 
