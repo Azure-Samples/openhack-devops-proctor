@@ -38,7 +38,7 @@ while getopts ":b:r:t:s:d:n:g:" arg; do
         n)
             teamName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
         ;;
     esac
