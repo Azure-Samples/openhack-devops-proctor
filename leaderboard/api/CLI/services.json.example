@@ -1,8 +1,8 @@
 ﻿{
   "team01": {
-    "endpoint": "http://YOUR_ENDPOINT_HERE"
+    "endpoint": "https://sarmopenhack2.azurewebsites.net/api/team01/health"
   },
   "team02": {
-    "endpoint": "https://YOUR_ENDPOINT_HERE"
+    "endpoint": "https://sarmopenhack2.azurewebsites.net/api/team01/health"
   }
 }

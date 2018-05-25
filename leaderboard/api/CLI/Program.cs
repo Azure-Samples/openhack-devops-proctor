@@ -128,7 +128,17 @@ namespace CLI
                     Id = newId,
                     Name = element.Key,
                     Challenges = GetInitialChallenges(),
-                    ServiceId = new string[] { $"{newId}01", $"{newId}02", $"{newId}03" },
+                    Services = new Service[] {
+                        new Service {
+                            Id = $"{newId}01"
+                        },
+                        new Service {
+                            Id = $"{newId}02"
+                        },
+                        new Service {
+                            Id = $"{newId}03"
+                        }
+                    },
                     Score = 0                
                 };
                 var services = new Service[]
@@ -397,7 +407,7 @@ namespace CLI
                         }
             };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
 
@@ -485,7 +495,7 @@ namespace CLI
                         }
             };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
         // Challenge 2, Service 1
@@ -557,7 +567,7 @@ namespace CLI
                         }
  };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
         private async Task CreateDocumentAsync<T>(string databaseName, T document) 

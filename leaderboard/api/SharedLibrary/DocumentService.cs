@@ -30,13 +30,13 @@ namespace Services
         }
 
         
-        public async Task<Service> GetServiceAsync(string serviceId)
+        public async Task<T> GetServiceAsync<T>(string id) where T :IDocument
         {
-            var query = client.CreateDocumentQuery<Service>(
-                UriFactory.CreateDocumentCollectionUri(databaseId, "Service"))
-                .Where(f => f.Id == serviceId)
-                .AsEnumerable<Service>();  
-            return query.FirstOrDefault<Service>();
+            var query = client.CreateDocumentQuery<T>(
+                UriFactory.CreateDocumentCollectionUri(databaseId, nameof(T)))
+                .Where(f => f.Id == id)
+                .AsEnumerable<T>();  
+            return query.FirstOrDefault<T>();
         }
 
         // History Section
