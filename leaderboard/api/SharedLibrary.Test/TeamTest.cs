@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models;
+using System.Threading.Tasks;
 
 namespace SharedLibrary.Test
 {
@@ -7,30 +8,46 @@ namespace SharedLibrary.Test
     public class TeamTest
     {
 
+        private Service GetUserSample(bool currentStatus)
+        {
+            return new Service
+            {
+                Id = "0101",
+                Name = "Team01USER",
+                Uri = "https://www.microsoft.com",
+                CurrentStatus = currentStatus
+            };
+        }
+        private Service GetTripSample(bool currentStatus)
+        {
+            return new Service
+            {
+                Id = "0102",
+                Name = "Team01TRIPS",
+                Uri = "https://www.microsoft.com",
+                CurrentStatus = currentStatus
+            };
+        }
+
+        private Service GetPOISample(bool currentStatus)
+        {
+            return new Service
+            {
+                Id = "0103",
+                Name = "Team01POI",
+                Uri = "https://www.microsoft.com",
+                CurrentStatus = currentStatus
+            };
+        }
+
+
         private Team GetSampleTeam()
         {
             var services = new Service[]
             {
-                new Service {
-                    Id = "0101",
-                    Name = "Team01USER",
-                    Uri = "https://www.microsoft.com",
-                    CurrentStatus = false
-                },
-                new Service
-                {
-                    Id = "0102",
-                    Name = "Team01TRIPS",
-                    Uri = "https://www.microsoft.com",
-                    CurrentStatus = true
-                },
-                new Service
-                {
-                    Id = "0103",
-                    Name = "Team01POI",
-                    Uri = "https://www.microsoft.com",
-                    CurrentStatus = false
-                }
+                GetUserSample(false),
+                GetTripSample(true),
+                GetPOISample(false)
             };
 
 
@@ -38,7 +55,8 @@ namespace SharedLibrary.Test
             var team = new Team
             {
                 Id = "Team01",
-                Services = services
+                Services = services,
+                CurrentState = true
             };
             return team;
         }
@@ -48,24 +66,12 @@ namespace SharedLibrary.Test
 
             var team = GetSampleTeam();
 
-            var service01 = new Service
-            {
-                Id = "0101",
-                Name = "Team01USER",
-                Uri = "https://www.microsoft.com",
-                CurrentStatus = true
-            };
+            var service01 = GetUserSample(true);
 
             team.UpdateService(service01);
             Assert.IsTrue(team.Services[0].CurrentStatus);
 
-            var service03 = new Service
-            {
-                Id = "0103",
-                Name = "Team01POI",
-                Uri = "https://www.microsoft.com",
-                CurrentStatus = true
-            };
+            var service03 = GetPOISample(true);
             team.UpdateService(service03);
             Assert.IsTrue(team.Services[2].CurrentStatus);
         }
@@ -94,27 +100,63 @@ namespace SharedLibrary.Test
         {
             var team = GetSampleTeam();
             Assert.IsFalse(team.GetTotalStatus());
-            var service01 = new Service
-            {
-                Id = "0101",
-                Name = "Team01USER",
-                Uri = "https://www.microsoft.com",
-                CurrentStatus = true
-            };
+            var service01 = GetUserSample(true);
 
             team.UpdateService(service01);
 
 
-            var service03 = new Service
-            {
-                Id = "0103",
-                Name = "Team01POI",
-                Uri = "https://www.microsoft.com",
-                CurrentStatus = true
-            };
+            var service03 = GetPOISample(true);
             team.UpdateService(service03);
             Assert.IsTrue(team.GetTotalStatus());
         }
-        
+
+        [TestMethod]
+        public async Task CurrentStatus_MethodAsync()
+        {
+            var team = GetSampleTeam();
+            var executed = false;
+            await team.UpdateCurrentStateWithFunctionAsync(() =>  
+            {
+                // You can update the history in here 
+                executed = true;
+                return Task.CompletedTask;
+            });
+
+            // In this case, the Action will be executed. CurrentState and currentState from service is different. 
+            Assert.IsFalse(team.CurrentState);
+            Assert.IsTrue(executed);
+
+            // This time team.CurrentState becomes false. 
+            executed = false;
+            await team.UpdateCurrentStateWithFunctionAsync(() =>
+            {
+                executed = true;
+                return Task.CompletedTask;
+            });
+            // If the CurrentState is the same as current state, do nothing. 
+            Assert.IsFalse(team.CurrentState);
+            Assert.IsFalse(executed);
+
+            // Update The CurrentStates to be true
+            var service01 = GetUserSample(true);
+
+            team.UpdateService(service01);
+
+
+            var service03 = GetPOISample(true);
+            team.UpdateService(service03);
+
+            executed = false;
+            await team.UpdateCurrentStateWithFunctionAsync(() =>
+            {
+                executed = true;
+                return Task.CompletedTask;
+            });
+            // If the CurrentState is the same as current state, do nothing. 
+            Assert.IsTrue(team.CurrentState);
+            Assert.IsTrue(executed);
+
+        }
+
     }
 }

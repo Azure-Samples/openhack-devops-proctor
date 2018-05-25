@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Models
@@ -27,7 +28,23 @@ namespace Models
         public int Score { get; set; }
         public Challenge[] Challenges { get; set; }
         public Service[] Services { get; set; }
+        public Boolean CurrentState { get; set; }
 
+        /// <summary>
+        /// Update Current Status. If the current status and Services is different, 
+        /// It update the Current Status, also execute parameter function.
+        /// The primary purpose of the function is to insert a StatusHistory record.
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public async Task UpdateCurrentStateWithFunctionAsync(Func<Task> function)
+        {
+            if (GetTotalStatus() != this.CurrentState)
+            {
+                await function(); // function execution comes first. If it fails, don't want to change the state.
+                this.CurrentState = GetTotalStatus();
+            }
+        }
         public void UpdateService(Service service)
         {
             var hasUpdated = false;
@@ -109,6 +126,22 @@ namespace Models
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+    }
+
+    /// <summary>
+    /// This document record when we've got a status change. 
+    /// This table used for the downtime calcuration 
+    /// </summary>
+    public class StatusHistory
+    {
+        public string TeamId { get; set; }
+        public DateTime Date { get; set; }
+        public DowntimeStatus Status { get; set; }
+    }
+
+    public enum DowntimeStatus{
+        Started,
+        Finished
     }
 
     /// <summary>
