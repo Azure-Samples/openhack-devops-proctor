@@ -40,7 +40,9 @@ namespace Leaderboard
                 if (targetService.CurrentStatus != report.Status)
                 {
                     await service.UpdateDocumentAsync<Service>(targetService);
-                    // TODO adding to update Team.Services
+                    var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
+                    targetTeam.UpdateService(targetService);
+                    await service.UpdateDocumentAsync<Team>(targetTeam);
 
                 }
 

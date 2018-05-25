@@ -89,6 +89,32 @@ namespace SharedLibrary.Test
 
 
         }
+        [TestMethod]
+        public void Availablity_Methods()
+        {
+            var team = GetSampleTeam();
+            Assert.IsFalse(team.GetTotalStatus());
+            var service01 = new Service
+            {
+                Id = "0101",
+                Name = "Team01USER",
+                Uri = "https://www.microsoft.com",
+                CurrentStatus = true
+            };
+
+            team.UpdateService(service01);
+
+
+            var service03 = new Service
+            {
+                Id = "0103",
+                Name = "Team01POI",
+                Uri = "https://www.microsoft.com",
+                CurrentStatus = true
+            };
+            team.UpdateService(service03);
+            Assert.IsTrue(team.GetTotalStatus());
+        }
         
     }
 }

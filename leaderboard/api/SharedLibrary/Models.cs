@@ -44,6 +44,19 @@ namespace Models
                 throw new InvalidOperationException($"Can not find the target Service: {service.Id}");
             }
         }
+
+        public bool GetTotalStatus()
+        {
+            var currentStatus = true;
+            foreach(var service in Services)
+            {
+                if (!service.CurrentStatus)
+                {
+                    currentStatus = false;
+                }
+            }
+            return currentStatus;
+        }
     }
 
     /// <summary>
