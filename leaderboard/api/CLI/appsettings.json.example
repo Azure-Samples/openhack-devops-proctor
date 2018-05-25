@@ -1,8 +1,6 @@
 ﻿{
-  "EndpointUri":
-    "YOUR_COSMOS_DB_ENDPOINT_HERE",
-  "PrimaryKey":
-    "YOUR_COSMOS_DB_PRIMARY_KEY_HERE",
-  "DatabaseId":
-    "leaderboard"
+  "EndpointUri": "YOUR_COSMOS_DB_ENDPOINT_HERE",
+  "PrimaryKey": "YOUR_COSMOS_DB_PRIMARY_KEY_HERE",
+  "DatabaseId": "leaderboard",
+  "NumberOfChallenges": "3"
 }

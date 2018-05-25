@@ -34,12 +34,16 @@ namespace Leaderboard
                 log.Info(requestBody);
                 var report = JsonConvert.DeserializeObject<DowntimeReport>(requestBody);
 
-                var targetService = await service.GetServiceAsync(report.ServiceId);
+                var targetService = await service.GetServiceAsync<Service>(report.ServiceId);
 
                 //// Service current status update. 
                 if (targetService.CurrentStatus != report.Status)
                 {
                     await service.UpdateDocumentAsync<Service>(targetService);
+                    var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
+                    targetTeam.UpdateService(targetService);
+                    await service.UpdateDocumentAsync<Team>(targetTeam);
+
                 }
 
                 // If status is failure, it write history. If you want to limit the number of inserting data, enable this.

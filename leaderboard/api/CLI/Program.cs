@@ -21,8 +21,13 @@ namespace CLI
         private static int NumberOfChallenges;
         private static DocumentClient client;
 
+        private static DateTime StartTime;
+        private static DateTime EndTime;
+
         private static IConfigurationRoot Configuration { get; set; }
         static Program() {
+
+            // Read config from appsettings.json
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
@@ -31,6 +36,15 @@ namespace CLI
             PrimaryKey = Configuration["PrimaryKey"];
             DatabaseId = Configuration["DatabaseId"];
             NumberOfChallenges = int.Parse(Configuration["NumberOfChallenges"]);
+
+            // Read config from openhack.json 
+            builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("openhack.json");
+            Configuration = builder.Build();
+            StartTime = DateTime.Parse(Configuration["StartTime"]);
+            EndTime = DateTime.Parse(Configuration["EndTime"]);
+
         }
 
         private async Task SampleDataSeeds()
@@ -101,6 +115,15 @@ namespace CLI
             sw.Stop();
             Console.WriteLine($"---- Create Collection History {sw.ElapsedMilliseconds} msec");
 
+            sw.Restart();
+            // Openhack Collection creation
+            var openhackCollection = new DocumentCollection();
+            openhackCollection.Id = typeof(Openhack).Name;
+            await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId),
+    openhackCollection);
+            sw.Stop();
+            Console.WriteLine($"---- Create Collection Openhack {sw.ElapsedMilliseconds} msec");
+
         }
 
         /// <summary>
@@ -112,6 +135,9 @@ namespace CLI
 
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
+
+            // Create a Openhack document
+            await createOpenHackAsync();
 
             var serviceConfigJson = System.IO.File.ReadAllText("services.json");
             var serviceConfig = JObject.Parse(serviceConfigJson);
@@ -128,7 +154,17 @@ namespace CLI
                     Id = newId,
                     Name = element.Key,
                     Challenges = GetInitialChallenges(),
-                    ServiceId = new string[] { $"{newId}01", $"{newId}02", $"{newId}03" },
+                    Services = new Service[] {
+                        new Service {
+                            Id = $"{newId}01"
+                        },
+                        new Service {
+                            Id = $"{newId}02"
+                        },
+                        new Service {
+                            Id = $"{newId}03"
+                        }
+                    },
                     Score = 0                
                 };
                 var services = new Service[]
@@ -321,6 +357,19 @@ namespace CLI
             await CreateDocumentAsync<Team>(DatabaseId, team);
         }
 
+        private async Task createOpenHackAsync()
+        {
+            var openhack = new Openhack
+            {
+                StartTime = StartTime,
+                EndTime = EndTime
+            };
+
+            await client.CreateDocumentAsync(
+                UriFactory.CreateDocumentCollectionUri(DatabaseId, "Openhack"), 
+                openhack);
+      }
+
         // Challenge 3, Service 2
         private (Team, Service[], History[]) generatePattern01(Team team)
         {
@@ -397,7 +446,7 @@ namespace CLI
                         }
             };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
 
@@ -485,7 +534,7 @@ namespace CLI
                         }
             };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
         // Challenge 2, Service 1
@@ -557,7 +606,7 @@ namespace CLI
                         }
  };
             team.Challenges = challenges;
-            team.ServiceId = new string[] { services[0].Id, services[1].Id };
+            team.Services = new Service[] { services[0], services[1] };
             return (team, services, histories);
         }
         private async Task CreateDocumentAsync<T>(string databaseName, T document) 
