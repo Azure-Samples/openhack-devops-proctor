@@ -88,9 +88,9 @@ sqlServerFQDN=$(az keyvault secret show --vault-name $keyVaultName --name sqlSer
 sqlPassword=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerPassword -o tsv --query value)
 
 # Base64 encode the values are required for K8s secrets
-sqlServerFQDNbase64=$(echo $sqlServerFQDN | base64)
-sqlPasswordbase64=$(echo $sqlPassword | base64)
-sqlUserbase64=$(echo $sqlServerUsername | base64)
+sqlServerFQDNbase64=$(echo -n $sqlServerFQDN | base64)
+sqlPasswordbase64=$(echo -n $sqlPassword | base64)
+sqlUserbase64=$(echo -n $sqlServerUsername | base64)
 
 # Replace the secrets file with encoded values and create the secret on the cluster
 cat "./sql-secret.yaml" \
