@@ -38,7 +38,7 @@ while getopts ":b:r:t:s:d:n:g:" arg; do
         n)
             teamName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
         ;;
     esac
@@ -112,11 +112,7 @@ TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/openhack-devops-team/apis/poi/MyDriving.POIService.v2
-
-dotnet build -c $buildFlavor -o ./bin/
-
-sed -i -e 's/bin\//..\/bin\//g' ./bin/GetAllPOIs/function.json
+pushd $relativeSaveLocation/openhack-devops-team/apis/poi
 
 docker build . -t $TAG
 
@@ -126,17 +122,9 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-pushd $relativeSaveLocation/openhack-devops-team/apis/poi/MyDriving.POIService.v2/helm
-echo -e "\nhelm install from: " $PWD "\n\n"
+installPath=$relativeSaveLocation"/openhack-devops-team/apis/poi/helm"
+echo -e "\nhelm install from: " $installPath "\n\n"
 
-cat "./values.yaml" \
-    | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | sed "s/acrreplace.azurecr.io/$ACR_ID/g" \
-    | sed "s/imagereplace/$imageTag/g" \
-    | tee "./values-poi-$teamName.yaml"
-
-echo "deploying POI Service chart"
-helm install . --name api-poi -f ./values-poi-$teamName.yaml --set image.repository=$TAG
-
-popd
-
+BASE_URI='http://'$dnsUrl
+echo "Base URI: $BASE_URI"
+helm install $installPath --name api-poi --set repository.image=$TAG,env.webServerBaseUri=$BASE_URI,ingress.rules.endpoint.host=$dnsUrl

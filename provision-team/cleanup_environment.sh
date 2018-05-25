@@ -31,10 +31,10 @@ if [ -f $HOME/.azure/aksServicePrincipal.json ]; then
 fi
 
 # 2- Copy the kubeconfig file
-# if [ -f $HOME/.kube/config ]; then
-#     mv $HOME/.kube/config $HOME/team-env/kubeconfig-$teamName
-#     echo "The kubeconfig file has been move to $HOME/team-env/kubeconfig-$teamName"
-# fi
+if [ -f $HOME/.kube/config ]; then
+    cp $HOME/.kube/config $HOME/team_env/kubeconfig-$teamName
+    echo "Copied the kubeconfig file to $HOME/team_env/kubeconfig-$teamName"
+fi
 
 # 3- Delete the working directory
 rm -rf ./test_fetch_build

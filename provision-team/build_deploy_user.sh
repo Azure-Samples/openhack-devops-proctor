@@ -126,12 +126,6 @@ popd
 installPath=$relativeSaveLocation"/openhack-devops-team/apis/userprofile/helm"
 echo -e "\nhelm install ... from: " $installPath
 
-sed -i -e "s/dnsurlreplace/$dnsUrl/g" $installPath"/values.yaml"
-
-cat $installPath"/values.yaml" \
-    | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | tee "values-user-$teamName.yaml"
-
-helmTeamValues="values-user-$teamName.yaml"
-
-helm install $installPath --name api-user -f $helmTeamValues --set repository.image=$TAG
+BASE_URI='http://'$dnsUrl
+echo "Base URI: $BASE_URI"
+helm install $installPath --name api-user --set repository.image=$TAG,env.webServerBaseUri=$BASE_URI,ingress.rules.endpoint.host=$dnsUrl
