@@ -122,15 +122,9 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-pushd $relativeSaveLocation/openhack-devops-team/apis/poi/helm
-echo -e "\nhelm install from: " $PWD "\n\n"
+installPath=$relativeSaveLocation"/openhack-devops-team/apis/poi/helm"
+echo -e "\nhelm install from: " $installPath "\n\n"
 
-cat "./values.yaml" \
-    | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | tee "./values-poi-$teamName.yaml"
-
-echo "deploying POI Service chart"
-helm install . --name api-poi -f ./values-poi-$teamName.yaml --set repository.image=$TAG
-
-popd
-
+BASE_URI='http://'$dnsUrl
+echo "Base URI: $BASE_URI"
+helm install $installPath --name api-poi --set repository.image=$TAG,env.webServerBaseUri=$BASE_URI,ingress.rules.endpoint.host=$dnsUrl
