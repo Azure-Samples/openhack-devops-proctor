@@ -38,7 +38,7 @@ while getopts ":b:r:t:s:d:n:g:" arg; do
         n)
             teamName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
         ;;
     esac
@@ -130,7 +130,7 @@ cat "./values.yaml" \
     | tee "./values-poi-$teamName.yaml"
 
 echo "deploying POI Service chart"
-helm install . --name api-poi -f ./values-poi-$teamName.yaml --set image.repository=$TAG
+helm install . --name api-poi -f ./values-poi-$teamName.yaml --set repository.image=$TAG
 
 popd
 
