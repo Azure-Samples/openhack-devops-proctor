@@ -102,6 +102,14 @@ namespace Models
         public DateTime Date { get; set; }
         public int StatusCode { get; set; }
     }
+    /// <summary>
+    /// Store the record of the OpenHack. This collection has only one document. 
+    /// </summary>
+    public class Openhack
+    {
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+    }
 
     /// <summary>
     /// Downtime Report is a report from sentinels. 
