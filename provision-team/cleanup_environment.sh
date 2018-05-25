@@ -32,8 +32,8 @@ fi
 
 # 2- Copy the kubeconfig file
 if [ -f $HOME/.kube/config ]; then
-    cp $HOME/.kube/config $HOME/team-env/kubeconfig-$teamName
-    echo "Copied the kubeconfig file to $HOME/team-env/kubeconfig-$teamName"
+    cp $HOME/.kube/config $HOME/team_env/kubeconfig-$teamName
+    echo "Copied the kubeconfig file to $HOME/team_env/kubeconfig-$teamName"
 fi
 
 # 3- Delete the working directory
