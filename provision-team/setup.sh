@@ -35,6 +35,12 @@ if [ ! $? == 0 ]; then
     fi
 fi
 
+type -p sqlcmd
+if [ ! $? == 0 ]; then
+    echo "sqlcmd not found, install and re-run setup."
+    exit 1
+fi
+
 # Check if az is installed and that we can install it
 type -p az
 if [ ! $? == 0 ]; then
@@ -165,7 +171,7 @@ bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n 
 echo "6-Provision SQL & Mobile App  (bash ./provision_sql_mobileapp.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
 bash ./provision_sql_mobileapp.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
 
-echo "7-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName)"
+echo "7-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName -d $sqlDBName)"
 bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName -d $sqlDBName
 
 # Save the public DNS address to be provisioned in the helm charts for each service

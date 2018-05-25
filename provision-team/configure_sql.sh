@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: deploy_app_aks.sh -s <relative save location> -g <resourceGroupName> -u <sql server user name> -n <teamName> -k <keyVaultName> -d <sqlDBName>" 1>&2; exit 1; }
+usage() { echo "Usage: configure_sql.sh -s <relative save location> -g <resourceGroupName> -u <sql server user name> -n <teamName> -k <keyVaultName> -d <sqlDBName>" 1>&2; exit 1; }
 
 declare relativeSaveLocation=""
 declare resourceGroupName=""
@@ -88,9 +88,9 @@ sqlServerFQDN=$(az keyvault secret show --vault-name $keyVaultName --name sqlSer
 sqlPassword=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerPassword -o tsv --query value)
 
 # Base64 encode the values are required for K8s secrets
-sqlServerFQDNbase64=$(echo $sqlServerFQDN | base64)
-sqlPasswordbase64=$(echo $sqlPassword | base64)
-sqlUserbase64=$(echo $sqlServerUsername | base64)
+sqlServerFQDNbase64=$(echo -n $sqlServerFQDN | base64)
+sqlPasswordbase64=$(echo -n $sqlPassword | base64)
+sqlUserbase64=$(echo -n $sqlServerUsername | base64)
 
 # Replace the secrets file with encoded values and create the secret on the cluster
 cat "./sql-secret.yaml" \
@@ -105,7 +105,7 @@ kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml"
 az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName -s $sqlServer --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.254
 
 #Create schema in db
-sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MYDrivingDB.sql -e
+/opt/mssql-tools/bin/sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MYDrivingDB.sql -e
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
