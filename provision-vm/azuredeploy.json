@@ -213,7 +213,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                   "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('extensionName'))]"
- 
+
             ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
