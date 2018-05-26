@@ -30,6 +30,8 @@ sudo apt-get install -y jq
 echo "############### Installing Git ###############"
 sudo apt-get install -y git
 
+whoami > ~/output.txt
+
 echo "############### Installing SQL cmd line tools ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
