@@ -45,7 +45,6 @@ source ~/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
-# This doesn't actually take effect for some reason and have to run same command after login.
 sudo chown azureuser:azureuser -R ./openhack-devops-proctor/.
 
 echo "############### Install Powershell Core and AzureRM modules "###############
