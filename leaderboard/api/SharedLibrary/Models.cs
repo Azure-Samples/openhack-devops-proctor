@@ -45,6 +45,7 @@ namespace Models
                 this.CurrentState = GetTotalStatus();
             }
         }
+
         public void UpdateService(Service service)
         {
             var hasUpdated = false;
@@ -143,6 +144,7 @@ namespace Models
         Started,
         Finished
     }
+
 
     /// <summary>
     /// Downtime Report is a report from sentinels. 

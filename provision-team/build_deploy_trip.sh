@@ -39,7 +39,7 @@ while getopts ":b:r:t:s:d:n:g:" arg; do
         n)
             teamName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
         ;;
     esac
@@ -126,12 +126,6 @@ popd
 installPath=$relativeSaveLocation"/openhack-devops-team/apis/trips/helm"
 echo -e "\nhelm install ... from: " $installPath
 
-sed -i -e "s/dnsurlreplace/$dnsUrl/g" $installPath"/values.yaml"
-
-cat $installPath"/values.yaml" \
-    | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | tee "values-trip-$teamName.yaml"
-
-helmTeamValues="values-trip-$teamName.yaml"
-
-helm install $installPath --name api-trip -f $helmTeamValues --set repository.image=$TAG
+BASE_URI='http://'$dnsUrl
+echo "Base URI: $BASE_URI"
+helm install $installPath --name api-trip --set repository.image=$TAG,env.webServerBaseUri=$BASE_URI,ingress.rules.endpoint.host=$dnsUrl

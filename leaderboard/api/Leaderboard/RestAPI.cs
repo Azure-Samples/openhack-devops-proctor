@@ -42,6 +42,7 @@ namespace Leaderboard
                     await service.UpdateDocumentAsync<Service>(targetService);
                     var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
                     targetTeam.UpdateService(targetService);
+
                     await targetTeam.UpdateCurrentStateWithFunctionAsync(async () =>
                     {
                         // This method is called when CurrentStatus is changing. 

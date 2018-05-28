@@ -40,7 +40,6 @@ namespace SharedLibrary.Test
             };
         }
 
-
         private Team GetSampleTeam()
         {
             var services = new Service[]
@@ -65,13 +64,13 @@ namespace SharedLibrary.Test
         {
 
             var team = GetSampleTeam();
-
             var service01 = GetUserSample(true);
 
             team.UpdateService(service01);
             Assert.IsTrue(team.Services[0].CurrentStatus);
 
             var service03 = GetPOISample(true);
+
             team.UpdateService(service03);
             Assert.IsTrue(team.Services[2].CurrentStatus);
         }
@@ -142,7 +141,6 @@ namespace SharedLibrary.Test
 
             team.UpdateService(service01);
 
-
             var service03 = GetPOISample(true);
             team.UpdateService(service03);
 
@@ -157,6 +155,5 @@ namespace SharedLibrary.Test
             Assert.IsTrue(executed);
 
         }
-
     }
 }
