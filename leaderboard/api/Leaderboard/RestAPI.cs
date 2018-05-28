@@ -57,8 +57,6 @@ namespace Leaderboard
                         await service.CreateDocumentAsync<StatusHistory>(statusHistory);
                     });
                     await service.UpdateDocumentAsync<Team>(targetTeam);
-                   
-
                 }
 
                 // If status is failure, it write history. If you want to limit the number of inserting data, enable this.
