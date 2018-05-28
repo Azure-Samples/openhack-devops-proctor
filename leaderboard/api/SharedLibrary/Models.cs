@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -138,6 +139,11 @@ namespace Models
         public string TeamId { get; set; }
         public DateTime Date { get; set; }
         public DowntimeStatus Status { get; set; }
+
+        internal static TimeSpan GetDownTime(IList<StatusHistory> statusHistories)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public enum DowntimeStatus{

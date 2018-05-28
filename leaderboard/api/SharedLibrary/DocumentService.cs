@@ -8,7 +8,19 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class DocumentService
+    public interface IDocumentService
+    {
+        Task CreateDocumentAsync<T>(T document);
+        Task UpdateDocumentAsync<T>(T document);
+
+        Task<T> GetServiceAsync<T>(string id) where T : IDocument;
+        Task<IList<T>> GetDocumentsAsync<T>(string id) where T : IDocument;
+        Task<IList<T>> GetDocumentsAsync<T>(Func<IOrderedQueryable<T>, IQueryable<T>> queryFunction);
+
+    }
+
+
+    public class DocumentService : IDocumentService
     {
         private static DocumentClient client = new DocumentClient(
     new Uri(
@@ -37,6 +49,22 @@ namespace Services
                 .Where(f => f.Id == id)
                 .AsEnumerable<T>();  
             return query.FirstOrDefault<T>();
+        }
+
+        public async Task<IList<T>> GetDocumentsAsync<T>(string id) where T :IDocument
+        {
+            var query = client.CreateDocumentQuery<T>(
+                UriFactory.CreateDocumentCollectionUri(databaseId, nameof(T)))
+                .Where(f => f.Id == id);           
+            return query.ToList<T>();
+        }
+
+        public async Task<IList<T>> GetDocumentsAsync<T>(Func<IOrderedQueryable<T>, IQueryable<T>> queryFunction)
+        {
+            var queryBase = client.CreateDocumentQuery<T>(
+                UriFactory.CreateDocumentCollectionUri(databaseId, nameof(T)));
+            var query = queryFunction(queryBase);
+            return query.ToList<T>();
         }
 
         // History Section
