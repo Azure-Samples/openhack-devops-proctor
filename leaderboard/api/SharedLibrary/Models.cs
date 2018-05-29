@@ -128,6 +128,10 @@ namespace Models
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public TimeSpan GetDuration()
+        {
+            return EndTime.Subtract(StartTime);
+        }
     }
 
     /// <summary>
@@ -228,6 +232,21 @@ namespace Models
             history.StatusCode = this.StatusCode;
             return history;
         }
+    }
+
+    /// <summary>
+    /// UptimeReport is report for SPA to report all Team uptime reports.
+    /// </summary>
+    public class UptimeReport
+    {
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+        [JsonProperty(PropertyName = "uptime")]
+        public int Uptime { get; set; }
+        [JsonProperty(PropertyName = "uppercent")]
+        public int Uppercent { get; set; }
+        [JsonProperty(PropertyName = "point")]
+        public int Point { get; set; }
     }
 
 }

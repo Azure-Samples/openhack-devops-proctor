@@ -1,4 +1,4 @@
-
+﻿
 using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Autofac;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Leaderboard
 {
@@ -57,15 +59,15 @@ namespace Leaderboard
 
                         await targetTeam.UpdateCurrentStateWithFunctionAsync(async () =>
                         {
-                        // This method is called when CurrentStatus is changing. 
-                        var statusHistory = new StatusHistory
+                            // This method is called when CurrentStatus is changing. 
+                            var statusHistory = new StatusHistory
                             {
                                 TeamId = targetTeam.Id,
                                 Date = DateTime.UtcNow,
-                            // CurrentStatus is not updated in this time period
-                            // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
-                            // If it is false, then it means go to the failure state.
-                            Status = targetTeam.GetTotalStatus() ? DowntimeStatus.Finished : DowntimeStatus.Started
+                                // CurrentStatus is not updated in this time period
+                                // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
+                                // If it is false, then it means go to the failure state.
+                                Status = targetTeam.GetTotalStatus() ? DowntimeStatus.Finished : DowntimeStatus.Started
                             };
                             await service.CreateDocumentAsync<StatusHistory>(statusHistory);
                         });
@@ -89,5 +91,49 @@ namespace Leaderboard
             }
         }
 
+        [FunctionName("GetTeamsStatus")]
+        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequest req, TraceWriter log)
+        {
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                try
+                {
+                    var service = scope.Resolve<DocumentService>();
+                    // Get Openhack Start/End time.
+                    var openhack = await service.GetDocumentAsync<Openhack>();
+                    // Get Team list
+                    var teams = await service.GetAllDocumentsAsync<Team>();
+                    var list = new List<UptimeReport>();
+                    foreach (var team in teams)
+                    {
+                        var histories = await service.GetDocumentsAsync<StatusHistory>(
+                            (query) =>
+                            {
+                                return query.Where(f => f.TeamId == team.Id);
+                            });
+                        var downtime = StatusHistory.GetDownTime(histories);
+                        // TODO implement uptime and uppercent
+                        list.Add(
+                            new UptimeReport
+                            {
+                                Name = team.Name,
+                                Uptime = 100,
+                                Uppercent = 50,
+                                Point = 300
+                            }
+                            );
+                    }
+                    var result = JsonConvert.SerializeObject(list);
+                    return new OkObjectResult(result);
+                } catch (Exception e)
+                {
+                    log.Error($"Get Team status error: {e.Message}");
+                    log.Error(e.StackTrace);
+                    return new BadRequestObjectResult("{'status': 'error', 'message': '{" + e.Message + "'}");
+                }
+            }
 
+
+        }
+    }
 }

@@ -13,6 +13,8 @@ namespace Services
         Task CreateDocumentAsync<T>(T document);
         Task UpdateDocumentAsync<T>(T document);
 
+        Task<T> GetDocumentAsync<T>();
+        Task<IList<T>> GetAllDocumentsAsync<T>();
         Task<T> GetServiceAsync<T>(string id) where T : IDocument;
         Task<IList<T>> GetDocumentsAsync<T>(string id) where T : IDocument;
         Task<IList<T>> GetDocumentsAsync<T>(Func<IOrderedQueryable<T>, IQueryable<T>> queryFunction);
@@ -39,6 +41,22 @@ namespace Services
         public async Task UpdateDocumentAsync<T>(T document)
         {
             await client.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name), document);
+        }
+
+        public async Task<IList<T>> GetAllDocumentsAsync<T>()
+        {
+            var query = client.CreateDocumentQuery<T>(
+                UriFactory.CreateDocumentCollectionUri(databaseId, nameof(T)))
+                .AsEnumerable<T>();
+            return query.ToList<T>();
+        }
+
+        public async Task<T> GetDocumentAsync<T>()
+        {
+            var query = client.CreateDocumentQuery<T>(
+            UriFactory.CreateDocumentCollectionUri(databaseId, nameof(T)))
+            .AsEnumerable<T>();
+            return query.FirstOrDefault<T>();
         }
 
         
