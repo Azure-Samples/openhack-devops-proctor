@@ -27,6 +27,3 @@
 An example command to provision might look like the following:
 
 `./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh`
-
-If running from the proctor VM, please first execute:
-`sudo chown azureuser -R ./openhack-devops-proctor`
