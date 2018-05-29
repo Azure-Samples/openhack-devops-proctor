@@ -134,15 +134,68 @@ namespace Models
     /// This document record when we've got a status change. 
     /// This table used for the downtime calcuration 
     /// </summary>
-    public class StatusHistory
+    public class StatusHistory : IComparable
     {
         public string TeamId { get; set; }
         public DateTime Date { get; set; }
         public DowntimeStatus Status { get; set; }
 
-        internal static TimeSpan GetDownTime(IList<StatusHistory> statusHistories)
+        public static TimeSpan GetDownTime(IList<StatusHistory> statusHistories, DateTime? currentTime = null)
         {
-            throw new NotImplementedException();
+            var list = new List<StatusHistory>();
+            list.AddRange(statusHistories);
+            // Sort by the Date. For the detail, please refer CompareTo method.
+            list.Sort();
+            // Loop and detect the downtime. 
+            var downtime = TimeSpan.FromMinutes(0);
+            StatusHistory current = null;
+            // Set Default currentTime. In case of the downtime has been started but not finished.
+            if (!currentTime.HasValue)
+            {
+                currentTime = DateTime.Now;
+            }
+            
+            foreach(var history in list)
+            {
+                if (history.Status == DowntimeStatus.Started)
+                {
+                    current = history;
+                } else
+                {
+                    // In case of DowntimeStatus.Finished
+                    if (current == null)
+                    {
+                        throw new JsonFormatException("Invalid Data. Finished comes DowntimeStatus.Finsihed without Downtime.Started. Please check your document.");
+                    }
+                    downtime = downtime + history.Date.Subtract(current.Date);
+                    current = null;
+                }
+                
+            }
+            // In case of DowntimeStatus.Started but not finished yet. 
+            if (current != null)
+            {
+                
+                downtime = downtime + ((DateTime)currentTime).Subtract(current.Date);
+            }
+            return downtime;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var history = obj as StatusHistory;
+            return this.Date.CompareTo(history.Date);
+        }
+    }
+
+    /// <summary>
+    /// DocumentFormatException is thorwn when you've got a wrong format document from CosmosDB.
+    /// </summary>
+    public class JsonFormatException : Exception
+    {
+        public JsonFormatException(string message) : base(message)
+        {
+
         }
     }
 
