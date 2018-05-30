@@ -33,7 +33,7 @@ namespace Services
                    return query.Where(f => f.TeamId == teamId);
                }
                 );
-            return StatusHistory.GetDownTime(statusHistories);
+            return StatusHistory.GetServiceDowntimeTotal(statusHistories);
 
         }
 

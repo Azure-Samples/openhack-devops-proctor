@@ -111,7 +111,7 @@ namespace Leaderboard
                             {
                                 return query.Where(f => f.TeamId == team.Id);
                             });
-                        var downtime = StatusHistory.GetDownTime(histories);
+                        var downtime = StatusHistory.GetServiceDowntimeTotal(histories);
                         // TODO implement uptime and uppercent
                         list.Add(
                             new UptimeReport

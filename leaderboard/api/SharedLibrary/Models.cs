@@ -128,7 +128,20 @@ namespace Models
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public TimeSpan GetDuration()
+
+        public double GetTotalAvailavility(TimeSpan serviceDownTime)
+        {
+            var totalTime = GetTotalTime().TotalSeconds;
+            var downTime = serviceDownTime.TotalSeconds;
+            return (double)(((totalTime - downTime) / totalTime) * 100);
+        }
+        public string GetTotalAvailavilityAsString(TimeSpan serviceDownTime)
+        {
+            var availability = GetTotalAvailavility(serviceDownTime);
+            return availability.ToString("F6");
+        }
+
+        public TimeSpan GetTotalTime()
         {
             return EndTime.Subtract(StartTime);
         }
@@ -144,7 +157,7 @@ namespace Models
         public DateTime Date { get; set; }
         public DowntimeStatus Status { get; set; }
 
-        public static TimeSpan GetDownTime(IList<StatusHistory> statusHistories, DateTime? currentTime = null)
+        public static TimeSpan GetServiceDowntimeTotal(IList<StatusHistory> statusHistories, DateTime? currentTime = null)
         {
             var list = new List<StatusHistory>();
             list.AddRange(statusHistories);

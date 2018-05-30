@@ -55,7 +55,7 @@ namespace SharedLibrary.Test
         {
             // Normal case. Two sequential Downtime.
             var list = GetSampleStatusHistories();
-            var downtime = StatusHistory.GetDownTime(list);
+            var downtime = StatusHistory.GetServiceDowntimeTotal(list);
             Assert.AreEqual(TimeSpan.FromHours(2), downtime);
         }
 
@@ -72,7 +72,7 @@ namespace SharedLibrary.Test
                     DowntimeStatus.Started
                     ));
 
-            var downtime = StatusHistory.GetDownTime(list, new DateTime(2018, 5, 29, 15, 0, 0));
+            var downtime = StatusHistory.GetServiceDowntimeTotal(list, new DateTime(2018, 5, 29, 15, 0, 0));
             Assert.AreEqual(TimeSpan.FromHours(3), downtime);
         }
     }
