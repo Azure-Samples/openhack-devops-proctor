@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -euo pipefail
+set -euo pipefail
 IFS=$'\n\t'
 
 usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> " 1>&2; exit 1; }
@@ -88,8 +88,8 @@ fi
 
 # declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
 declare resourceGroupTeam="${teamName}-rg";
-declare registryName="${teamName}-acr"
-declare clusterName="${teamName}-aks"
+declare registryName="${teamName}acr"
+declare clusterName="${teamName}aks"
 # declare keyVaultName="${teamName}kv${random4Chars}"
 # declare sqlServerName="${teamName}sql${random4Chars}"
 # declare hostingPlanName="${teamName}plan${random4Chars}"
