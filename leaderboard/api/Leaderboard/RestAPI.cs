@@ -117,8 +117,8 @@ namespace Leaderboard
                             new UptimeReport
                             {
                                 Name = team.Name,
-                                Uptime = 100,
-                                Uppercent = 50,
+                                Uptime = (int)openhack.GetUpTime(downtime).TotalHours,
+                                Uppercent = (int)openhack.GetTotalAvailavility(downtime),
                                 Point = 300
                             }
                             );

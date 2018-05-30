@@ -20,6 +20,18 @@ namespace SharedLibrary.Test
             
             Assert.AreEqual(55, openhack.GetTotalTime().TotalHours);
         }
+        [TestMethod]
+        public void Get_Up_Time()
+        {
+            var openhack = new Openhack
+            {
+                StartTime = new DateTime(2018, 10, 10, 10, 0, 0),
+                EndTime = new DateTime(2018, 10, 12, 17, 0, 0)
+            };
+            var downtime = TimeSpan.FromSeconds(3600);
+
+            Assert.AreEqual(54, openhack.GetUpTime(downtime).TotalHours);
+        }
 
         [TestMethod]
         public void Get_Total_Availability()
@@ -30,7 +42,7 @@ namespace SharedLibrary.Test
                 EndTime = new DateTime(2018, 10, 12, 17, 0, 0)
             };
             var serviceDownTime = TimeSpan.FromHours(1);
-            Assert.AreEqual("98.181818", openhack.GetTotalAvailavilityAsString(serviceDownTime));
+            Assert.AreEqual("98.182", openhack.GetTotalAvailavilityAsString(serviceDownTime));
 
         }
     }

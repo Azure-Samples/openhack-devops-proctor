@@ -138,12 +138,17 @@ namespace Models
         public string GetTotalAvailavilityAsString(TimeSpan serviceDownTime)
         {
             var availability = GetTotalAvailavility(serviceDownTime);
-            return availability.ToString("F6");
+            return availability.ToString("F3");
         }
 
         public TimeSpan GetTotalTime()
         {
             return EndTime.Subtract(StartTime);
+        }
+
+        public TimeSpan GetUpTime(TimeSpan downtime)
+        {
+            return GetTotalTime() - downtime;
         }
     }
 
