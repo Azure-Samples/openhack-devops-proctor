@@ -4,22 +4,76 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sentinel-{{ .serviceId }}
+  name: {{ teamId-from-file }}-user
 spec:
   containers:
-  - name: sentinel
+  - name: {{ teamId-from-file }}-user
     image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
     imagePullPolicy: {{ $.Values.image.pullPolicy }}
     env:
     - name: SENTINEL_TEAM_ID
-      value: "{{ .teamId }}"
+      value: "{{ teamId-from-file }}"
     - name: SENTINEL_SERVICE_ID
-      value: "{{ .serviceId }}"
+      value: "user"
     - name: SENTINEL_ENDPOINT
-      value: "{{ .endpoint }}"
+      value: "/health/user"
     - name: "SENTINEL_PORT"
-      value: "{{ .port }}"
+      value: "{{ .Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: "{{ .apiURL }}"
+      value: "{{ endpoint-from-file }}"
+    - name: SENTINEL_POLLING_INTERVAL
+      value: {{ .Values.services.pollingInterval }}
+    - name: SENTINEL_RETRY_DURATION
+      value: {{ .Values.services.retryDuration }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ teamId-from-file }}-poi
+spec:
+  containers:
+  - name: {{ teamId-from-file }}-poi
+    image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+    imagePullPolicy: {{ $.Values.image.pullPolicy }}
+    env:
+    - name: SENTINEL_TEAM_ID
+      value: "{{ teamId-from-file }}"
+    - name: SENTINEL_SERVICE_ID
+      value: "poi"
+    - name: SENTINEL_ENDPOINT
+      value: "/health/poi"
+    - name: "SENTINEL_PORT"
+      value: "{{ .Values.services.port }}"
+    - name: SENTINEL_API_URL
+      value: "{{ endpoint-from-file }}"
+    - name: SENTINEL_POLLING_INTERVAL
+      value: {{ .Values.services.pollingInterval }}
+    - name: SENTINEL_RETRY_DURATION
+      value: {{ .Values.services.retryDuration }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ teamId-from-file }}-trip
+spec:
+  containers:
+  - name: {{ teamId-from-file }}-trip
+    image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+    imagePullPolicy: {{ $.Values.image.pullPolicy }}
+    env:
+    - name: SENTINEL_TEAM_ID
+      value: "{{ teamId-from-file }}"
+    - name: SENTINEL_SERVICE_ID
+      value: "trip"
+    - name: SENTINEL_ENDPOINT
+      value: "/health/trip"
+    - name: "SENTINEL_PORT"
+      value: "{{ .Values.services.port }}"
+    - name: SENTINEL_API_URL
+      value: "{{ endpoint-from-file }}"
+    - name: SENTINEL_POLLING_INTERVAL
+      value: {{ .Values.services.pollingInterval }}
+    - name: SENTINEL_RETRY_DURATION
+      value: {{ .Values.services.retryDuration }}
 {{- end }}
 
