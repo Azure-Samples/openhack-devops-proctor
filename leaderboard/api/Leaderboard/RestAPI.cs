@@ -119,7 +119,7 @@ namespace Leaderboard
                                 Name = team.Name,
                                 Uptime = (int)openhack.GetUpTime(downtime).TotalHours,
                                 Uppercent = (int)openhack.GetTotalAvailavility(downtime),
-                                Point = 300
+                                Point = 300 // No logic until now. 
                             }
                             );
                     }
