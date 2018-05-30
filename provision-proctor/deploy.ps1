@@ -148,8 +148,7 @@ if(!$module)
     Install-Module AzureRM.Websites -Repository PSGallery -AllowPrerelease -Force
 }
 
-$app = Get-AzureRmWebApp -ResourceGroupName $RGNameCosmosDB -Name $functionName
-
+# $app = Get-AzureRmWebApp -ResourceGroupName $RGNameCosmosDB -Name $functionName
 
 # Create and Configure KeyVault
 Write-Output ""
@@ -163,11 +162,11 @@ New-AzureRmKeyVault -Name $KeyVaultName -ResourceGroupName $RGNameCosmosDB -Loca
 
 # Add Service Principal To the KeyVault
 
-# If I doesn't stop in here, sometimes, we can't refer the ObjectId
-Write-Output "Waiting for Service Principal is generated..."
-Start-Sleep -Seconds 30
+# # If I doesn't stop in here, sometimes, we can't refer the ObjectId
+# Write-Output "Waiting for Service Principal is generated..."
+# Start-Sleep -Seconds 30
 
-Set-AzureRmKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $app.Identity.PrincipalId -PermissionsToSecrets Get
+# Set-AzureRmKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $app.Identity.PrincipalId -PermissionsToSecrets Get
 
 # Upload Secrets
 
@@ -195,93 +194,93 @@ Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'shared-cosmosDB-Connecti
 #
 
 # Create a Service Principal with Application
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Provisioning a Service Principal for the AKS Cluster..."
-Write-Output "**************************************************************************************************"
+# Write-Output ""
+# Write-Output "**************************************************************************************************"
+# Write-Output "* Provisioning a Service Principal for the AKS Cluster..."
+# Write-Output "**************************************************************************************************"
 
-$secureStringPassword = ConvertTo-SecureString -String $ADAppPass -AsPlainText -Force
+# $secureStringPassword = ConvertTo-SecureString -String $ADAppPass -AsPlainText -Force
 #$IdentifierUris = "http://" + $ADAppName
 #$ADApplication = New-AzureRmADApplication -DisplayName $ADAppName -HomePage "http://www.microsoft.com" -IdentifierUris $IdentifierUris -Password $secureStringPassword
 #Add-Type -AssemblyName System.Web
 #$password = [System.Web.Security.Membership]::GeneratePassword(16,3)
 #$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApplication.ApplicationId -Password $password
 
-$servicePrincipal = Get-AzureRmADServicePrincipal -DisplayName $ADAppName 
+# $servicePrincipal = Get-AzureRmADServicePrincipal -DisplayName $ADAppName 
 
-if (!$servicePrincipal)
-{
-    # If the service principal doesn't exist yet, create it
-    $servicePrincipal = New-AzureRmADServicePrincipal -DisplayName $ADAppName -Password $secureStringPassword
-}
+# if (!$servicePrincipal)
+# {
+#     # If the service principal doesn't exist yet, create it
+#     $servicePrincipal = New-AzureRmADServicePrincipal -DisplayName $ADAppName -Password $secureStringPassword
+# }
 
-$ADApplication = Get-AzureRmADApplication -ApplicationId $servicePrincipal.ApplicationId
+# $ADApplication = Get-AzureRmADApplication -ApplicationId $servicePrincipal.ApplicationId
 
-Write-Output $servicePrincipal
+# Write-Output $servicePrincipal
 
 # Write-Output ""
 # Write-Output "**************************************************************************************************"
 # Write-Output "* Assinging Contributor role for the Resource Group..."
 # Write-Output "**************************************************************************************************"
 
-Write-Output "Waiting for Service Principal is generated..."
-Start-Sleep -Seconds 30
+# Write-Output "Waiting for Service Principal is generated..."
+# Start-Sleep -Seconds 30
 
-$RGNameAKS = $ResourceGroupName + '-aks' 
-Get-AzureRmResourceGroup -Name $RGNameAKS -ErrorVariable notPresent -ErrorAction SilentlyContinue
+# $RGNameAKS = $ResourceGroupName + '-aks' 
+# Get-AzureRmResourceGroup -Name $RGNameAKS -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
-if($notPresent)
-{
-    Write-Output ""
-    Write-Output "**************************************************************************************************"
-    Write-Output "* Creating the resource group for AKS Cluster..."
-    Write-Output "**************************************************************************************************"
-    New-AzureRmResourceGroup -Name $RGNameAKS -Location $Location -Force   
-}
+# if($notPresent)
+# {
+#     Write-Output ""
+#     Write-Output "**************************************************************************************************"
+#     Write-Output "* Creating the resource group for AKS Cluster..."
+#     Write-Output "**************************************************************************************************"
+#     New-AzureRmResourceGroup -Name $RGNameAKS -Location $Location -Force   
+# }
 
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Provisioning the AKS Cluster..."
-Write-Output "**************************************************************************************************"
+# Write-Output ""
+# Write-Output "**************************************************************************************************"
+# Write-Output "* Provisioning the AKS Cluster..."
+# Write-Output "**************************************************************************************************"
 
 # $AKSPublicKey = Get-Content -Path $AKSPublicKeyPath
-$secureStringPublicKey = ConvertTo-SecureString -String $publicKey -AsPlainText -Force
-$secureStringServicePrincipalId = ConvertTo-SecureString -string $ADApplication.ApplicationId -AsPlainText -Force
-$secureStringServicePrincipalPass = ConvertTo-SecureString -string $ADAppPass -AsPlainText -Force
+# $secureStringPublicKey = ConvertTo-SecureString -String $publicKey -AsPlainText -Force
+# $secureStringServicePrincipalId = ConvertTo-SecureString -string $ADApplication.ApplicationId -AsPlainText -Force
+# $secureStringServicePrincipalPass = ConvertTo-SecureString -string $ADAppPass -AsPlainText -Force
 
-$aksTemplate = $PSScriptRoot + '\scripts\aks.json'
-New-AzureRmResourceGroupDeployment -Name LeaderBoardAKSDeployment -ResourceGroup $RGNameAKS -Templatefile $aksTemplate -dnsNamePrefix $AKSDnsNamePrefix -sshRSAPublicKey $secureStringPublicKey -servicePrincipalClientId $secureStringServicePrincipalId -servicePrincipalClientSecret $secureStringServicePrincipalPass  -DeploymentDebugLogLevel All
+# $aksTemplate = $PSScriptRoot + '\scripts\aks.json'
+# New-AzureRmResourceGroupDeployment -Name LeaderBoardAKSDeployment -ResourceGroup $RGNameAKS -Templatefile $aksTemplate -dnsNamePrefix $AKSDnsNamePrefix -sshRSAPublicKey $secureStringPublicKey -servicePrincipalClientId $secureStringServicePrincipalId -servicePrincipalClientSecret $secureStringServicePrincipalPass  -DeploymentDebugLogLevel All
 
-$RGNameACR = $ResourceGroupName + '-acr' 
-Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
+# $RGNameACR = $ResourceGroupName + '-acr' 
+# Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
-if($notPresent)
-{
-    Write-Output ""
-    Write-Output "**************************************************************************************************"
-    Write-Output "* Creating the resource group for ACR..."
-    Write-Output "**************************************************************************************************"
-    New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
-}
+# if($notPresent)
+# {
+#     Write-Output ""
+#     Write-Output "**************************************************************************************************"
+#     Write-Output "* Creating the resource group for ACR..."
+#     Write-Output "**************************************************************************************************"
+#     New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
+# }
 
-Write-Output ""
-Write-Output "**************************************************************************************************"
-Write-Output "* Provisioning the ACR..."
-Write-Output "**************************************************************************************************"
-$ACRTemplate = $PSScriptRoot + '\scripts\acr.json'
-New-AzureRmResourceGroupDeployment -Name LeaderBoardACRDeployment -ResourceGroup $RGNameACR -Templatefile $ACRTemplate -acrName $ACRName 
+# Write-Output ""
+# Write-Output "**************************************************************************************************"
+# Write-Output "* Provisioning the ACR..."
+# Write-Output "**************************************************************************************************"
+# $ACRTemplate = $PSScriptRoot + '\scripts\acr.json'
+# New-AzureRmResourceGroupDeployment -Name LeaderBoardACRDeployment -ResourceGroup $RGNameACR -Templatefile $ACRTemplate -acrName $ACRName 
 
-$message =  "Done! Please refer " + $RGNameACR + " On your subscription"
-Write-Output $message
+# $message =  "Done! Please refer " + $RGNameACR + " On your subscription"
+# Write-Output $message
 
-$RGNameACR = $ResourceGroupName + '-acr' 
-Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
+# $RGNameACR = $ResourceGroupName + '-acr' 
+# Get-AzureRmResourceGroup -Name $RGNameACR -ErrorVariable notPresent -ErrorAction SilentlyContinue
 
-if($notPresent)
-{
-    Write-Output ""
-    Write-Output "**************************************************************************************************"
-    Write-Output "* Creating the resource group for ACR..."
-    Write-Output "**************************************************************************************************"
-    New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
-}
+# if($notPresent)
+# {
+#     Write-Output ""
+#     Write-Output "**************************************************************************************************"
+#     Write-Output "* Creating the resource group for ACR..."
+#     Write-Output "**************************************************************************************************"
+#     New-AzureRmResourceGroup -Name $RGNameACR -Location $Location -Force   
+# }
