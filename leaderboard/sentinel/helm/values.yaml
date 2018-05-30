@@ -1,0 +1,8 @@
+image:
+  repository: tsuyoshiushio/sentinel
+  tag: latest
+  pullPolicy: Always
+services:
+  port: 80
+  pollingInterval: 
+  retryDuration: 
