@@ -124,6 +124,16 @@ namespace CLI
             sw.Stop();
             Console.WriteLine($"---- Create Collection Openhack {sw.ElapsedMilliseconds} msec");
 
+            sw.Restart();
+            // StatusHistory Collection creation
+            var statusHistoryCollection = new DocumentCollection();
+            statusHistoryCollection.Id = typeof(StatusHistory).Name;
+            statusHistoryCollection.PartitionKey.Paths.Add("/TeamId");
+            await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId),
+    statusHistoryCollection, new RequestOptions { OfferThroughput = 2500 });
+            sw.Stop();
+            Console.WriteLine($"---- Create Collection StatusHistory {sw.ElapsedMilliseconds} msec");
+
         }
 
         /// <summary>

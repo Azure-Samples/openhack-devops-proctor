@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Models
@@ -27,6 +29,23 @@ namespace Models
         public int Score { get; set; }
         public Challenge[] Challenges { get; set; }
         public Service[] Services { get; set; }
+        public Boolean CurrentState { get; set; }
+
+        /// <summary>
+        /// Update Current Status. If the current status and Services is different, 
+        /// It update the Current Status, also execute parameter function.
+        /// The primary purpose of the function is to insert a StatusHistory record.
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public async Task UpdateCurrentStateWithFunctionAsync(Func<Task> function)
+        {
+            if (GetTotalStatus() != this.CurrentState)
+            {
+                await function(); // function execution comes first. If it fails, don't want to change the state.
+                this.CurrentState = GetTotalStatus();
+            }
+        }
 
         public void UpdateService(Service service)
         {
@@ -109,7 +128,104 @@ namespace Models
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+
+        public double GetTotalAvailavility(TimeSpan serviceDownTime)
+        {
+            var totalTime = GetTotalTime().TotalSeconds;
+            var downTime = serviceDownTime.TotalSeconds;
+            return (double)(((totalTime - downTime) / totalTime) * 100);
+        }
+        public string GetTotalAvailavilityAsString(TimeSpan serviceDownTime)
+        {
+            var availability = GetTotalAvailavility(serviceDownTime);
+            return availability.ToString("F3");
+        }
+
+        public TimeSpan GetTotalTime()
+        {
+            return EndTime.Subtract(StartTime);
+        }
+
+        public TimeSpan GetUpTime(TimeSpan downtime)
+        {
+            return GetTotalTime() - downtime;
+        }
     }
+
+    /// <summary>
+    /// This document record when we've got a status change. 
+    /// This table used for the downtime calcuration 
+    /// </summary>
+    public class StatusHistory : IComparable
+    {
+        public string TeamId { get; set; }
+        public DateTime Date { get; set; }
+        public DowntimeStatus Status { get; set; }
+
+        public static TimeSpan GetServiceDowntimeTotal(IList<StatusHistory> statusHistories, DateTime? currentTime = null)
+        {
+            var list = new List<StatusHistory>();
+            list.AddRange(statusHistories);
+            // Sort by the Date. For the detail, please refer CompareTo method.
+            list.Sort();
+            // Loop and detect the downtime. 
+            var downtime = TimeSpan.FromMinutes(0);
+            StatusHistory current = null;
+            // Set Default currentTime. In case of the downtime has been started but not finished.
+            if (!currentTime.HasValue)
+            {
+                currentTime = DateTime.Now;
+            }
+            
+            foreach(var history in list)
+            {
+                if (history.Status == DowntimeStatus.Started)
+                {
+                    current = history;
+                } else
+                {
+                    // In case of DowntimeStatus.Finished
+                    if (current == null)
+                    {
+                        throw new JsonFormatException("Invalid Data. Finished comes DowntimeStatus.Finsihed without Downtime.Started. Please check your document.");
+                    }
+                    downtime = downtime + history.Date.Subtract(current.Date);
+                    current = null;
+                }
+                
+            }
+            // In case of DowntimeStatus.Started but not finished yet. 
+            if (current != null)
+            {
+                
+                downtime = downtime + ((DateTime)currentTime).Subtract(current.Date);
+            }
+            return downtime;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var history = obj as StatusHistory;
+            return this.Date.CompareTo(history.Date);
+        }
+    }
+
+    /// <summary>
+    /// DocumentFormatException is thorwn when you've got a wrong format document from CosmosDB.
+    /// </summary>
+    public class JsonFormatException : Exception
+    {
+        public JsonFormatException(string message) : base(message)
+        {
+
+        }
+    }
+
+    public enum DowntimeStatus{
+        Started,
+        Finished
+    }
+
 
     /// <summary>
     /// Downtime Report is a report from sentinels. 
@@ -134,6 +250,21 @@ namespace Models
             history.StatusCode = this.StatusCode;
             return history;
         }
+    }
+
+    /// <summary>
+    /// UptimeReport is report for SPA to report all Team uptime reports.
+    /// </summary>
+    public class UptimeReport
+    {
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+        [JsonProperty(PropertyName = "uptime")]
+        public int Uptime { get; set; }
+        [JsonProperty(PropertyName = "uppercent")]
+        public int Uppercent { get; set; }
+        [JsonProperty(PropertyName = "point")]
+        public int Point { get; set; }
     }
 
 }
