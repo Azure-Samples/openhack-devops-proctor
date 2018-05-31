@@ -1,4 +1,5 @@
 {{- range $i, $e := until (.Values.teams.totalNumber|int) }}
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -9,20 +10,18 @@ spec:
     image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
     imagePullPolicy: {{ $.Values.image.pullPolicy }}
     env:
-    - name: SENTINEL_TEAM_ID
-      value: {{ $.Values.teams.baseName }}{{ add1 $i }}
     - name: SENTINEL_SERVICE_ID
       value: user
     - name: SENTINEL_ENDPOINT
       value: /health/user
     - name: SENTINEL_PORT
-      value: {{ $.Values.services.port }}
+      value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com
+      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
     - name: SENTINEL_POLLING_INTERVAL
-      value: {{ $.Values.services.pollingInterval }}
+      value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
-      value: {{ $.Values.services.retryDuration }}
+      value: "{{ $.Values.services.retryDuration }}"
 ---
 apiVersion: v1
 kind: Pod
@@ -41,13 +40,13 @@ spec:
     - name: SENTINEL_ENDPOINT
       value: /health/trip
     - name: SENTINEL_PORT
-      value: {{ $.Values.services.port }}
+      value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com
+      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
     - name: SENTINEL_POLLING_INTERVAL
-      value: {{ $.Values.services.pollingInterval }}
+      value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
-      value: {{ $.Values.services.retryDuration }}
+      value: "{{ $.Values.services.retryDuration }}"
 ---
 apiVersion: v1
 kind: Pod
@@ -66,11 +65,11 @@ spec:
     - name: SENTINEL_ENDPOINT
       value: /health/poi
     - name: SENTINEL_PORT
-      value: {{ $.Values.services.port }}
+      value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com
+      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
     - name: SENTINEL_POLLING_INTERVAL
-      value: {{ $.Values.services.pollingInterval }}
+      value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
-      value: {{ $.Values.services.retryDuration }}
+      value: "{{ $.Values.services.retryDuration }}"
 {{- end }}
