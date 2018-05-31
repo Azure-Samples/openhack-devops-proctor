@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/caarlos0/env"
@@ -21,18 +23,29 @@ type config struct {
 	RetryDuration int    `env:"SENTINEL_RETRY_DURATION" envDefault:"1000"`
 }
 
-type Log struct {
-	TeamId     string
-	ServiceId  string
+type log struct {
+	TeamID     string
+	ServiceID  string
 	Date       time.Time
 	StatusCode int
 	Status     bool
 }
 
+func devEnvVars() {
+	os.Setenv("SENTINEL_ENDPOINT", "/")
+	os.Setenv("SENTINEL_TEAM_ID", "123")
+	os.Setenv("SENTINEL_SERVICE_ID", "test")
+	os.Setenv("SENTINEL_API_URL", "bing.com")
+}
+
 func main() {
-	// Get enviornment variables and validate it
+	// Get environment variables and validate it
 	fmt.Println("Sentinel - Monitor an endpoint status for Openhack - DevOps")
 	fmt.Println("\nStarting...")
+	devenv := strings.Contains(os.Getenv("NODE_ENV"), "development")
+	if devenv == true {
+		devEnvVars()
+	}
 	cfg := config{}
 	err := env.Parse(&cfg)
 	if err != nil {
@@ -45,14 +58,14 @@ func main() {
 	ticker := time.NewTicker(time.Duration(cfg.Interval) * time.Second)
 	for t := range ticker.C {
 		fmt.Println("Tick ...", t)
-		statusCode, err := HelathCheck(&cfg)
+		statusCode, err := healthCheck(&cfg)
 		if err != nil {
 			panic(err)
 		}
 		fmt.Println(fmt.Sprintf("Server: %s Status: %d", cfg.Endpoint, statusCode))
-		log := &Log{
-			TeamId:     cfg.TeamID,
-			ServiceId:  cfg.ServiceID,
+		log := &log{
+			TeamID:     cfg.TeamID,
+			ServiceID:  cfg.ServiceID,
 			Date:       time.Now(),
 			StatusCode: statusCode,
 		}
@@ -82,7 +95,7 @@ func main() {
 	fmt.Println("Hello")
 }
 
-func printAPIErrorMessage(cfg *config, err error, res *http.Response, log *Log) {
+func printAPIErrorMessage(cfg *config, err error, res *http.Response, log *log) {
 	logJSON, err := json.Marshal(*log)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Log marshal error: %s", err.Error()))
@@ -101,13 +114,12 @@ func getBody(resp *http.Response) (string, error) {
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		return string(body), err
-	} else {
-		// In case of 404, the body doesn't exist.
-		return "", nil
 	}
+	// In case of 404, the body doesn't exist.
+	return "", nil
 }
 
-func report(cfg *config, log *Log) (*http.Response, error) {
+func report(cfg *config, log *log) (*http.Response, error) {
 	reportJSON, err := json.Marshal(*log)
 	if err != nil {
 		return nil, err
@@ -116,11 +128,12 @@ func report(cfg *config, log *Log) (*http.Response, error) {
 	return res, err
 }
 
-func HelathCheck(cfg *config) (int, error) {
-	res, err := http.Get((*cfg).Endpoint)
+func healthCheck(cfg *config) (int, error) {
+	s := []string{"http://", (*cfg).APIURL, (*cfg).Endpoint}
+	url := strings.Join(s, "")
+	res, err := http.Get(url)
 	if res != nil {
 		return res.StatusCode, err
-	} else {
-		return 0, err
 	}
+	return 0, err
 }
