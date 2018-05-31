@@ -1,5 +1,5 @@
 image:
-  repository: tsuyoshiushio/sentinel
+  repository: sentinel
   tag: latest
   pullPolicy: IfNotPresent
 services:
@@ -7,6 +7,7 @@ services:
   pollingInterval: 30
   retryDuration: 3
 teams:
-  totalNumber: 2
+  totalNumber: 1
   baseName: devopsoh
   location: eastus
+  apiUrl: https://changeme.azurewebsites.net # Azure Functions API where the health events get logged through

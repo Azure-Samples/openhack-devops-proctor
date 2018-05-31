@@ -15,11 +15,11 @@ spec:
     - name: SENTINEL_SERVICE_ID
       value: user
     - name: SENTINEL_ENDPOINT
-      value: /health/user
+      value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/healthcheck/user"
     - name: SENTINEL_PORT
       value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
+      value: "{{ $.Values.teams.apiUrl }}"
     - name: SENTINEL_POLLING_INTERVAL
       value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
@@ -40,11 +40,11 @@ spec:
     - name: SENTINEL_SERVICE_ID
       value: trip
     - name: SENTINEL_ENDPOINT
-      value: /health/trip
+      value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/healthcheck/trip"
     - name: SENTINEL_PORT
       value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
+      value: "{{ $.Values.teams.apiUrl }}"
     - name: SENTINEL_POLLING_INTERVAL
       value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
@@ -65,11 +65,11 @@ spec:
     - name: SENTINEL_SERVICE_ID
       value: poi
     - name: SENTINEL_ENDPOINT
-      value: /health/poi
+      value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/healthcheck/poi"
     - name: SENTINEL_PORT
       value: "{{ $.Values.services.port }}"
     - name: SENTINEL_API_URL
-      value: "akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com"
+      value: "{{ $.Values.teams.apiUrl }}"
     - name: SENTINEL_POLLING_INTERVAL
       value: "{{ $.Values.services.pollingInterval }}"
     - name: SENTINEL_RETRY_DURATION
