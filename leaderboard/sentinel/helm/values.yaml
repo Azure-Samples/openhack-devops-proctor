@@ -1,8 +1,12 @@
 image:
   repository: tsuyoshiushio/sentinel
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 services:
   port: 80
   pollingInterval: 30
   retryDuration: 3
+teams:
+  totalNumber: 3
+  baseName: devopsoh
+  location: eastus
