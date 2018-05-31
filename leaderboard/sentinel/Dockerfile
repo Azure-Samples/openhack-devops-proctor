@@ -1,27 +1,24 @@
-FROM alpine:3.7 AS base
-WORKDIR /app
-
-FROM golang:1.10-alpine AS build
-WORKDIR /sentinel/src/github.com/Azure-Samples/openhack-devops-tools/sentinel
-RUN mkdir /sentinel/bin
-ENV GOPATH /sentinel
-ENV PATH $PATH:$GOPATH/bin
+FROM golang:1.10.2 AS gobuild
+WORKDIR /go/src/github.com/Azure-Samples/openhack-devops-proctor/leaderboard/sentinel
 COPY . .
-RUN apk --update add git
-RUN apk add --no-cache ca-certificates
-RUN go get -u github.com/golang/dep/cmd/dep
-RUN dep ensure
-RUN go build
+RUN go get -t 
+RUN CGO_ENABLED=0 GOOS=linux go build -o sentinel .
 
-FROM base as final
-RUN apk add --no-cache ca-certificates
+FROM alpine:3.7 AS gorun
+
+ENV SENTINEL_ENDPOINT="http://bing.com" \
+	SENTINEL_PORT="80" \
+    SENTINEL_TEAM_ID="devteam" \
+	SENTINEL_SERVICE_ID="devservice" \
+	SENTINEL_API_URL="https://changeme.azurewebsites.net" \
+	SENTINEL_POLLING_INTERVAL="5" \
+	SENTINEL_RETRY_DURATION="1000"
+
 WORKDIR /app
-COPY --from=build /sentinel/src/github.com/Azure-Samples/openhack-devops-tools/sentinel/sentinel /app/sentinel
-# https://stackoverflow.com/questions/34729748/installed-go-binary-not-found-in-path-on-alpine-linux-docker
-# I add this line to fix sentinel binary can't find even if it it is exists. 
-# For more detail, ldd /app/sentinel might help.
-# This happens when I use build image as golang:1.10 (not alpine)
-# RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
-ENTRYPOINT ["/app/sentinel"]
 
+RUN apk add --update \
+  ca-certificates
 
+COPY --from=gobuild /go/src/github.com/Azure-Samples/openhack-devops-proctor/leaderboard/sentinel/sentinel .
+
+CMD ["./sentinel"]
