@@ -3,5 +3,3 @@ _vendor-*
 /sentinel
 /sentinel.exe
 setenv.sh
-
-values.yaml
