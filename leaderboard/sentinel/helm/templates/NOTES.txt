@@ -1,12 +1,8 @@
-1. Get the application URL by running these commands:
+{{ .Values.teams.totalNumber }} total teams are deployed with one pod for each of the 3 services. 
 
-kubectl get pods
-
-You have {{ .Values.serviceSize }} pods on the default namespace. 
-
-TeamID | ServiceID | EndPoint                       | Port   | ApiURL
-{{- range .Values.services }}
-{{ .teamId }}     | {{ .serviceId }}      | {{ .endpoint }}                       | {{ .port }}   | {{ .apiURL }}
+TeamID |  ApiURL
+{{- range $i, $e := until (.Values.teams.totalNumber|int) }}
+{{ $.Values.teams.baseName }}{{ add1 $i }} | http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com 
 {{- end }}
 
 Happy Sentinel
