@@ -7,6 +7,6 @@ services:
   pollingInterval: 30
   retryDuration: 3
 teams:
-  totalNumber: 3
+  totalNumber: 2
   baseName: devopsoh
   location: eastus
