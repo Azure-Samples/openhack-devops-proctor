@@ -22,10 +22,16 @@ while getopts ":i:l:n:" arg; do
         n)
             teamName=${OPTARG}
         ;;
+        e)
+            totalTeams=${OPTARG}
+        ;;
+        a)
+            apiUrl=${OPTARG}
+        ;;
     esac
 done
 shift $((OPTIND-1))
-
+numberTeams -l $location -a $apiUrl
 # Check if kubectl is installed or that we can install it
 type -p kubectl
 if [ ! $? == 0 ]; then
@@ -34,12 +40,6 @@ if [ ! $? == 0 ]; then
         exit 1
     fi
 fi
-
-# type -p sqlcmd
-# if [ ! $? == 0 ]; then
-#     echo "sqlcmd not found, install and re-run setup."
-#     exit 1
-# fi
 
 # Check if az is installed and that we can install it
 type -p az
@@ -75,16 +75,6 @@ if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamNam
     echo "Parameter missing..."
     usage
 fi
-
-# randomChar() {
-#     s=abcdefghijklmnopqrstuvxwyz0123456789
-#     p=$(( $RANDOM % 36))
-#     echo -n ${s:$p:1}
-# }
-
-# randomNum() {
-#     echo $(( $RANDOM % 10 ))
-# }
 
 # declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
 declare resourceGroupTeam="${teamName}-rg";
@@ -172,8 +162,8 @@ bash ../provision-team/deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceG
 dnsURL='akstraefik'${teamName}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
-# echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
-# bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
+# echo "8-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+bash ./build_deploy_poi.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
 echo "11-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${teamName}
