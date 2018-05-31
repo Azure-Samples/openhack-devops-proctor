@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
-	"strings"
 	"time"
 
 	"github.com/caarlos0/env"
@@ -31,21 +29,10 @@ type log struct {
 	Status     bool
 }
 
-func devEnvVars() {
-	os.Setenv("SENTINEL_ENDPOINT", "/")
-	os.Setenv("SENTINEL_TEAM_ID", "123")
-	os.Setenv("SENTINEL_SERVICE_ID", "test")
-	os.Setenv("SENTINEL_API_URL", "bing.com")
-}
-
 func main() {
 	// Get environment variables and validate it
 	fmt.Println("Sentinel - Monitor an endpoint status for Openhack - DevOps")
 	fmt.Println("\nStarting...")
-	devenv := strings.Contains(os.Getenv("NODE_ENV"), "development")
-	if devenv == true {
-		devEnvVars()
-	}
 	cfg := config{}
 	err := env.Parse(&cfg)
 	if err != nil {
@@ -129,9 +116,7 @@ func report(cfg *config, log *log) (*http.Response, error) {
 }
 
 func healthCheck(cfg *config) (int, error) {
-	s := []string{"http://", (*cfg).APIURL, (*cfg).Endpoint}
-	url := strings.Join(s, "")
-	res, err := http.Get(url)
+	res, err := http.Get((*cfg).Endpoint)
 	if res != nil {
 		return res.StatusCode, err
 	}
