@@ -8,7 +8,7 @@ FROM alpine:3.7 AS gorun
 
 ENV SENTINEL_ENDPOINT="http://bing.com" \
 	SENTINEL_PORT="80" \
-    SENTINEL_TEAM_ID="devteam" \
+	SENTINEL_TEAM_ID="devteam" \
 	SENTINEL_SERVICE_ID="devservice" \
 	SENTINEL_API_URL="https://changeme.azurewebsites.net" \
 	SENTINEL_POLLING_INTERVAL="5" \
@@ -16,8 +16,7 @@ ENV SENTINEL_ENDPOINT="http://bing.com" \
 
 WORKDIR /app
 
-RUN apk add --update \
-  ca-certificates
+RUN apk add --update ca-certificates
 
 COPY --from=gobuild /go/src/github.com/Azure-Samples/openhack-devops-proctor/leaderboard/sentinel/sentinel .
 
