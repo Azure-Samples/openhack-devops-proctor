@@ -10,6 +10,8 @@ spec:
     image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
     imagePullPolicy: {{ $.Values.image.pullPolicy }}
     env:
+    - name: SENTINEL_TEAM_ID
+      value: {{ $.Values.teams.baseName }}{{ add1 $i }}
     - name: SENTINEL_SERVICE_ID
       value: user
     - name: SENTINEL_ENDPOINT
