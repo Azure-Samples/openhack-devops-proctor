@@ -60,6 +60,11 @@ if [[ -z "$teamName" ]]; then
     read teamName
 fi
 
+if [[ -z "$totalTeams" ]]; then
+    echo "Enter the total number of teams provisioned:"
+    read totalTeams
+fi
+
 if [[ -z "$resourceGroupLocation" ]]; then
     echo "Enter the resource group location where the teams were provisioned:"
     read resourceGroupLocation
