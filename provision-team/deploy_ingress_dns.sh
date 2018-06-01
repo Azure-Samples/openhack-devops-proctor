@@ -65,7 +65,7 @@ echo "Updating information of available charts locally from chart repositories"
 helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
-cat "./traefik-values.yaml" \
+cat "${0%/*}/traefik-values.yaml" \
     | sed "s/akstraefikreplaceme/akstraefik$teamName/g" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
