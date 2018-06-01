@@ -73,7 +73,7 @@ cat "./traefik-values.yaml" \
 time=0 
 while true; do
         TILLER_STATUS=$(kubectl get pods --all-namespaces --selector=app=helm -o json | jq -r '.items[].status.phase')
-        echo -e "Verifying tiller is ready" 
+        echo -e "\n\nVerifying tiller is ready" 
         if [[ "${TILLER_STATUS}" == "Running" ]]; then break; fi
         sleep 10
         time=$(($time+10))
