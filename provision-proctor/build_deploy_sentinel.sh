@@ -55,23 +55,34 @@ if [[ -z "$registryName" ]]; then
     [[ "${registryName:?}" ]]
 fi
 
-if [ -z "$resourceGroupName" ] || [ -z "$registryName" ]; then
-    echo "One of resourceGroupName, imageTag, or registryName are empty"
-    usage
+if [[ -z "$teamName" ]]; then
+    echo "Enter the base team name used to provision the teams:"
+    read teamName
 fi
 
 if [[ -z "$resourceGroupLocation" ]]; then
-    echo "If creating a *new* resource group, you need to set a location "
-    echo "You can lookup locations with the CLI using: az account list-locations "
-
-    echo "Enter resource group location:"
+    echo "Enter the resource group location where the teams were provisioned:"
     read resourceGroupLocation
+fi
+
+if [[ -z "$apiUrl" ]]; then
+    echo "Enter the Azure functions api URL i.e. https://mysite.azurewebsites.net :"
+    read apiUrl
+    [[ "${apiUrl:?}" ]]
+fi
+
+if [ -z "$resourceGroupName" ] || [ -z "$registryName" ] || [[ -z "$teamName" ]] || [[ -z "$resourceGroupLocation" ]] || [[ -z "$apiUrl" ]]; then
+    echo "One of the parameters are missing"
+    usage
 fi
 
 #DEBUG
 echo $resourceGroupName
-echo $imageTag
-
+echo $registryName
+echo $teamName
+echo $totalTeams
+echo $resourceGroupLocation
+echo $apiUrl
 echo -e '\n'
 
 #get the acr repsotiory id to tag image with.
