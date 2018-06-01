@@ -4,18 +4,19 @@ metadata:
   name: "{{ .Values.image.name }}-deploy"
   labels:
     deploy: {{ .Values.image.label }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.image.label }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ .Values.image.label }}
+        release: {{ .Release.Name }}
     spec:
-      imagePullSecrets:
-        - name: acrsecret
       containers:
       - image: "{{ .Values.repository.image }}:{{ .Values.repository.tag }}"
         imagePullPolicy: {{ .Values.repository.pullPolicy }}
