@@ -49,11 +49,9 @@ fi
 
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade
+helm init --upgrade --wait
 
 tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
-
-echo "Waiting for tiller ..."
 
 while [ $tiller != "Running" ]; do
         echo "Waiting for tiller ..."
@@ -63,7 +61,7 @@ done
 
 echo "tiller upgrade complete."
 
-echo "Updating repo information"
+echo "Updating information of available charts locally from chart repositories"
 helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
@@ -72,16 +70,17 @@ cat "./traefik-values.yaml" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
 
-echo -e "\n\nInstalling Traefik Ingress controller ..."
-echo -e "Waiting for tiller to be ready" 
 time=0 
 while true; do
         TILLER_STATUS=$(kubectl get pods --all-namespaces --selector=app=helm -o json | jq -r '.items[].status.phase')
+        echo -e "\n\nVerifying tiller is ready" 
         if [[ "${TILLER_STATUS}" == "Running" ]]; then break; fi
         sleep 10
         time=$(($time+10))
         echo $time "seconds waiting"
 done
+
+echo -e "\n\nInstalling Traefik Ingress controller ..."
 
 helm install stable/traefik --name team-ingress --version 1.27.0 -f $relativeSaveLocation"/traefik$teamName.yaml"
 
