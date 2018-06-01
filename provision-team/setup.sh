@@ -3,15 +3,15 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> " 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> " 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare teamName=""
-declare keyVaultName=""
+declare teamNumber=""
 
 # Initialize parameters specified from command line
-while getopts ":i:t:s:r:c:l:n:k:" arg; do
+while getopts ":i:l:n:e:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -21,6 +21,9 @@ while getopts ":i:t:s:r:c:l:n:k:" arg; do
         ;;
         n)
             teamName=${OPTARG}
+        ;;
+        e)
+            teamNumber=${OPTARG}
         ;;
     esac
 done
@@ -86,16 +89,20 @@ randomNum() {
     echo $(( $RANDOM % 10 ))
 }
 
-declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
-declare resourceGroupTeam="${teamName}rg${random4Chars}";
-declare registryName="${teamName}acr${random4Chars}"
-declare clusterName="${teamName}aks${random4Chars}"
-declare keyVaultName="${teamName}kv${random4Chars}"
-declare sqlServerName="${teamName}sql${random4Chars}"
-declare hostingPlanName="${teamName}plan${random4Chars}"
-declare mobileAppName="${teamName}app${random4Chars}"
-declare sqlServerUsername="${teamName}sa${random4Chars}"
-declare sqlServerPassword="${teamName}pwd-${random4Chars}"
+if [[ -z "$teamNumber" ]]; then
+    echo "Using a random team number since not specified."
+    teamNumber="$(randomChar;randomChar;randomChar;randomNum;)"
+fi
+
+declare resourceGroupTeam="${teamName}rg${teamNumber}";
+declare registryName="${teamName}acr${teamNumber}"
+declare clusterName="${teamName}aks${teamNumber}"
+declare keyVaultName="${teamName}kv${teamNumber}"
+declare sqlServerName="${teamName}sql${teamNumber}"
+declare hostingPlanName="${teamName}plan${teamNumber}"
+declare mobileAppName="${teamName}app${teamNumber}"
+declare sqlServerUsername="${teamName}sa${teamNumber}"
+declare sqlServerPassword="${teamName}pwd-${teamNumber}"
 declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
@@ -104,8 +111,8 @@ echo "=========================================="
 echo "subscriptionId            = "${subscriptionId}
 echo "resourceGroupLocation     = "${resourceGroupLocation}
 echo "teamName                  = "${teamName}
+echo "teamNumber                = "${teamNumber}
 echo "keyVaultName              = "${keyVaultName}
-echo "random4Chars              = "${random4Chars}
 echo "resourceGroupTeam         = "${resourceGroupTeam}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
@@ -165,27 +172,27 @@ bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $cl
 echo "4-Clone repo"
 bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s ./test_fetch_build
 
-echo "5-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${random4Chars})"
-bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${random4Chars}
+echo "5-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber})"
+bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber}
 
 echo "6-Provision SQL & Mobile App  (bash ./provision_sql_mobileapp.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
 bash ./provision_sql_mobileapp.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
 
-echo "7-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName -d $sqlDBName)"
-bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${random4Chars} -k $keyVaultName -d $sqlDBName
+echo "7-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${teamNumber} -k $keyVaultName -d $sqlDBName)"
+bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${teamNumber} -k $keyVaultName -d $sqlDBName
 
 # Save the public DNS address to be provisioned in the helm charts for each service
-dnsURL='akstraefik'${teamName}${random4Chars}'.'$resourceGroupLocation'.cloudapp.azure.com'
+dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
-echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
-bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
+echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
+bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "9-Build and deploy User API to AKS  (bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
-bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
+echo "9-Build and deploy User API to AKS  (bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
+bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "10-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName)"
-bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${random4Chars} -g $registryName
+echo "10-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
+bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
 echo "11-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}
