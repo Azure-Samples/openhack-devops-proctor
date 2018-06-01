@@ -8,10 +8,12 @@ usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare teamName=""
+declare totalTeams=""
+declare apiUrl=""
 # declare keyVaultName=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:" arg; do
+while getopts ":i:l:n:e:a:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -71,7 +73,18 @@ if [[ -z "$teamName" ]]; then
     read teamName
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
+if [[ -z "$totalTeams" ]]; then
+    echo "Enter the total number of teams provisioned:"
+    read totalTeams
+fi
+
+if [[ -z "$apiUrl" ]]; then
+    echo "Enter the Azure functions api URL i.e. https://mysite.azurewebsites.net :"
+    read apiUrl
+    [[ "${apiUrl:?}" ]]
+fi
+
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
     echo "Parameter missing..."
     usage
 fi
@@ -81,12 +94,6 @@ declare resourceGroupTeam="${teamName}-rg";
 declare registryName="${teamName}acr"
 declare clusterName="${teamName}aks"
 # declare keyVaultName="${teamName}kv${random4Chars}"
-# declare sqlServerName="${teamName}sql${random4Chars}"
-# declare hostingPlanName="${teamName}plan${random4Chars}"
-# declare mobileAppName="${teamName}app${random4Chars}"
-# declare sqlServerUsername="${teamName}sa${random4Chars}"
-# declare sqlServerPassword="${teamName}pwd-${random4Chars}"
-# declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
 echo " VARIABLES"
@@ -95,18 +102,10 @@ echo "subscriptionId            = "${subscriptionId}
 echo "resourceGroupLocation     = "${resourceGroupLocation}
 echo "teamName                  = "${teamName}
 # echo "keyVaultName              = "${keyVaultName}
-# echo "random4Chars              = "${random4Chars}
 echo "resourceGroupTeam         = "${resourceGroupTeam}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
-# echo "sqlServerName             = "${sqlServerName}
-# echo "sqlServerUsername         = "${sqlServerUsername}
-# echo "sqlServerPassword         = "${sqlServerPassword}
-# echo "sqlDBName                 = "${sqlDBName}
-# echo "hostingPlanName           = "${hostingPlanName}
-# echo "mobileAppName             = "${mobileAppName}
 echo "=========================================="
-
 
 #login to azure using your credentials
 az account show 1> /dev/null
@@ -152,18 +151,18 @@ bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupTeam
 echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation
 
-echo "4-Clone repo"
-bash ../provision-team/git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-proctor -s ./test_fetch_build
-
-echo "5-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName})"
+echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName})"
 bash ../provision-team/deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${teamName}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
-# echo "8-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
-bash ./build_deploy_poi.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
+echo "5-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-echo "11-Clean the working environment"
+# echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -r $resourceGroupTeam -g $registryName -n ${teamName} )"
+# bash ./build_deploy_web.sh -r $resourceGroupTeam -g $registryName -n ${teamName}
+
+echo "7-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${teamName}
