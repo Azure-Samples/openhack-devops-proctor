@@ -3,8 +3,8 @@ The public endpoint for the dashboard is:
 "http://{{ .Values.ingress.rules.endpoint.host }}"
 {{- end }}
 {{- if contains "ClusterIP" .Values.service.type }}
-To access the pod directly:
+To access the 1st pod directly:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Values.image.label }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:{{.Values.service.externalPort}} to use your application"
   kubectl port-forward $POD_NAME {{.Values.service.externalPort}}:{{.Values.image.containerPort}}
+  Then visit http://127.0.0.1:{{.Values.service.externalPort}} to see your application.
 {{- end }}
