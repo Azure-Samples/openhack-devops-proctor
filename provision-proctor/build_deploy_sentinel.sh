@@ -14,7 +14,7 @@ declare registryName=""
 declare resourceGroupLocation=""
 
 # Initialize parameters specified from command line
-while getopts ":r:g:n:e:a:" arg; do
+while getopts ":r:g:n:e:l:a:" arg; do
     case "${arg}" in
         r)
             resourceGroupName=${OPTARG}
