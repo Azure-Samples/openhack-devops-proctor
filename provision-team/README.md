@@ -5,16 +5,15 @@
 ## Pre-requisites
 
 - Access to [MyDriving github repository](https://github.com/Azure-Samples/openhack-devops-team)
-- Generate ssh key to get openhack-team-cli https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+- [Generate ssh key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) to get openhack-team-cli
 - [Helm](https://docs.helm.sh/using_helm/#installing-helm)
 - Azure [AZ cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-- [.net core 2.0.4](https://www.microsoft.com/net/download/) [Linux install](https://www.microsoft.com/net/download/linux-package-manager/ubuntu16-04/sdk-current)
 - [Docker](https://docs.docker.com/install/)
 - [JQ](https://stedolan.github.io/jq/) (sudo apt-get install jq)
 
 ## Usage
 
-    `./setup.sh -i <subscriptionId> -g <resourceGroupName> -r <registryName> -c <clusterName> -l <resourceGroupLocation> -n <teamName>`
+    `./setup.sh -i <subscriptionId> -g <resourceGroupName> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>`
 
 **NOTE:** You will be asked to login to your subscription if you have not already done so using the azure cli.
 
@@ -22,8 +21,12 @@
 
 - SubscriptionId - id of the subscription to deploy the team infrastructure to
 - resourceGroupLocation - Azure region to deploy to.  **_Must be a region that supports ACR, AKS, and KeyVault._**
-- teamName - name of the team.  Containers and apps will use this value in provisioning.  **_Must be all lowercase alphanumeric characters_**
+- teamName - name of the team.  This value is used for the base name of all of the resources provisioned in Azure.  **_Must be all lowercase alphanumeric characters_**
+- teamNumber (optional) - specific number for a team to provision.  If this is not specified, a random (3 character + 1 number) will be auto-generated.
 
-An example command to provision might look like the following:
+An example command to provision with a random team number:
 
 `./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh`
+
+An example command to provision with a specific team number:
+`./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh -e 01`
