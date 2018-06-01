@@ -489,3 +489,147 @@ EXEC dbo.sp_executesql @statement = N'CREATE TRIGGER [dbo].[TR_dbo_UserProfiles_
 GO
 ALTER TABLE [dbo].[UserProfiles] ENABLE TRIGGER [TR_dbo_UserProfiles_InsertUpdateDelete]
 GO
+
+
+/******* Adding Additional Tables Needed for Simulator *********************/
+
+GO
+SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, QUOTED_IDENTIFIER ON;
+
+SET NUMERIC_ROUNDABORT OFF;
+
+
+
+GO
+PRINT N'Creating [dbo].[POISource]...';
+
+
+GO
+CREATE TABLE [dbo].[POISource] (
+    [Id]                NVARCHAR (128) NOT NULL,
+    [TripId]            NVARCHAR (MAX) NULL,
+    [Latitude]          FLOAT (53)     NOT NULL,
+    [Longitude]         FLOAT (53)     NOT NULL,
+    [POIType]           INT            NOT NULL,
+    [RecordedTimeStamp] NVARCHAR (50)  NULL,
+    CONSTRAINT [PK_POISource_ID] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+
+GO
+PRINT N'Creating [dbo].[TripPointSource]...';
+
+
+GO
+CREATE TABLE [dbo].[TripPointSource] (
+    [tripid]                   VARCHAR (36)     NOT NULL,
+    [userid]                   VARCHAR (33)     NOT NULL,
+    [name]                     VARCHAR (30)     NULL,
+    [trippointid]              VARCHAR (36)     NOT NULL,
+    [lat]                      NUMERIC (18, 15) NOT NULL,
+    [lon]                      NUMERIC (19, 14) NOT NULL,
+    [speed]                    INT              NOT NULL,
+    [recordedtimestamp]        VARCHAR (28)     NOT NULL,
+    [sequence]                 INT              NOT NULL,
+    [enginerpm]                INT              NOT NULL,
+    [shorttermfuelbank]        INT              NOT NULL,
+    [longtermfuelbank]         INT              NOT NULL,
+    [throttleposition]         INT              NOT NULL,
+    [relativethrottleposition] INT              NOT NULL,
+    [runtime]                  INT              NOT NULL,
+    [distancewithmil]          INT              NOT NULL,
+    [engineload]               INT              NOT NULL,
+    [mafflowrate]              INT              NOT NULL,
+    [outsidetemperature]       VARCHAR (30)     NULL,
+    [enginefuelrate]           INT              NOT NULL,
+    [FIELD21]                  INT              NULL,
+    PRIMARY KEY CLUSTERED ([trippointid] ASC)
+);
+
+
+GO
+PRINT N'Creating [dbo].[POIs].[nci_wi_POIs_55307BFB0FFEEFC3E0238C0CC3B42651]...';
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_POIs_55307BFB0FFEEFC3E0238C0CC3B42651]
+    ON [dbo].[POIs]([POIType] ASC)
+    INCLUDE([TripId]);
+
+
+GO
+PRINT N'Creating unnamed constraint on [dbo].[IOTHubDatas]...';
+
+
+GO
+ALTER TABLE [dbo].[IOTHubDatas]
+    ADD DEFAULT ((0)) FOR [Deleted];
+
+
+GO
+PRINT N'Creating unnamed constraint on [dbo].[POIs]...';
+
+
+GO
+ALTER TABLE [dbo].[POIs]
+    ADD DEFAULT ((0)) FOR [Deleted];
+
+
+GO
+PRINT N'Altering [dbo].[UpdateUserProfilesOnInsert]...';
+
+
+GO
+ALTER TRIGGER [dbo].[UpdateUserProfilesOnInsert] ON [dbo].[POIs]
+FOR INSERT
+AS
+        -- Do it for all rows inserted (maybe bulk insert)
+        DECLARE crs CURSOR FOR
+                SELECT TripId FROM inserted
+        
+        DECLARE @TId nvarchar(100)
+        
+        OPEN crs
+        FETCH NEXT FROM crs INTO @TId
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+
+               -- Update Accelerations      
+               WITH ascnt1 AS (
+                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt1
+                                  FROM            dbo.POIs AS p INNER JOIN
+                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
+                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
+                                  WHERE        (p.POIType = 1)
+                                  GROUP BY p.TripId, up.UserId
+               )       
+               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardAccelerations = ascnt1.cnt1 FROM ascnt1
+               WHERE ascnt1.TripId = @TId AND dbo.UserProfiles.UserId = ascnt1.UserId;
+        
+               -- Update Hard Stops
+               WITH ascnt2 AS (
+                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt2
+                                  FROM            dbo.POIs AS p INNER JOIN
+                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
+                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
+                                  WHERE        (p.POIType = 2)
+                                  GROUP BY p.TripId, up.UserId
+               )       
+               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardStops = ascnt2.cnt2 FROM ascnt2
+               WHERE ascnt2.TripId = @TId AND dbo.UserProfiles.UserId = ascnt2.UserId;
+        
+        
+               FETCH NEXT FROM crs INTO @TId
+        END
+        CLOSE crs
+        DEALLOCATE crs
+GO
+PRINT N'Creating [dbo].[GetPoisForTrip]...';
+
+
+GO
+
+PRINT N'Update complete.';
+
+
+GO
