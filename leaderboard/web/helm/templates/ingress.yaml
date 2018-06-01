@@ -24,7 +24,7 @@ spec:
         {{- range $path := .paths }}
           - path: {{ $path.path }}
             backend:
-              serviceName: {{ $path.serviceName }}
+              serviceName: {{ $.Values.image.name }}
               servicePort: {{ $.Values.service.externalPort }}
         {{- end -}}
     {{- end -}}
