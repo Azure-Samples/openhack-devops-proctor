@@ -11,6 +11,7 @@ usage() { echo "Usage: build_deploy_sentinel.sh -r <resourceGroupName> -g <acr r
 declare resourceGroupName=""
 declare imageTag=""
 declare registryName=""
+declare resourceGroupLocation=""
 
 # Initialize parameters specified from command line
 while getopts ":r:g:n:e:a:" arg; do
@@ -28,7 +29,7 @@ while getopts ":r:g:n:e:a:" arg; do
             totalTeams=${OPTARG}
         ;;
         l)
-            location=${OPTARG}
+            resourceGroupLocation=${OPTARG}
         ;;
         a)
             apiUrl=${OPTARG}
@@ -55,6 +56,14 @@ fi
 if [ -z "$resourceGroupName" ] || [ -z "$registryName" ]; then
     echo "One of resourceGroupName, imageTag, or registryName are empty"
     usage
+fi
+
+if [[ -z "$resourceGroupLocation" ]]; then
+    echo "If creating a *new* resource group, you need to set a location "
+    echo "You can lookup locations with the CLI using: az account list-locations "
+
+    echo "Enter resource group location:"
+    read resourceGroupLocation
 fi
 
 #DEBUG
@@ -90,4 +99,4 @@ popd
 installPath="../leaderboard/sentinel/helm"
 echo -e "\nhelm install ... from: " $installPath
 
-helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$location,teams.baseName=$teamName,teams.apiUrl=$apiURL
+helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$resourceGroupLocation,teams.baseName=$teamName,teams.apiUrl=$apiURL
