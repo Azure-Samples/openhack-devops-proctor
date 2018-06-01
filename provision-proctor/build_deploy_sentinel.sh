@@ -9,9 +9,11 @@ IFS=$'\n\t'
 usage() { echo "Usage: build_deploy_sentinel.sh -r <resourceGroupName> -g <acr registry name> -n <teamName> -e <number of teams> -l <location> -a <apiUrl>" 1>&2; exit 1; }
 
 declare resourceGroupName=""
-declare imageTag=""
 declare registryName=""
+declare teamName=""
+declare totalTeams=""
 declare resourceGroupLocation=""
+declare apiUrl=""
 
 # Initialize parameters specified from command line
 while getopts ":r:g:n:e:l:a:" arg; do
