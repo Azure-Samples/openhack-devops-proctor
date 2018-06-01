@@ -11,7 +11,8 @@ image:
   label: leaderboard
   containerPort: 80
 service:
-  externalPort: 80
+  externalPort: 8080
+  type: ClusterIP
 ingress:
   enabled: true
   annotations:
@@ -20,10 +21,10 @@ ingress:
     endpoint:
       host: changeme
       paths:
-      - path: /leaderboard/*
+      - path: /
         serviceName: leaderboard
         servicePort: 80
-      - path: /healthcheck
+      - path: /#/pages/
         serviceName: leaderboard
         servicePort: 80
 resources: {}

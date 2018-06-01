@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "chart.fullname" . }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   selector:
     app: {{ .Values.image.label }}
   ports:
