@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_sentinel.sh -r <resourceGroupName> -g <acr registry name> -e <number of teams> -l <location> -a <apiUrl>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_sentinel.sh -r <resourceGroupName> -g <acr registry name> -n <teamName> -e <number of teams> -l <location> -a <apiUrl>" 1>&2; exit 1; }
 
 declare resourceGroupName=""
 declare imageTag=""
