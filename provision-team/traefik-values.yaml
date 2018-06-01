@@ -1,13 +1,19 @@
 # https://github.com/kubernetes/charts/blob/master/stable/traefik/values.yaml
 ## Default values for Traefik
 image: traefik
-imageTag: 1.5.4
+imageTag: 1.6.2
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
 # loadBalancerSourceRanges: []
-externalTrafficPolicy: Cluster
+whiteListSourceRange: []
+externalTrafficPolicy: Local
 replicas: 1
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
+
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
@@ -28,6 +34,7 @@ tolerations: []
   # namespaces:
   # - default
   # labelSelector:
+  # ingressClass:
 proxyProtocol:
   enabled: false
   # trustedIPs is required when enabled
