@@ -82,7 +82,7 @@ done
 
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-helm install stable/traefik --name team-ingress --version 1.31.1 -f $relativeSaveLocation"/traefik$teamName.yaml"
+helm install stable/traefik --name team-ingress --version 1.27.0 -f $relativeSaveLocation"/traefik$teamName.yaml"
 
 echo "Waiting for public IP:"
 time=0
