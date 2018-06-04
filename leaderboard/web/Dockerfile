@@ -5,7 +5,7 @@ FROM node:8.9-alpine AS build
 WORKDIR /usr/src/app
 RUN npm i -g @angular/cli
 COPY . .
-RUN rm -rf node_modules
+# RUN rm -rf node_modules
 COPY package.json package.json
 RUN npm install --silent
 RUN apk add --no-cache curl
