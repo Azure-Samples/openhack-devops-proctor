@@ -3,23 +3,27 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> " 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -n <teamName> -e <totalTeams> -a <apiUrl>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
+declare proctorName=""
 declare teamName=""
 declare totalTeams=""
 declare apiUrl=""
 # declare keyVaultName=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:a:" arg; do
+while getopts ":i:l:m:n:e:a:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
         ;;
         l)
             resourceGroupLocation=${OPTARG}
+        ;;
+        m)
+            proctorName=${OPTARG}
         ;;
         n)
             teamName=${OPTARG}
@@ -33,7 +37,7 @@ while getopts ":i:l:n:e:a:" arg; do
     esac
 done
 shift $((OPTIND-1))
-numberTeams -l $location -a $apiUrl
+
 # Check if kubectl is installed or that we can install it
 type -p kubectl
 if [ ! $? == 0 ]; then
@@ -68,6 +72,11 @@ if [[ -z "$resourceGroupLocation" ]]; then
     read resourceGroupLocation
 fi
 
+if [[ -z "$proctorName" ]]; then
+    echo "Enter a team name to be used in app provisioning:"
+    read proctorName
+fi
+
 if [[ -z "$teamName" ]]; then
     echo "Enter a team name to be used in app provisioning:"
     read teamName
@@ -84,25 +93,26 @@ if [[ -z "$apiUrl" ]]; then
     [[ "${apiUrl:?}" ]]
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
     echo "Parameter missing..."
     usage
 fi
 
 # declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
-declare resourceGroupTeam="${teamName}-rg";
-declare registryName="${teamName}acr"
-declare clusterName="${teamName}aks"
-# declare keyVaultName="${teamName}kv${random4Chars}"
+declare resourceGroupProctor="${proctorName}-rg";
+declare registryName="${proctorName}acr"
+declare clusterName="${proctorName}aks"
+# declare keyVaultName="${proctorName}kv${random4Chars}"
 
 echo "=========================================="
 echo " VARIABLES"
 echo "=========================================="
 echo "subscriptionId            = "${subscriptionId}
 echo "resourceGroupLocation     = "${resourceGroupLocation}
+echo "proctorName"              = "${proctorName}"
 echo "teamName                  = "${teamName}
 # echo "keyVaultName              = "${keyVaultName}
-echo "resourceGroupTeam         = "${resourceGroupTeam}
+echo "resourceGroupProctor         = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
 echo "=========================================="
@@ -127,42 +137,42 @@ az provider register -n Microsoft.ContainerService
 set +e
 
 #Check for existing RG
-if [ `az group exists -n $resourceGroupTeam -o tsv` == false ]; then
-    echo "Resource group with name" $resourceGroupTeam "could not be found. Creating new resource group.."
+if [ `az group exists -n $resourceGroupProctor -o tsv` == false ]; then
+    echo "Resource group with name" $resourceGroupProctor "could not be found. Creating new resource group.."
     set -e
     (
         set -x
-        az group create --name $resourceGroupTeam --location $resourceGroupLocation
+        az group create --name $resourceGroupProctor --location $resourceGroupLocation
     )
 else
     echo "Using existing resource group..."
 fi
 
-# echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
-# bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation
+# echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation)"
+# bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation
 
-echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupTeam -r $registryName -l $resourceGroupLocation)"
-bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupTeam -r $registryName -l $resourceGroupLocation
+echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation)"
-bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation
+echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
 # Remove do to the permission with the role assignment
-echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation)"
-bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -r $registryName -l $resourceGroupLocation
+echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
 
-echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName})"
-bash ../provision-team/deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}
+echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
+bash ../provision-team/deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
-dnsURL='akstraefik'${teamName}'.'$resourceGroupLocation'.cloudapp.azure.com'
-echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
+dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
+echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
 
-echo "5-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
-bash ./build_deploy_sentinel.sh -r $resourceGroupTeam -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
+echo "5-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-# echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -r $resourceGroupTeam -g $registryName -n ${teamName} )"
-# bash ./build_deploy_web.sh -r $resourceGroupTeam -g $registryName -n ${teamName}
+# echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
+bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
 
 echo "7-Clean the working environment"
-bash ../provision-team/cleanup_environment.sh -t ${teamName}
+bash ../provision-team/cleanup_environment.sh -t ${proctorName}
