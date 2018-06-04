@@ -112,7 +112,7 @@ echo "resourceGroupLocation     = "${resourceGroupLocation}
 echo "proctorName"              = "${proctorName}"
 echo "teamName                  = "${teamName}
 # echo "keyVaultName              = "${keyVaultName}
-echo "resourceGroupProctor         = "${resourceGroupProctor}
+echo "resourceGroupProctor      = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
 echo "=========================================="
@@ -162,7 +162,7 @@ echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscript
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
 
 echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
-bash ../provision-team/deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName}
+bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
@@ -171,7 +171,7 @@ echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
 echo "5-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-# echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
+echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
 bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
 
 echo "7-Clean the working environment"
