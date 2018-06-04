@@ -1,88 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/map';
 
+interface TeamResponse {
+  name: string;
+  uptime: number;
+  uppercent: number;
+  point: number;
+}
+
+@Injectable()
 @Component({
   selector: 'ngx-dashboard',
   styleUrls: ['./dashboard.component.scss'],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
-  private teams = [
-    {"name" : "Team1",
-     "uptime": 30,
-     "uppercent": 50,
-     "point": 120},
-     {"name" : "Team2",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530},
-     {"name" : "Team3",
-     "uptime": 100,
-     "uppercent": 90,
-     "point": 120},
-     {"name" : "Team4",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530
-     },
-     {"name" : "Team5",
-     "uptime": 30,
-     "uppercent": 50,
-     "point": 120},
-     {"name" : "Team6",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530},
-     {"name" : "Team7",
-     "uptime": 100,
-     "uppercent": 90,
-     "point": 120},
-     {"name" : "Team8",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530
-     },
-     {"name" : "Team9",
-     "uptime": 30,
-     "uppercent": 50,
-     "point": 120},
-     {"name" : "Team10",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530},
-     {"name" : "Team11",
-     "uptime": 100,
-     "uppercent": 90,
-     "point": 120},
-     {"name" : "Team12",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530
-     },
-     {"name" : "Team13",
-     "uptime": 30,
-     "uppercent": 50,
-     "point": 120},
-     {"name" : "Team14",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530},
-     {"name" : "Team15",
-     "uptime": 100,
-     "uppercent": 90,
-     "point": 120},
-     {"name" : "Team16",
-     "uptime": 120,
-     "uppercent": 90,
-     "point": 530
-     }
-  ]
+export class DashboardComponent implements OnInit {
+  private teams =[];
 
   private viewTeams:{[k:string]: any}[];
+  
+  private pollingData: any;
 
-  constructor() {
+  constructor(private http: HttpClient) {
+    console.log('constructor');
+  }
+
+
+  ngOnInit(): void {
     console.log("constructor ran.");
-    this.Convert();
-    console.log("length:" + this.viewTeams.length);
+    let url = environment.backendUrl;
+    this.pollingData = Observable.interval(5000)
+      .subscribe((data) => {
+        this.http.get(url)
+        .map(response => response as TeamResponse[])
+        .subscribe(
+          data => {
+            this.teams = data;
+            this.Convert();
+            console.log(data);
+          }
+        );
+      });
+
+
+//    this.Convert();
+//    console.log("length:" + this.viewTeams.length);
   }
 
   Convert() {
@@ -118,3 +84,4 @@ export class DashboardComponent {
     console.log(this.viewTeams);
   }
 }
+
