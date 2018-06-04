@@ -19,7 +19,7 @@ ingress:
     kubernetes.io/ingress.class: traefik
   rules:
     endpoint:
-      host: changeme
+#      host: changeme 
       paths:
       - path: /
       - path: /#/pages/
