@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  devicesim.ef.sql:
-    image: devicesimefsql
-    build:
-      context: .
-      dockerfile: DeviceSim.EF.SQL/Dockerfile
