@@ -4,10 +4,8 @@ WORKDIR /app
 #Pull SDK Image to Build Solution
 FROM microsoft/dotnet:2.0-sdk AS build
 WORKDIR /src
-COPY DeviceSim.EF.SQL.sln ./ 
-COPY ./DeviceSim.EF.SQL/DeviceSim.EF.SQL.csproj DeviceSim.EF.SQL/
-RUN dotnet restore -nowarn:msb3202,nu1503
 COPY . .
+RUN dotnet restore -nowarn:msb3202,nu1503
 WORKDIR /src/DeviceSim.EF.SQL
 RUN dotnet build -c Release -o /app
 #Build .net solution
