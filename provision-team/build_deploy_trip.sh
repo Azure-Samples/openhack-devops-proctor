@@ -8,7 +8,7 @@ IFS=$'\n\t'
 #script requires latest version of .netcore to be installed ()
 
 
-usage() { echo "Usage: build_deploy_poi.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name> -g <registry name>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_trip.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name> -g <registry name>" 1>&2; exit 1; }
 
 declare buildFlavor=""
 declare resourceGroupName=""

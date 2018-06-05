@@ -11,9 +11,9 @@ usage() { echo "Usage: configure_sql.sh -s <relative save location> -g <resource
 declare relativeSaveLocation=""
 declare resourceGroupName=""
 declare sqlServerUsername=""
-declare sqlDBName=""
 declare teamName=""
 declare keyVaultName=""
+declare sqlDBName=""
 
 # Initialize parameters specified from command line
 while getopts ":s:g:n:u:k:d:" arg; do
