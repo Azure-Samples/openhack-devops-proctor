@@ -14,5 +14,11 @@ RUN dotnet publish -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
+ENV SQL_USER="devopsohsa00" \
+SQL_PASSWORD="devopsohdevpwd-00" \
+SQL_SERVER="changeme.database.windows.net" \
+SQL_DBNAME="mydrivingDB" \
+TRIP_FREQUENCY="180000" \
+TEAM_NAME="devopsoh000test"
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "DeviceSim.EF.SQL.dll"]
+ENTRYPOINT ["dotnet", "DeviceSim.dll"]
