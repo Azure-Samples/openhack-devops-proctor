@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: deploy_app_aks.sh -s <relative save location> -n <teamName> -l <resource group location>" 1>&2; exit 1; }
+usage() { echo "Usage: deploy_ingress_dns.sh -s <relative save location> -l <resource group location> -n <teamName>" 1>&2; exit 1; }
 
 declare relativeSaveLocation=""
 declare resourceGroupLocation=""
@@ -70,10 +70,10 @@ cat "${0%/*}/traefik-values.yaml" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
 
-time=0 
+time=0
 while true; do
         TILLER_STATUS=$(kubectl get pods --all-namespaces --selector=app=helm -o json | jq -r '.items[].status.phase')
-        echo -e "\n\nVerifying tiller is ready" 
+        echo -e "\n\nVerifying tiller is ready"
         if [[ "${TILLER_STATUS}" == "Running" ]]; then break; fi
         sleep 10
         time=$(($time+10))
