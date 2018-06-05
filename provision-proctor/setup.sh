@@ -98,10 +98,24 @@ if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctor
     usage
 fi
 
-# declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
+randomChar() {
+    s=abcdefghijklmnopqrstuvxwyz0123456789
+    p=$(( $RANDOM % 36))
+    echo -n ${s:$p:1}
+}
+
+randomNum() {
+    echo $(( $RANDOM % 10 ))
+}
+
+declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
+
 declare resourceGroupProctor="${proctorName}-rg";
 declare registryName="${proctorName}acr"
 declare clusterName="${proctorName}aks"
+# TODO: update with the event 4 digit
+declare cosmosDBName="${proctorName}db${random4Chars}"
+declare storageAccount="${proctorName}sa${random4Chars}"
 # declare keyVaultName="${proctorName}kv${random4Chars}"
 
 echo "=========================================="
@@ -115,6 +129,9 @@ echo "teamName                  = "${teamName}
 echo "resourceGroupProctor      = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
+echo "cosmosDBName              = "${cosmosDBName}
+echo "storageAccount            = "${storageAccount}
+echo "functionAppName           = "${functionAppName}
 echo "=========================================="
 
 #login to azure using your credentials
@@ -174,5 +191,11 @@ bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${t
 echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
 bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
 
-echo "7-Clean the working environment"
+echo "7-Provision CosmosDB"
+bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
+
+echo "8-Provision Azure Function"
+bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName
+
+echo "9-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}
