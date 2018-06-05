@@ -108,98 +108,120 @@ namespace DeviceSim.Controllers
 
         private void UpdateUserProfile()
         {
-            UserProfiles up = ctx.UserProfiles
-                            .Where(user => user.UserId == CurrentTrip.UserId)
-                            .SingleOrDefault();
+            try
+            {
+                UserProfiles up = ctx.UserProfiles
+                                .Where(user => user.UserId == CurrentTrip.UserId)
+                                .SingleOrDefault();
 
 
-            up.TotalTrips++;
-            up.TotalDistance += CurrentTrip.Distance;
-            up.HardStops += CurrentTrip.HardStops;
-            up.HardAccelerations += CurrentTrip.HardAccelerations;
+                up.TotalTrips++;
+                up.TotalDistance += CurrentTrip.Distance;
+                up.HardStops += CurrentTrip.HardStops;
+                up.HardAccelerations += CurrentTrip.HardAccelerations;
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Unable to Update User Profile. Ensure that the  Trip UserProfile Matches with records in the database for Hacker 1, for more information see: {ex.Message}.");
+
+            }
         }
 
         private void CreateTripPoints(string SourceTrip)
         {
-            
-            CurrentTrip.RecordedTimeStamp = DateTime.UtcNow;
-            //CurrentTrip.Name = $"Trip {tripCount}";
-            CurrentTrip.Name = $"Trip {DateTime.Now}";
-            CurrentTrip.Id = Guid.NewGuid().ToString(); //Create trip ID
-            //TODO: Make this so that once Authenticated we use the Login Information from the JWT Token if Authentication will be used
-            CurrentTrip.UserId = "Hacker1";//_toProcess[0][1]; //"MicrosoftAccount:cd3744e78c2d3d2d" //"Twitter:128169747"
-
-
-            foreach (var tps in tripInfo)
+            try
             {
-                TripPoints _tripPoint = new TripPoints()
+                CurrentTrip.RecordedTimeStamp = DateTime.UtcNow;
+                //CurrentTrip.Name = $"Trip {tripCount}";
+                CurrentTrip.Name = $"Trip {DateTime.Now}";
+                CurrentTrip.Id = Guid.NewGuid().ToString(); //Create trip ID
+                                                            //TODO: Make this so that once Authenticated we use the Login Information from the JWT Token if Authentication will be used
+                CurrentTrip.UserId = "Hacker 1";//_toProcess[0][1]; //"MicrosoftAccount:cd3744e78c2d3d2d" //"Twitter:128169747"//Hacker1
+
+
+                foreach (var tps in tripInfo)
                 {
-                    TripId = CurrentTrip.Id,
-                    Id = Guid.NewGuid().ToString(),
-                    Latitude = Convert.ToDouble(tps.Lat),
-                    Longitude = Convert.ToDouble(tps.Lon),
-                    Speed = Convert.ToDouble(tps.Speed),
-                    RecordedTimeStamp = Convert.ToDateTime(tps.Recordedtimestamp),
-                    Sequence = Convert.ToInt32(tps.Sequence),
-                    Rpm = Convert.ToDouble(tps.Enginerpm),
-                    ShortTermFuelBank = Convert.ToDouble(tps.Shorttermfuelbank),
-                    LongTermFuelBank = Convert.ToDouble(tps.Longtermfuelbank),
-                    ThrottlePosition = Convert.ToDouble(tps.Throttleposition),
-                    RelativeThrottlePosition = Convert.ToDouble(tps.Relativethrottleposition),
-                    Runtime = Convert.ToDouble(tps.Runtime),
-                    DistanceWithMalfunctionLight = Convert.ToDouble(tps.Distancewithmil),
-                    EngineLoad = Convert.ToDouble(tps.Engineload),
-                    MassFlowRate = Convert.ToDouble(tps.Mafflowrate),
-                    EngineFuelRate = Convert.ToDouble(tps.Enginefuelrate)
+                    TripPoints _tripPoint = new TripPoints()
+                    {
+                        TripId = CurrentTrip.Id,
+                        Id = Guid.NewGuid().ToString(),
+                        Latitude = Convert.ToDouble(tps.Lat),
+                        Longitude = Convert.ToDouble(tps.Lon),
+                        Speed = Convert.ToDouble(tps.Speed),
+                        RecordedTimeStamp = Convert.ToDateTime(tps.Recordedtimestamp),
+                        Sequence = Convert.ToInt32(tps.Sequence),
+                        Rpm = Convert.ToDouble(tps.Enginerpm),
+                        ShortTermFuelBank = Convert.ToDouble(tps.Shorttermfuelbank),
+                        LongTermFuelBank = Convert.ToDouble(tps.Longtermfuelbank),
+                        ThrottlePosition = Convert.ToDouble(tps.Throttleposition),
+                        RelativeThrottlePosition = Convert.ToDouble(tps.Relativethrottleposition),
+                        Runtime = Convert.ToDouble(tps.Runtime),
+                        DistanceWithMalfunctionLight = Convert.ToDouble(tps.Distancewithmil),
+                        EngineLoad = Convert.ToDouble(tps.Engineload),
+                        MassFlowRate = Convert.ToDouble(tps.Mafflowrate),
+                        EngineFuelRate = Convert.ToDouble(tps.Enginefuelrate)
 
-                };
-                CurrentTrip.TripPoints.Add(_tripPoint);
-             }
+                    };
+                    CurrentTrip.TripPoints.Add(_tripPoint);
+                }
 
 
-            //Get Source POIs
-            tripPOIsource = ctx.Poisource.Where(p => p.TripId == SourceTrip).ToList();
-                        
-            //Update Time Stamps to current date and times before sending to IOT Hub
-            UpdateTripPointTimeStamps(CurrentTrip);
+                //Get Source POIs
+                tripPOIsource = ctx.Poisource.Where(p => p.TripId == SourceTrip).ToList();
+
+                //Update Time Stamps to current date and times before sending to IOT Hub
+                UpdateTripPointTimeStamps(CurrentTrip);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not create/update Trip Points. For more detail see: {ex.Message}.");
+            }
         }
 
         private  void UpdateTripPointTimeStamps(Trips trip)
         {
-            //Sort Trip Points By Sequence Number
-            CurrentTrip.TripPoints = CurrentTrip.TripPoints.OrderBy(p => p.Sequence).ToList();
-
-            List<timeInfo> timeToAdd = new List<timeInfo>();
-            System.TimeSpan tDiff;
-
-            //Create a Variable to Track the Time Range as it Changes
-            System.DateTime runningTime = CurrentTrip.RecordedTimeStamp;
-
-            //Calculate the Difference in time between Each Sequence Item 
-            for (int currentTripPoint = (CurrentTrip.TripPoints.Count - 1); currentTripPoint > -1; currentTripPoint--)
+            try
             {
-                if (currentTripPoint > 0)
+                //Sort Trip Points By Sequence Number
+                CurrentTrip.TripPoints = CurrentTrip.TripPoints.OrderBy(p => p.Sequence).ToList();
+
+                List<timeInfo> timeToAdd = new List<timeInfo>();
+                System.TimeSpan tDiff;
+
+                //Create a Variable to Track the Time Range as it Changes
+                System.DateTime runningTime = CurrentTrip.RecordedTimeStamp;
+
+                //Calculate the Difference in time between Each Sequence Item 
+                for (int currentTripPoint = (CurrentTrip.TripPoints.Count - 1); currentTripPoint > -1; currentTripPoint--)
                 {
-                    tDiff = CurrentTrip.TripPoints.ElementAt(currentTripPoint).RecordedTimeStamp 
-                          - CurrentTrip.TripPoints.ElementAt(currentTripPoint - 1).RecordedTimeStamp;
-                    timeToAdd.Add(new timeInfo() { evtSeq = CurrentTrip.TripPoints.ElementAt(currentTripPoint).Sequence, tSpan = tDiff });
-                 
+                    if (currentTripPoint > 0)
+                    {
+                        tDiff = CurrentTrip.TripPoints.ElementAt(currentTripPoint).RecordedTimeStamp
+                              - CurrentTrip.TripPoints.ElementAt(currentTripPoint - 1).RecordedTimeStamp;
+                        timeToAdd.Add(new timeInfo() { evtSeq = CurrentTrip.TripPoints.ElementAt(currentTripPoint).Sequence, tSpan = tDiff });
+
+                    }
+
                 }
 
+                //Sort List in order to Add time to Trip Points
+                timeToAdd = timeToAdd.OrderBy(s => s.evtSeq).ToList();
+                //Update Trip Points
+
+                for (int currentTripPoint = 1, timeToAddCollIdx = 0; currentTripPoint < CurrentTrip.TripPoints.Count; currentTripPoint++, timeToAddCollIdx++)
+                {
+                    runningTime = runningTime.Add(timeToAdd[timeToAddCollIdx].tSpan);
+                    CurrentTrip.TripPoints.ElementAt(currentTripPoint).RecordedTimeStamp = runningTime;
+                }
+
+                // Update Initial Trip Point
+                CurrentTrip.TripPoints.ElementAt(0).RecordedTimeStamp = CurrentTrip.RecordedTimeStamp;
             }
-
-            //Sort List in order to Add time to Trip Points
-            timeToAdd = timeToAdd.OrderBy(s => s.evtSeq).ToList();
-            //Update Trip Points
-
-            for (int currentTripPoint = 1, timeToAddCollIdx = 0; currentTripPoint < CurrentTrip.TripPoints.Count; currentTripPoint++, timeToAddCollIdx++)
+            catch (Exception ex)
             {
-                runningTime = runningTime.Add(timeToAdd[timeToAddCollIdx].tSpan);
-                CurrentTrip.TripPoints.ElementAt(currentTripPoint).RecordedTimeStamp = runningTime;
+                Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
             }
-
-            // Update Initial Trip Point
-            CurrentTrip.TripPoints.ElementAt(0).RecordedTimeStamp = CurrentTrip.RecordedTimeStamp;
         }
     }
 
