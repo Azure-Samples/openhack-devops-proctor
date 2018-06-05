@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "helmv2.fullname" . }}
+  labels:
+    app: {{ template "helmv2.name" . }}
+    chart: {{ template "helmv2.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "helmv2.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "helmv2.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecrets }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          env:
+            - name: SQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sql
+                  key: sql_user
+            - name: SQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sql
+                  key: sql_password
+            - name: SQL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: sql
+                  key: sql_server
+            - name: SQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: sql
+                  key: sql_dbname
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
