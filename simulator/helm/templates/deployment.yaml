@@ -42,4 +42,4 @@ spec:
           - name: TRIP_FREQUENCY
             value: "{{ .Values.simulator.tripFrequency }}"
           - name: TEAM_NAME
-            value: "{{ $.Values.simulator.teamName }}"
+            value: "{{ .Values.simulator.teamName }}"
