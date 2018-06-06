@@ -3,18 +3,18 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -n <teamName> -e <totalTeams> -a <apiUrl>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> -a <apiUrl>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare proctorName=""
+declare proctorNumber=""
 declare teamName=""
 declare totalTeams=""
 declare apiUrl=""
-# declare keyVaultName=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:m:n:e:a:" arg; do
+while getopts ":i:l:m:u:n:e:a:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -24,6 +24,9 @@ while getopts ":i:l:m:n:e:a:" arg; do
         ;;
         m)
             proctorName=${OPTARG}
+        ;;
+        u)
+            proctorNumber=${OPTARG}
         ;;
         n)
             teamName=${OPTARG}
@@ -108,24 +111,25 @@ randomNum() {
     echo $(( $RANDOM % 10 ))
 }
 
-declare random4Chars="$(randomChar;randomChar;randomChar;randomNum;)"
+if [[ -z "$proctorNumber" ]]; then
+    echo "Using a random proctor environment number since not specified."
+    proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
+fi
 
-declare resourceGroupProctor="${proctorName}-rg";
-declare registryName="${proctorName}acr"
-declare clusterName="${proctorName}aks"
-# TODO: update with the event 4 digit
-declare cosmosDBName="${proctorName}db${random4Chars}"
-declare storageAccount="${proctorName}sa${random4Chars}"
-# declare keyVaultName="${proctorName}kv${random4Chars}"
+declare resourceGroupProctor="${proctorName}${proctorNumber}-rg";
+declare registryName="${proctorName}${proctorNumber}acr"
+declare clusterName="${proctorName}${proctorNumber}aks"
+declare cosmosDBName="${proctorName}${proctorNumber}db"
+declare storageAccount="${proctorName}${proctorNumber}sa"
 
 echo "=========================================="
 echo " VARIABLES"
 echo "=========================================="
 echo "subscriptionId            = "${subscriptionId}
 echo "resourceGroupLocation     = "${resourceGroupLocation}
-echo "proctorName"              = "${proctorName}"
+echo "proctorName               = "${proctorName}
+echo "proctorNumber             = "${proctorNumber}
 echo "teamName                  = "${teamName}
-# echo "keyVaultName              = "${keyVaultName}
 echo "resourceGroupProctor      = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
@@ -165,37 +169,34 @@ else
     echo "Using existing resource group..."
 fi
 
-# echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation)"
-# bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation
+echo "1-Provision CosmosDB"
+bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
 
-echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+echo "2-Provision Azure Function"
+bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName
+
+echo "3-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+echo "4-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
 # Remove do to the permission with the role assignment
-echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+echo "5-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
 
-echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
+echo "6-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
 bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
 
-echo "5-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+echo "7-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-echo "6-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
+echo "8-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
 bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
-
-echo "7-Provision CosmosDB"
-bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
-
-echo "8-Provision Azure Function"
-bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName
 
 echo "9-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}
