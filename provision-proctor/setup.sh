@@ -86,7 +86,7 @@ if [[ -z "$totalTeams" ]]; then
     read totalTeams
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ]; then
     echo "Parameter missing..."
     usage
 fi
