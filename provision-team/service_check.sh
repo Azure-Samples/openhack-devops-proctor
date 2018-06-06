@@ -47,7 +47,8 @@ echo -e "Checking USER:\t"$user_URL
 echo -e "Checking TRIPS:\t"$trips_URL"\n"
 
 i=0
-while [ "$i" -ne 70 ]
+echo "Allowing traefik to bring services up"
+while [ "$i" -ne 60 ]
 do
         sleep 10
         i=$(($i+10))
