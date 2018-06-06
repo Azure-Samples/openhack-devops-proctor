@@ -7,82 +7,32 @@ IFS=$'\n\t'
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 #script requires latest version of .netcore to be installed ()
 
-usage() { echo "Usage: build_deploy_simulator.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -s <relative save location> -d <dns host Url> -n <team name> -g <registry name>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_simulator.sh -n <team name> -t <image tag> -q <trip frequency>" 1>&2; exit 1; }
 
-declare buildFlavor="Debug"
-declare resourceGroupName="freshrgbeb3"
+declare teamName=""
 declare imageTag="latest"
-declare relativeSaveLocation=""
-declare dnsUrl=""
-declare teamName="Team01"
-declare registryName="team01acr3sk3"
+declare tripFrequency="1800"
 
 # Initialize parameters specified from command line
-while getopts ":b:r:t:s:d:n:g:" arg; do
+while getopts ":n:t:q:" arg; do
     case "${arg}" in
-        b)
-            buildFlavor=${OPTARG}
-        ;;
-        r)
-            resourceGroupName=${OPTARG}
+        n)
+            teamName=${OPTARG}
         ;;
         t)
             imageTag=${OPTARG}
         ;;
-        s)
-            relativeSaveLocation=${OPTARG}
-        ;;
-        d)
-            dnsUrl=${OPTARG}
-        ;;
-        n)
-            teamName=${OPTARG}
-        ;;
-        g)  
-            registryName=${OPTARG}
+        q)
+            tripFrequency=${OPTARG}
         ;;
     esac
 done
 shift $((OPTIND-1))
 
-if [[ -z "$buildFlavor" ]]; then
-    echo "Enter a build flavor (Debug, Release)"
-    read buildFlavor
-    [[ "${buildFlavor:?}" ]]
-fi
-
-if [[ -z "$resourceGroupName" ]]; then
-    echo "This script will look for an existing resource group, otherwise a new one will be created "
-    echo "You can create new resource groups with the CLI using: az group create "
-    echo "Enter a resource group name"
-    read resourceGroupName
-    [[ "${resourceGroupName:?}" ]]
-fi
-
-if [[ -z "$imageTag" ]]; then
-    echo "This script requires name and optionally a tag in the 'name:tag' format"
-    echo "Enter an image tag "
-    read imageTag
-    [[ "${imageTag:?}" ]]
-fi
-
-if [[ -z "$relativeSaveLocation" ]]; then
-    echo "Path relative to script in which to download and build the app"
-    echo "Enter an relative path to save location "
-    read relativeSaveLocation
-    [[ "${relativeSaveLocation:?}" ]]
-fi
-
-if [[ -z "$dnsUrl" ]]; then
-    echo "Public DNS address where the API will be hosted behind."
-    echo "Enter public DNS name."
-    read dnsUrl
-    [[ "${dnsUrl:?}" ]]
-fi
-
-if [ -z "$buildFlavor" ] || [ -z "$resourceGroupName" ] || [ -z "$imageTag" ] || [ -z "$relativeSaveLocation" ] || [ -z "$dnsUrl" ]; then
-    echo "Either one of buildFlavor, resourceGroupName, imageTag, relativeSaveLocation, or dnsUrl is empty"
-    usage
+if [[ -z "$tripFrequency" ]]; then
+    echo "How often in ms a new trip will be simulated."
+    read tripFrequency
+    [[ "${tripFrequency:?}" ]]
 fi
 
 if [[ -z "$teamName" ]]; then
@@ -90,12 +40,20 @@ if [[ -z "$teamName" ]]; then
     read teamName
 fi
 
+if [ -z "$teamName" ]; then
+    echo "missing teamName"
+    usage
+fi
+
+declare resourceGroupName="${teamName}rg"
+declare registryName="${teamName}acr"
+
 #DEBUG
-echo $buildFlavor
 echo $resourceGroupName
+echo $tripFrequency
+echo $teamName
+echo $registryName
 echo $imageTag
-echo $relativeSaveLocation
-echo $dnsUrl
 
 #get the acr repository id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
@@ -112,11 +70,7 @@ TAG=$ACR_ID"/devopsoh/simulator:"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/openhack-devops-proctor/simulator/MyDriving.Simulator.v1
-
-dotnet build -c $buildFlavor -o ./bin/
-
-sed -i -e 's/bin\//..\/bin\//g' ./bin/GetAllPOIs/function.json
+pushd ../simulator/
 
 docker build . -t $TAG
 
@@ -126,20 +80,5 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-pushd $relativeSaveLocation/openhack-devops-proctor/simulator/MyDriving.Simulator.v1/helm
-echo -e "\nhelm install from: " $PWD "\n\n"
-
-cat "./values.yaml" \
-    | sed "s/dnsurlreplace/$dnsUrl/g" \
-    | sed "s/acrreplace/$ACR_ID/g" \
-    | sed "s/imagetagreplace/$imageTag/g" \
-    | tee "./values-poi-$teamName.yaml"
-
-echo "replacing values file in chart"
-mv "./values-poi-$teamName.yaml" "./values.yaml"
-
-echo "deploying POI Service chart"
-helm install . --name $teamName-simulator --set image.repository=$TAG
-
-popd
-
+echo "deploying simulator chart"
+#helm install . --name simulator --set image.repository=$TAG
