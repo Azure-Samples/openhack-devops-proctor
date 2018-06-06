@@ -108,7 +108,7 @@ if [ ! -d "$HOME/team_env" ]; then
 fi
 
 if [ ! -f "$HOME/team_env/team_service_config.json" ]; then
-   touch $HOME/team_env/teamConfig.json
+   touch $HOME/team_env/team_service_config.json
 else
     existingEnv="$(<$HOME/team_env/team_service_config.json)"
     teamEndPoint="{
