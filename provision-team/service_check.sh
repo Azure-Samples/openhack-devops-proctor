@@ -36,11 +36,15 @@ fi
 
 echo "Checking services for ([X] = PASSED):"
 echo "Team Name:" $teamName
-echo "DNS Url:" $dnsUrl
+echo -e "DNS Url:" $dnsUrl"\n"
 
-# echo $poi_URL
-# echo $user_URL
-# echo $trips_URL
+poi_URL=$dnsUrl"/api/healthcheck/poi"
+user_URL=$dnsUrl"/api/healthcheck/user"
+trips_URL=$dnsUrl"/api/healthcheck/trips"
+
+echo -e "Checking POI:\t"$poi_URL
+echo -e "Checking USER:\t"$user_URL
+echo -e "Checking TRIPS:\t"$trips_URL"\n"
 
 status_code_poi=`curl -sL -w "%{http_code}\\n" "$poi_URL" -o /dev/null`
 
