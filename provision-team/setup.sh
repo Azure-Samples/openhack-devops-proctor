@@ -89,6 +89,12 @@ randomNum() {
     echo $(( $RANDOM % 10 ))
 }
 
+randomNonAlpha() {
+    s='!$#%'
+p=$(( $RANDOM % 4))
+    echo -n ${s:$p:1}
+}
+
 if [[ -z "$teamNumber" ]]; then
     echo "Using a random team number since not specified."
     teamNumber="$(randomChar;randomChar;randomChar;randomNum;)"
@@ -102,7 +108,7 @@ declare sqlServerName="${teamName}${teamNumber}sql"
 declare hostingPlanName="${teamName}${teamNumber}plan"
 declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
-declare sqlServerPassword="${teamName}${teamNumber}pwd"
+declare sqlServerPassword="$(randomChar;randomNonAlpha;randomNum;randomChar;randomChar;randomNum;randonNonAlpha;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
