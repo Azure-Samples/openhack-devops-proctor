@@ -86,7 +86,13 @@ randomChar() {
 }
 
 randomNum() {
-    echo $(( $RANDOM % 10 ))
+    echo -n $(( $RANDOM % 10 ))
+}
+
+randomCharUpper() {
+    s=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    p=$(( $RANDOM % 26))
+    echo -n ${s:$p:1}
 }
 
 if [[ -z "$teamNumber" ]]; then
@@ -102,7 +108,7 @@ declare sqlServerName="${teamName}${teamNumber}sql"
 declare hostingPlanName="${teamName}${teamNumber}plan"
 declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
-declare sqlServerPassword="${teamName}${teamNumber}pwd"
+declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
