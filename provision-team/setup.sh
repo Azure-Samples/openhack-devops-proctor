@@ -89,9 +89,10 @@ randomNum() {
     echo $(( $RANDOM % 10 ))
 }
 
-randomNonAlpha() {
-    s='!$#%'
-p=$(( $RANDOM % 4))
+
+randomCharUpper() {
+    s=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    p=$(( $RANDOM % 26))
     echo -n ${s:$p:1}
 }
 
@@ -108,7 +109,7 @@ declare sqlServerName="${teamName}${teamNumber}sql"
 declare hostingPlanName="${teamName}${teamNumber}plan"
 declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
-declare sqlServerPassword="$(randomChar;randomNonAlpha;randomNum;randomChar;randomChar;randomNum;randonNonAlpha;randomChar;randomNum)pwd"
+declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
