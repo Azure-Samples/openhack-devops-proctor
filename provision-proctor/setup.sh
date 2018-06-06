@@ -55,6 +55,12 @@ if [ ! $? == 0 ]; then
     exit 1
 fi
 
+type -p zip
+if [ ! $? == 0 ]; then
+    echo "zip needs to to be installed.\n"
+    exit 1
+fi
+
 #Prompt for parameters is some required parameters are missing
 if [[ -z "$subscriptionId" ]]; then
     echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
