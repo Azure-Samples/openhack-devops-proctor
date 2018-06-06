@@ -20,6 +20,13 @@ while getopts ":v:" arg; do
 done
 shift $((OPTIND-1))
 
+if [[ -z "$version" ]]; then
+    echo "This script will build Leaderboard application created by Azure Functions"
+    echo "Enter the version of the application with semantic versioning like 1.0.0"
+    read version
+    [[ "${version:?}" ]]
+fi
+
 pushd .
 cd ../leaderboard/api/Leaderboard
 dotnet restore
