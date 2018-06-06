@@ -1,0 +1,11 @@
+replicaCount: 1
+repository:
+  image: acrreplace.azurecr.io/devopsoh/imagereplace
+  tag: latest
+  pullPolicy: Always
+image:
+  name: simulator
+  label: simulator
+simulator:
+  tripFrequency: 1800
+  teamName: devopsohtest

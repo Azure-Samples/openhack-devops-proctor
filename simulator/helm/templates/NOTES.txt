@@ -1,0 +1,6 @@
+The simulator pod has no service or container port because it only sends data to SQL or APIs.
+
+To exec into a bash shell on the simulator pod for troubleshooting run the following two commands:
+
+export API_SIMULATOR_POD_NAME=$(kubectl get pods -l app={{ .Values.image.label }} -o jsonpath="{.items[0].metadata.name}")
+kubectl exec -it $API_SIMULATOR_POD_NAME /bin/bash

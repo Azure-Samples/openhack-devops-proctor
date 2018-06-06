@@ -94,15 +94,15 @@ if [[ -z "$teamNumber" ]]; then
     teamNumber="$(randomChar;randomChar;randomChar;randomNum;)"
 fi
 
-declare resourceGroupTeam="${teamName}rg${teamNumber}";
-declare registryName="${teamName}acr${teamNumber}"
-declare clusterName="${teamName}aks${teamNumber}"
-declare keyVaultName="${teamName}kv${teamNumber}"
-declare sqlServerName="${teamName}sql${teamNumber}"
-declare hostingPlanName="${teamName}plan${teamNumber}"
-declare mobileAppName="${teamName}app${teamNumber}"
-declare sqlServerUsername="${teamName}sa${teamNumber}"
-declare sqlServerPassword="${teamName}pwd-${teamNumber}"
+declare resourceGroupTeam="${teamName}${teamNumber}rg";
+declare registryName="${teamName}${teamNumber}acr"
+declare clusterName="${teamName}${teamNumber}aks"
+declare keyVaultName="${teamName}${teamNumber}kv"
+declare sqlServerName="${teamName}${teamNumber}sql"
+declare hostingPlanName="${teamName}${teamNumber}plan"
+declare mobileAppName="${teamName}${teamNumber}app"
+declare sqlServerUsername="${teamName}${teamNumber}sa"
+declare sqlServerPassword="${teamName}${teamNumber}pwd"
 declare sqlDBName="mydrivingDB"
 
 echo "=========================================="
