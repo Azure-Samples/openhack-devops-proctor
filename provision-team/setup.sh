@@ -131,6 +131,7 @@ az account show 1> /dev/null
 if [ $? != 0 ];
 then
     az login
+    exit 0
 fi
 
 #set the default subscription id
