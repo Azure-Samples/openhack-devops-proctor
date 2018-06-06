@@ -30,6 +30,9 @@ sudo apt-get install -y jq
 echo "############### Installing Git ###############"
 sudo apt-get install -y git
 
+echo "############### Installing zip ###############"
+sudo apt-get install -y zip
+
 whoami > ~/output.txt
 
 echo "############### Installing SQL cmd line tools ###############"

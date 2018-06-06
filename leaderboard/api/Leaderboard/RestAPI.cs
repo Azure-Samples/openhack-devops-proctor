@@ -135,5 +135,43 @@ namespace Leaderboard
 
 
         }
+
+        [FunctionName("SampleFunc")]
+        public static async Task<IActionResult> SampleFunc([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
+        {
+            var seed = Environment.TickCount;
+            Random rnd = new System.Random();
+
+            var list = new List<UptimeReport>(3);
+            var report01 = new UptimeReport
+            {
+                Name = "Team01",
+                Uptime = rnd.Next(10, 300),
+                Uppercent = 30,
+                Point = 100
+            };
+            var report02 = new UptimeReport
+            {
+                Name = "Team02",
+                Uptime = rnd.Next(10, 300),
+                Uppercent = 40,
+                Point = 100
+            };
+            var report03 = new UptimeReport
+            {
+                Name = "Team03",
+                Uptime = rnd.Next(10, 300),
+                Uppercent = 50,
+                Point = 100
+            };
+            list.Add(report01);
+            list.Add(report02);
+            list.Add(report03);
+            var result = JsonConvert.SerializeObject(list);
+            return new OkObjectResult(result);
+        }
+
+
+
     }
 }
