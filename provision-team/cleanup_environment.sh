@@ -20,20 +20,16 @@ if [ -z "$teamName" ] ; then
     usage
 fi
 
-if [ ! -d "$HOME/team_env" ]; then
-    mkdir $HOME/team_env
-fi
-
 # 1- Rename $HOME/.azure/aksServicePrincipal.json to $HOME/.azure/aksServicePrincipal-team-number.json
 if [ -f $HOME/.azure/aksServicePrincipal.json ]; then
-    cp $HOME/.azure/aksServicePrincipal.json $HOME/team_env/aksServicePrincipal-$teamName.json
-    echo "The aksServicePrincipal.json file has been move to team-env/aksServicePrincipal-$teamName.json"
+    mv $HOME/.azure/aksServicePrincipal.json $HOME/team_env/$teamName/aksServicePrincipal-$teamName.json
+    echo "The aksServicePrincipal.json file has been move to team-env/$teamName/aksServicePrincipal-$teamName.json"
 fi
 
 # 2- Copy the kubeconfig file
 if [ -f $HOME/.kube/config ]; then
-    cp $HOME/.kube/config $HOME/team_env/kubeconfig-$teamName
-    echo "Copied the kubeconfig file to $HOME/team_env/kubeconfig-$teamName"
+    mv $HOME/.kube/config $HOME/team_env/$teamName/kubeconfig-$teamName
+    echo "Copied the kubeconfig file to $HOME/team_env/$teamName/kubeconfig-$teamName"
 fi
 
 # 3- Delete the working directory
