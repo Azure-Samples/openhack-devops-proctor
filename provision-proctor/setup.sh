@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> -a <apiUrl>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
@@ -11,10 +11,9 @@ declare proctorName=""
 declare proctorNumber=""
 declare teamName=""
 declare totalTeams=""
-declare apiUrl=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:m:u:n:e:a:" arg; do
+while getopts ":i:l:m:u:n:e:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -33,9 +32,6 @@ while getopts ":i:l:m:u:n:e:a:" arg; do
         ;;
         e)
             totalTeams=${OPTARG}
-        ;;
-        a)
-            apiUrl=${OPTARG}
         ;;
     esac
 done
@@ -90,12 +86,6 @@ if [[ -z "$totalTeams" ]]; then
     read totalTeams
 fi
 
-if [[ -z "$apiUrl" ]]; then
-    echo "Enter the Azure functions api URL i.e. https://mysite.azurewebsites.net :"
-    read apiUrl
-    [[ "${apiUrl:?}" ]]
-fi
-
 if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
     echo "Parameter missing..."
     usage
@@ -121,6 +111,8 @@ declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
 declare cosmosDBName="${proctorName}${proctorNumber}db"
 declare storageAccount="${proctorName}${proctorNumber}sa"
+declare functionAppName="${proctorName}${proctorNumber}fun"
+declare apiUrl="https://"$functionAppName".azurewebsites.net"
 
 echo "=========================================="
 echo " VARIABLES"
