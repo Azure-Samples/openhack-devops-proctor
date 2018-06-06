@@ -46,6 +46,14 @@ echo -e "Checking POI:\t"$poi_URL
 echo -e "Checking USER:\t"$user_URL
 echo -e "Checking TRIPS:\t"$trips_URL"\n"
 
+i=0
+while [ "$i" -ne 70 ]
+do
+        sleep 10
+        i=$(($i+10))
+        echo $i "seconds waiting"
+done
+
 status_code_poi=`curl -sL -w "%{http_code}\\n" "$poi_URL" -o /dev/null`
 
 if [[ "$status_code_poi" == "200" ]]; then
