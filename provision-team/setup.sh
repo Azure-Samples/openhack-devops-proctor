@@ -169,8 +169,8 @@ if [ ! -d "$HOME/team_env" ]; then
 fi
 
 # Verify that the team dir exist
-if [ ! -d "$HOME/team_env" ]; then
-   mkdir $HOME/team_env
+if [ ! -d "$HOME/team_env/${teamName}${teamNumber}" ]; then
+   mkdir $HOME/team_env/${teamName}${teamNumber}
 fi
 
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
