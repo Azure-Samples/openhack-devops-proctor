@@ -156,6 +156,16 @@ else
     echo "Using existing resource group..."
 fi
 
+# Verify that the teamConfig dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
+fi
+
+# Verify that the team dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
+fi
+
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
 bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation
 
