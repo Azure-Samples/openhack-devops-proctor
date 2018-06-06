@@ -211,9 +211,11 @@ bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTe
 echo "10-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "11-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
+echo "11-Build and deploy the simulator (# bash Usage: build_deploy_simulator.sh -n ${teamName}${teamNumber} -q 18000 -t <image tag optional>)"
+bash ./build_deploy_simulator.sh -n ${teamName}${teamNumber} -q '18000'
+
+echo "12-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
-echo "12-Clean the working environment"
+echo "13-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}
-
