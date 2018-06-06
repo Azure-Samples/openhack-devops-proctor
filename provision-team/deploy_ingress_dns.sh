@@ -107,15 +107,15 @@ if [ ! -d "$HOME/team_env" ]; then
    mkdir $HOME/team_env
 fi
 
-if [ ! -f "$HOME/team_env/teamConfig.json" ]; then
+if [ ! -f "$HOME/team_env/team_service_config.json" ]; then
    touch $HOME/team_env/teamConfig.json
 else
-    existingEnv="$(<$HOME/team_env/teamConfig.json)"
+    existingEnv="$(<$HOME/team_env/team_service_config.json)"
     teamEndPoint="{
         \"$teamName\": {
          \"endpoint\": \"$DNS_HOSTNAME\"
     }
 }"
-echo $teamEndPoint $existingEnv | jq -s add > $HOME/team_env/teamConfig.json
+echo $teamEndPoint $existingEnv | jq -s add > $HOME/team_env/team_service_config.json
 fi
 
