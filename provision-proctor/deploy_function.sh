@@ -83,34 +83,22 @@ echo $cosmosDBName
 echo $zipFileName
 echo -e "\n"
 
-
-# create a storage account 
+echo -e "Creating a storage account\n"
 az storage account create --name $storageAccountName --location $location  --resource-group $resourceGroupName --sku Standard_LRS
 
-# upload
-
-# TODO upload zipfile to the storage account.
-#  https://docs.microsoft.com/en-us/azure/storage/common/storage-azure-cli
-# https://backendsentinel9e99.blob.core.windows.net/public/Leaderboard1.0.0.zip
-
+echo -e "Uploading zipfile to the storage account\n"
 storageConnectionString=$(az storage account show-connection-string -g $resourceGroupName -n $storageAccountName --query connectionString --output tsv)
 az storage container create --name container --public-access blob --connection-string $storageConnectionString
 az storage blob upload --container-name container --file $zipFileName --name $zipFileName --connection-string $storageConnectionString
 
 zipFileUrl=https://$storageAccountName.blob.core.windows.net/container/$zipFileName
 
-# Retrieve cosmosdb connection string
+echo -e "Retrieving cosmosdb connection string\n"
 cosmosdbEndpoint=$(az cosmosdb show --name $cosmosDBName  --resource-group $resourceGroupName --query documentEndpoint --output tsv)
 cosmosdbKey=$(az cosmosdb list-keys --name $cosmosDBName  --resource-group $resourceGroupName --query primaryMasterKey --output tsv)
 
-# create a new function app, assign it to the resource group you have just created
+echo -e "Creating a new function app, assigning it to the resource group just created\n"
 az functionapp create --name $functionAppName --resource-group $resourceGroupName --storage-account $storageAccountName --consumption-plan-location $location
 
-
-# configure function app settings to use cosmosdb connection string
-# This part include Run-From-Zip deployment
-# TODO:
-# enalbe Application Insights (currently not supported on Azure CLI)
-# enable beta version (just add AppSettings, I'll do it after wake up.) FUNCTIONS_EXTENSION_VERSION=beta
-# Run-From-Zip deployment. https://github.com/Azure/app-service-announcements/issues/84
+echo -e "Configuring function app settings to use cosmosdb connection string\n"
 az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --setting CosmosDB_Endpoint=$cosmosdbEndpoint CosmosDB_Key=$cosmosdbKey WEBSITE_RUN_FROM_ZIP=$zipFileUrl FUNCTIONS_EXTENSION_VERSION=beta

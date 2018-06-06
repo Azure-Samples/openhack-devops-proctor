@@ -37,7 +37,3 @@ zip -r Leaderboard$version.zip *
 popd
 
 mv ../leaderboard/api/Leaderboard/bin/Release/netstandard2.0/publish/*.zip .
-
-
-
-
