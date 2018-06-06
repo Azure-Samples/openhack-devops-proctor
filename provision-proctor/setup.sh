@@ -55,6 +55,12 @@ if [ ! $? == 0 ]; then
     exit 1
 fi
 
+type -p zip
+if [ ! $? == 0 ]; then
+    echo "zip needs to to be installed.\n"
+    exit 1
+fi
+
 #Prompt for parameters is some required parameters are missing
 if [[ -z "$subscriptionId" ]]; then
     echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
@@ -86,7 +92,7 @@ if [[ -z "$totalTeams" ]]; then
     read totalTeams
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ] || [[ -z "$apiUrl" ]]; then
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ]; then
     echo "Parameter missing..."
     usage
 fi
@@ -164,31 +170,34 @@ fi
 echo "1-Provision CosmosDB"
 bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
 
-echo "2-Provision Azure Function"
-bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName
+echo "2-Build Azure Function"
+bash ./build_function.sh -v $proctorNumber
 
-echo "3-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+echo "3-Provision Azure Function"
+bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip"
+
+echo "4-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "4-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+echo "5-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
 # Remove do to the permission with the role assignment
-echo "5-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+echo "6-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
 
-echo "6-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
+echo "7-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
 bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
 
-echo "7-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+echo "8-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-echo "8-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
+echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
 bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
 
-echo "9-Clean the working environment"
+echo "10-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}
