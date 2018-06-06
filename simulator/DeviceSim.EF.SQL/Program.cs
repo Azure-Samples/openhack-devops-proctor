@@ -38,9 +38,16 @@ namespace DeviceSim
             Console.WriteLine($"*Starting Simulator - A new trip will be created every {WaitTime / 1000} seconds *");
 
             while (true)
-            {               
-                CreateTripAsync().Wait();
-                Thread.Sleep(WaitTime);
+            {
+                try
+                {
+                    CreateTripAsync().Wait();
+                    Thread.Sleep(WaitTime);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
                       
         }
