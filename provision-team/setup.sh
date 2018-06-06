@@ -173,6 +173,15 @@ if [ ! -d "$HOME/team_env/${teamName}${teamNumber}" ]; then
    mkdir $HOME/team_env/${teamName}${teamNumber}
 fi
 
+#create the initial team_service_config.json
+if [ ! -f "$HOME/team_env/team_service_config.json" ]; then
+   touch $HOME/team_env/team_service_config.json
+fi
+
+initialJson="{\"teams:[]\"}"
+
+echo $initialJson > $HOME/team_env/team_service_config.json
+
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
 bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation
 
