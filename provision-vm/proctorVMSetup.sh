@@ -30,6 +30,9 @@ sudo apt-get install -y jq
 echo "############### Installing Git ###############"
 sudo apt-get install -y git
 
+echo "############### Installing zip ###############"
+sudo apt-get install -y zip
+
 whoami > ~/output.txt
 
 echo "############### Installing SQL cmd line tools ###############"
@@ -41,11 +44,11 @@ touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 #pick up changes to bash profile
-source ~/.bashrc
+source /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
-sudo chown azureuser:azureuser -R ./openhack-devops-proctor/.
+sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install Powershell Core and AzureRM modules "###############
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604

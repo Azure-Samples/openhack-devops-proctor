@@ -131,6 +131,7 @@ az account show 1> /dev/null
 if [ $? != 0 ];
 then
     az login
+    exit 0
 fi
 
 #set the default subscription id
@@ -154,6 +155,16 @@ if [ `az group exists -n $resourceGroupTeam -o tsv` == false ]; then
     )
 else
     echo "Using existing resource group..."
+fi
+
+# Verify that the teamConfig dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
+fi
+
+# Verify that the team dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
 fi
 
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
@@ -194,6 +205,9 @@ bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTe
 echo "10-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "11-Clean the working environment"
+echo "11-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
+bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
+
+echo "12-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}
 
