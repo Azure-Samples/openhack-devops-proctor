@@ -66,7 +66,8 @@ acrPassword=$(az acr credential show -n $registryName -o json | jq -r '[.passwor
 docker login $ACR_ID -u $registryName -p $acrPassword
 echo "Authenticated to ACR with username and password"
 
-TAG=$ACR_ID"/devopsoh/simulator:"$imageTag
+IMAGE=$ACR_ID"/devopsoh/simulator"
+TAG=$IMAGE':'$imageTag
 
 echo "TAG: "$TAG
 
@@ -78,7 +79,11 @@ docker push $TAG
 
 echo -e "\nSuccessfully pushed image: "$TAG
 
+kubectl create namespace simulator
+# Copy sql secrets for the simulator to use on new namespace
+kubectl get secrets sql -o yaml | sed 's/namespace: default/namespace: simulator/' | kubectl create -f -
+
 echo "deploying simulator chart"
-helm install ./helm --name simulator --set repository.image=$TAG,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName
+helm install ./helm --name simulator --set repository.image=$IMAGE,repository.tag=$imageTag,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName --namespace=simulator
 
 popd
