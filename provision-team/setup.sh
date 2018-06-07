@@ -168,6 +168,11 @@ if [ ! -d "$HOME/team_env" ]; then
    mkdir $HOME/team_env
 fi
 
+# Verify that kvstore dir exist
+if [ ! -d "$HOME/team_env/kvstore" ]; then
+   mkdir $HOME/team_env/kvstore
+fi
+
 # Verify that the team dir exist
 if [ ! -d "$HOME/team_env/${teamName}${teamNumber}" ]; then
    mkdir $HOME/team_env/${teamName}${teamNumber}
