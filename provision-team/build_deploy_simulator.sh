@@ -79,6 +79,6 @@ docker push $TAG
 echo -e "\nSuccessfully pushed image: "$TAG
 
 echo "deploying simulator chart"
-helm install ./helm --name simulator -set repository.image=$TAG,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName
+helm install ./helm --name simulator --set repository.image=$TAG,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName
 
 popd

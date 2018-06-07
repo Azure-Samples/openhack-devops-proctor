@@ -37,9 +37,6 @@
         "cosmosPrimaryKey": {
             "type": "string"
         },
-        "keyVaultUrl": {
-            "type": "string"
-        },
         "packageUrl": {
             "type": "string"
         }
@@ -73,6 +70,10 @@
                             "value": "6.5.0"
                         },
                         {
+                            "name": "WEBSITE_RUN_FROM_ZIP",
+                            "value": "[parameters('packageUrl')]"
+                        },
+                        {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('microsoft.insights/components/', parameters('functionName')), '2015-05-01').InstrumentationKey]"
                         },
@@ -87,10 +88,6 @@
                         {
                             "name": "CosmosDBDatabaseId",
                             "value": "leaderboard"
-                        },
-                        {
-                            "name": "KEYVAULT_URL",
-                            "value": "[parameters('keyVaultUrl')]"
                         }
                     ],
                     "alwaysOn": true
@@ -102,24 +99,22 @@
                 "hostingEnvironment": "[parameters('hostingEnvironment')]"
             },
             "resources": [
-                {
-                    "name": "MSDeploy",
-                    "type": "extensions",
-                    "location": "[resourceGroup().location]",
-                    "apiVersion": "2016-03-01",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/sites/', parameters('functionName'))]"
-                    ],
-                    "tags": {
-                        "displayName": "webdeploy"
-                    },
-                    "properties": {
-                        "packageUri": "[parameters('packageUrl')]",
-                        "dbType": "None",
-                        "connectionString": ""
+                    {
+                      "comments": "CORS allow origins *.",
+                      "type": "Microsoft.Web/sites/config",
+                      "name": "[concat(parameters('functionName'), '/web')]",
+                      "apiVersion": "2016-08-01",
+                      "properties": {
+                        "cors": {
+                          "allowedOrigins": [
+                            "*"
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/', parameters('functionName'))]"
+                      ]
                     }
-
-                }
             ],
             "apiVersion": "2016-03-01",
             "location": "[parameters('location')]",
