@@ -23,7 +23,7 @@ fi
 # 1- Rename $HOME/.azure/aksServicePrincipal.json to $HOME/.azure/aksServicePrincipal-team-number.json
 if [ -f $HOME/.azure/aksServicePrincipal.json ]; then
     mv $HOME/.azure/aksServicePrincipal.json $HOME/team_env/$teamName/aksServicePrincipal-$teamName.json
-    echo "The aksServicePrincipal.json file has been move to team-env/$teamName/aksServicePrincipal-$teamName.json"
+    echo "The aksServicePrincipal.json file has been move to team_env/$teamName/aksServicePrincipal-$teamName.json"
 fi
 
 # 2- Copy the kubeconfig file
