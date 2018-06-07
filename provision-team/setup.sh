@@ -220,7 +220,7 @@ bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServe
 dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
-kvstore set ${teamName} endpoint ${dnsURL}
+kvstore set ${teamName}${teamNumber} endpoint ${dnsURL}
 
 echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
