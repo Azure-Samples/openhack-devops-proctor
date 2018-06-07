@@ -6,16 +6,17 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: provision_aks_acr_auth.sh -i <subscriptionId> -g <resourceGroupName> -c <clusterName> -r <registryName> -l <resourceGroupLocation>" 1>&2; exit 1; }
+usage() { echo "Usage: provision_aks_acr_auth.sh -i <subscriptionId> -g <resourceGroupName> -c <clusterName> -r <registryName> -l <resourceGroupLocation> -n <teamName>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupName=""
 declare clusterName=""
 declare registryName=""
 declare resourceGroupLocation=""
+declare teamName=""
 
 # Initialize parameters specified from command line
-while getopts ":i:g:c:r:l:" arg; do
+while getopts ":i:g:c:r:l:n:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -31,6 +32,9 @@ while getopts ":i:g:c:r:l:" arg; do
         ;;
         l)
             resourceGroupLocation=${OPTARG}
+        ;;
+        n)
+            teamName=${OPTARG}
         ;;
     esac
 done
@@ -70,8 +74,13 @@ if [[ -z "$resourceGroupLocation" ]]; then
     read resourceGroupLocation
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupName" ] || [ -z "$clusterName" ] || [ -z "$registryName" ]; then
-    echo "Either one of subscriptionId, resourceGroupName, clusterName or registryName is empty"
+if [[ -z "$teamName" ]]; then
+    echo "Enter a team name to be used in app provisioning:"
+    read teamName
+fi
+
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupName" ] || [ -z "$clusterName" ] || [ -z "$registryName" ] || [ -z "$teamName" ]; then
+    echo "Either one of subscriptionId, resourceGroupName, clusterName, registryName or teamName is empty"
     usage
 fi
 
@@ -86,6 +95,8 @@ echo "Retrieving Registry ID..."
 ACR_ID="$(az acr show -n $registryName -g $resourceGroupName --query "id" --output tsv)"
 
 echo "Registry Id:"$ACR_ID
+
+kvstore set ${teamName} ACR_URI $ACR_ID
 
 echo "Granting AKS " $clusterName " access to ACR " $registryName "..."
 (
