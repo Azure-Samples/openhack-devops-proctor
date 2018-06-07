@@ -238,4 +238,4 @@ echo "12-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
 echo "13-Clean the working environment"
-bash ./cleanup_environment.sh -t ${teamName}
+bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
