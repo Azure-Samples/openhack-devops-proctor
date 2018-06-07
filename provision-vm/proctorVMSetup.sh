@@ -49,7 +49,7 @@ sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
 sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
-echo 'export KVSTORE_DIR=/home/azureuser/team_env/' >> /home/azureuser/.bashrc
+echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
 
 #pick up changes to bash profile
 source /home/azureuser/.bashrc
