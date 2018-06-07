@@ -167,37 +167,39 @@ else
     echo "Using existing resource group..."
 fi
 
-echo "1-Provision CosmosDB"
+echo "1-Provision CosmosDB  (bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName)"
 bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
 
-echo "2-Build Azure Function"
+echo "2-Seed CosmosDB  (bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s <openhackStartTime> -e <openhackEndTime> -n <number of challenges>)"
+bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s '2018-06-07T00:00:00' -e '2018-06-15T00:00:00' -n '3'
+
+echo "3-Build Azure Function  (bash ./build_function.sh -v $proctorNumber)"
 bash ./build_function.sh -v $proctorNumber
 
-echo "3-Provision Azure Function"
+echo "4-Provision Azure Function"
 bash ./deploy_function.sh -i $subscriptionId -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip"
 
-echo "4-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+echo "5-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "5-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+echo "6-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
-# Remove do to the permission with the role assignment
-echo "6-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+echo "7-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
 
-echo "7-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
+echo "8-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
 bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
 
-echo "8-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
+echo "9-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $location -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n ${teamName} -e $numberTeams -l $resourceGroupLocation -a $apiUrl
 
-echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
+echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
 bash ./build_deploy_web.sh -m $proctorName -d $dnsURL
 
-echo "10-Clean the working environment"
+echo "11-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}
