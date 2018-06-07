@@ -24,26 +24,16 @@ namespace CLI
         private static DateTime StartTime;
         private static DateTime EndTime;
 
-        private static IConfigurationRoot Configuration { get; set; }
         static Program() {
 
-            // Read config from appsettings.json
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
-            Configuration = builder.Build();
-            EndpointUri = Configuration["EndpointUri"];
-            PrimaryKey = Configuration["PrimaryKey"];
-            DatabaseId = Configuration["DatabaseId"];
-            NumberOfChallenges = int.Parse(Configuration["NumberOfChallenges"]);
+            // Read config from Environment Variables 
+            EndpointUri = Environment.GetEnvironmentVariable("COSMOSDB_ENDPOINT_URL");
+            PrimaryKey = Environment.GetEnvironmentVariable("COSMOSDB_PRIMARY_KEY");
+            DatabaseId = Environment.GetEnvironmentVariable("COSMOSDB_DATABASE_ID");
+            NumberOfChallenges = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CHALLENGES"));
 
-            // Read config from openhack.json 
-            builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("openhack.json");
-            Configuration = builder.Build();
-            StartTime = DateTime.Parse(Configuration["StartTime"]);
-            EndTime = DateTime.Parse(Configuration["EndTime"]);
+            StartTime = DateTime.Parse(Environment.GetEnvironmentVariable("OPENHACK_START_TIME"));
+            EndTime = DateTime.Parse(Environment.GetEnvironmentVariable("OPENHACK_END_TIME"));
 
         }
 
@@ -149,7 +139,7 @@ namespace CLI
             // Create a Openhack document
             await createOpenHackAsync();
 
-            var serviceConfigJson = System.IO.File.ReadAllText("services.json");
+            var serviceConfigJson = System.IO.File.ReadAllText("team_service_config.json");
             var serviceConfig = JObject.Parse(serviceConfigJson);
             var teams = new Team[] { };
             var tasks = new List<Task>();
@@ -674,7 +664,7 @@ namespace CLI
             {
                 Console.WriteLine("All Data seeding has been successful!");
                 Console.WriteLine($"Please have a look {EndpointUri}");
-                Console.ReadKey();
+                // Console.ReadKey();
             }
         }
     }
