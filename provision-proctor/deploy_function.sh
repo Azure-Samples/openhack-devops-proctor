@@ -123,4 +123,4 @@ echo -e "Create and configuring function app with Application Insights"
 hostingPlanPostFix="Plan"
 hostingPlanName=$functionAppName$hostingPlanPostFix
 
-az group deployment create --name FunctionDeployment --resource-group $resourceGroupName --template-file scripts/template.json --parameters functionName=$functionAppName storageName=fa$storageAccountName hostingPlanName=$hostingPlanName location=$location sku=Standard skuCode=S1 workerSize=1 serverFarmResourceGroup=$resourceGroupName subscriptionId=$subscriptionId cosmosDBEndpoint=$cosmosdbEndpoint cosmosPrimaryKey=$cosmosdbKey packageUrl=$zipFileUrl
+az group deployment create --name FunctionDeployment --resource-group $resourceGroupName --template-file functions_arm_template.json --parameters functionName=$functionAppName storageName=fa$storageAccountName hostingPlanName=$hostingPlanName location=$location sku=Standard skuCode=S1 workerSize=1 serverFarmResourceGroup=$resourceGroupName subscriptionId=$subscriptionId cosmosDBEndpoint=$cosmosdbEndpoint cosmosPrimaryKey=$cosmosdbKey packageUrl=$zipFileUrl
