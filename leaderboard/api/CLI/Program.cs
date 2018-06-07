@@ -139,7 +139,7 @@ namespace CLI
             // Create a Openhack document
             await createOpenHackAsync();
 
-            var serviceConfigJson = System.IO.File.ReadAllText("services.json");
+            var serviceConfigJson = System.IO.File.ReadAllText("team_service_config.json");
             var serviceConfig = JObject.Parse(serviceConfigJson);
             var teams = new Team[] { };
             var tasks = new List<Task>();

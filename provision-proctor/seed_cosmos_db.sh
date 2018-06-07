@@ -98,11 +98,11 @@ export OPENHACK_END_TIME=$openhackEndTime
 
 # TODO: Currently, I use service.json to get Endpoint for Service collection.
 # However, now we don't need it. We can remove it if we don't need it on the cosmos db.
-if [ -f services.json ]; then
+if [ -f team_service_config.json ]; then
 # Execute the command 
     dotnet run
 else 
-echo "Missing the config file services.json Please create one. "
+echo "Missing the config file team_service_config.json Please create one. "
 exit 1
 fi 
 
