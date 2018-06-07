@@ -664,7 +664,7 @@ namespace CLI
             {
                 Console.WriteLine("All Data seeding has been successful!");
                 Console.WriteLine($"Please have a look {EndpointUri}");
-                Console.ReadKey();
+                // Console.ReadKey();
             }
         }
     }
