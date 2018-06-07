@@ -173,14 +173,18 @@ if [ ! -d "$HOME/team_env/${teamName}${teamNumber}" ]; then
    mkdir $HOME/team_env/${teamName}${teamNumber}
 fi
 
-#create the initial team_service_config.json
-if [ ! -f "$HOME/team_env/team_service_config.json" ]; then
-   touch $HOME/team_env/team_service_config.json
-fi
-
-initialJson="{\"teams:[]\"}"
-
-echo $initialJson > $HOME/team_env/team_service_config.json
+kvstore set ${teamName}${teamNumber} subscriptionId ${subscriptionId}
+kvstore set ${teamName}${teamNumber} resourceGroupLocation ${resourceGroupLocation}
+kvstore set ${teamName}${teamNumber} teamNumber ${teamNumber}
+kvstore set ${teamName}${teamNumber} keyVaultName ${keyVaultName}
+kvstore set ${teamName}${teamNumber} resourceGroup ${resourceGroupTeam}
+kvstore set ${teamName}${teamNumber} ACR ${registryName}
+kvstore set ${teamName}${teamNumber} AKS ${clusterName}
+kvstore set ${teamName}${teamNumber} sqlServerName ${sqlServerName}
+kvstore set ${teamName}${teamNumber} sqlServerUserName ${sqlServerUsername}
+kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
+kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
+kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
 
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
 bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation
@@ -210,6 +214,8 @@ bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServe
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
+
+kvstore set ${teamName} endpoint ${dnsURL}
 
 echo "8-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName

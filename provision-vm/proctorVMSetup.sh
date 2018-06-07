@@ -43,14 +43,18 @@ sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
-#pick up changes to bash profile
-source /home/azureuser/.bashrc
-
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
-echo "############### Install Powershell Core and AzureRM modules "###############
+echo "############### Install kvstore ###############"
+sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
+echo 'export KVSTORE_DIR=/home/azureuser/team_env/' >> /home/azureuser/.bashrc
+
+#pick up changes to bash profile
+source /home/azureuser/.bashrc
+
+echo "############### Install Powershell Core and AzureRM modules ###############"
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
 
 # Can likely remove because same steps as SQL cmd line tools
