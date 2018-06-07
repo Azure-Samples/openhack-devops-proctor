@@ -7,8 +7,9 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: deploy_function.sh -g <resourceGroupName>  -l <location> -s <storageAccountName> -f <functionAppName> -c <cosmosDBName> -z <zipFileName>" 1>&2; exit 1; }
+usage() { echo "Usage: deploy_function.sh -i <subscriptionId> -g <resourceGroupName>  -l <location> -s <storageAccountName> -f <functionAppName> -c <cosmosDBName> -z <zipFileName>" 1>&2; exit 1; }
 
+declare subscriptionId=""
 declare resourceGroupName=""
 declare location=""
 declare storageAccountName=""
@@ -16,8 +17,11 @@ declare functionAppName=""
 declare cosmosDBName=""
 declare zipFileName=""
 # Initialize parameters specified from command line
-while getopts ":g:l:s:f:c:z:" arg; do
+while getopts ":i:g:l:s:f:c:z:" arg; do
     case "${arg}" in
+        i)
+            subscriptionId=${OPTARG}
+        ;;
         g)
             resourceGroupName=${OPTARG}
         ;;
@@ -40,6 +44,12 @@ while getopts ":g:l:s:f:c:z:" arg; do
 done
 shift $((OPTIND-1))
 
+if [[ -z "$subscriptionId" ]]; then
+    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
+    echo "Enter your subscription ID:"
+    read subscriptionId
+    [[ "${subscriptionId:?}" ]]
+fi
 
 if [[ -z "$resourceGroupName" ]]; then
     echo "This script will look for an existing resource group, otherwise a new one will be created "
@@ -89,6 +99,11 @@ az storage account create --name $storageAccountName --location $location  --res
 echo -e "Uploading zipfile to the storage account\n"
 storageConnectionString=$(az storage account show-connection-string -g $resourceGroupName -n $storageAccountName --query connectionString --output tsv)
 az storage container create --name container --public-access blob --connection-string $storageConnectionString
+
+# Sometimes it fails because of there is no container yet. Wait 30 sec.
+echo -e "Waiting for the container creation for 30 sec..."
+sleep 30
+
 az storage blob upload --container-name container --file $zipFileName --name $zipFileName --connection-string $storageConnectionString
 
 zipFileUrl=https://$storageAccountName.blob.core.windows.net/container/$zipFileName
@@ -97,8 +112,15 @@ echo -e "Retrieving cosmosdb connection string\n"
 cosmosdbEndpoint=$(az cosmosdb show --name $cosmosDBName  --resource-group $resourceGroupName --query documentEndpoint --output tsv)
 cosmosdbKey=$(az cosmosdb list-keys --name $cosmosDBName  --resource-group $resourceGroupName --query primaryMasterKey --output tsv)
 
-echo -e "Creating a new function app, assigning it to the resource group just created\n"
-az functionapp create --name $functionAppName --resource-group $resourceGroupName --storage-account $storageAccountName --consumption-plan-location $location
+# echo -e "Creating a new function app, assigning it to the resource group just created\n"
+# az functionapp create --name $functionAppName --resource-group $resourceGroupName --storage-account $storageAccountName --consumption-plan-location $location
 
-echo -e "Configuring function app settings to use cosmosdb connection string\n"
-az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --setting CosmosDB_Endpoint=$cosmosdbEndpoint CosmosDB_Key=$cosmosdbKey WEBSITE_RUN_FROM_ZIP=$zipFileUrl FUNCTIONS_EXTENSION_VERSION=beta
+# echo -e "Configuring function app settings to use cosmosdb connection string\n"
+# az functionapp config appsettings set --name $functionAppName --resource-group $resourceGroupName --setting CosmosDB_Endpoint=$cosmosdbEndpoint CosmosDB_Key=$cosmosdbKey WEBSITE_RUN_FROM_ZIP=$zipFileUrl FUNCTIONS_EXTENSION_VERSION=beta
+
+echo -e "Create and configuring function app with Application Insights"
+
+hostingPlanPostFix="Plan"
+hostingPlanName=$functionAppName$hostingPlanPostFix
+
+az group deployment create --name FunctionDeployment --resource-group $resourceGroupName --template-file scripts/template.json --parameters functionName=$functionAppName storageName=fa$storageAccountName hostingPlanName=$hostingPlanName location=$location sku=Standard skuCode=S1 workerSize=1 serverFarmResourceGroup=$resourceGroupName subscriptionId=$subscriptionId cosmosDBEndpoint=$cosmosdbEndpoint cosmosPrimaryKey=$cosmosdbKey packageUrl=$zipFileUrl

@@ -174,7 +174,7 @@ echo "2-Build Azure Function"
 bash ./build_function.sh -v $proctorNumber
 
 echo "3-Provision Azure Function"
-bash ./deploy_function.sh -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip"
+bash ./deploy_function.sh -i $subscriptionId -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip"
 
 echo "4-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
