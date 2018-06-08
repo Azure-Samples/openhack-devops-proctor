@@ -134,6 +134,7 @@ echo "clusterName               = "${clusterName}
 echo "cosmosDBName              = "${cosmosDBName}
 echo "storageAccount            = "${storageAccount}
 echo "functionAppName           = "${functionAppName}
+echo "apiUrl                    = "${apiUrl}
 echo "=========================================="
 
 #login to azure using your credentials
@@ -166,6 +167,33 @@ if [ `az group exists -n $resourceGroupProctor -o tsv` == false ]; then
 else
     echo "Using existing resource group..."
 fi
+
+# Verify that the teamConfig dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
+fi
+
+# Verify that kvstore dir exist
+if [ ! -d "$HOME/team_env/kvstore" ]; then
+   mkdir $HOME/team_env/kvstore
+fi
+
+# Verify that the team dir exist
+if [ ! -d "$HOME/team_env/${proctorName}${proctorNumber}" ]; then
+   mkdir $HOME/team_env/${proctorName}${proctorNumber}
+fi
+
+kvstore set ${proctorName}${proctorNumber} subscriptionId ${subscriptionId}
+kvstore set ${proctorName}${proctorNumber} resourceGroupLocation ${resourceGroupLocation}
+kvstore set ${proctorName}${proctorNumber} proctorNumber ${proctorNumber}
+kvstore set ${proctorName}${proctorNumber} teamName ${teamName}
+kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
+kvstore set ${proctorName}${proctorNumber} ACR ${registryName}
+kvstore set ${proctorName}${proctorNumber} AKS ${clusterName}
+kvstore set ${proctorName}${proctorNumber} cosmosDBName ${cosmosDBName}
+kvstore set ${proctorName}${proctorNumber} functionAppName ${functionAppName}
+kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
+kvstore set ${proctorName}${proctorNumber} teamFiles $HOME/team_env/${proctorName}${proctorNumber}
 
 echo "1-Provision CosmosDB  (bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName)"
 bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
