@@ -14,10 +14,6 @@ declare sqlServerUsername=""
 declare sqlServerPassword=""
 declare sqlDBName=""
 
-# Variables
-startip="0.0.0.0"
-endip="255.255.255.255"
-
 # Initialize parameters specified from command line
 while getopts ":g:l:q:m:h:k:u:p:d:" arg; do
     case "${arg}" in
@@ -27,25 +23,25 @@ while getopts ":g:l:q:m:h:k:u:p:d:" arg; do
         l)
             resourceGroupLocation=${OPTARG}
         ;;
-        q)  
+        q)
             sqlServerName=${OPTARG}
         ;;
-        m)  
+        m)
             mobileAppName=${OPTARG}
         ;;
-        h)  
+        h)
             hostingPlanName=${OPTARG}
         ;;
-        k)  
+        k)
             keyVaultName=${OPTARG}
         ;;
-        u)  
+        u)
             sqlServerUsername=${OPTARG}
         ;;
-        p)  
+        p)
             sqlServerPassword=${OPTARG}
         ;;
-        d)  
+        d)
             sqlDBName=${OPTARG}
         ;;
     esac
@@ -91,8 +87,8 @@ fi
 echo "$(tput setaf 3)Setting firewall rules of SQL Server...$(tput sgr 0)"
 (
 	set -x
-	az sql server firewall-rule create --server $sqlServerName --resource-group $resourceGroupName \
-	--name AllowYourIp --start-ip-address $startip --end-ip-address $endip
+    az sql server firewall-rule create --resource-group $resourceGroupName \
+    --server $sqlServerName -n "Allow Access To Azure Services" --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 )
 
 if [ $? == 0 ];
