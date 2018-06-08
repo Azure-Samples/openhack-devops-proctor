@@ -6,13 +6,18 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_web.sh -m <proctor name> -d <dnsURL>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_web.sh -u <proctorNumber> -m <proctor name> -d <dnsURL>" 1>&2; exit 1; }
 
+declare proctorNumber=""
 declare proctorName=""
+declare dnsURL=""
 
 # Initialize parameters specified from command line
-while getopts ":m:d:" arg; do
+while getopts ":u:m:d:" arg; do
     case "${arg}" in
+        u)
+            proctorNumber=${OPTARG}
+        ;;
         m)
             proctorName=${OPTARG}
         ;;
@@ -23,14 +28,6 @@ while getopts ":m:d:" arg; do
 done
 shift $((OPTIND-1))
 
-
-# if [[ -z "$resourceGroupName" ]]; then
-#     echo "This script will look for an existing resource group, otherwise a new one will be created "
-#     echo "You can create new resource groups with the CLI using: az group create "
-#     echo "Enter a resource group name"
-#     read resourceGroupName
-#     [[ "${resourceGroupName:?}" ]]
-# fi
 
 if [[ -z "$proctorName" ]]; then
     echo "Enter a team name for the helm chart values filename:"
@@ -49,8 +46,8 @@ if [ -z "$proctorName" ] || [ -z "$dnsURL" ]; then
     usage
 fi
 
-declare resourceGroupName="${proctorName}-rg"
-declare registryName="${proctorName}acr"
+declare resourceGroupName="${proctorName}${proctorNumber}-rg"
+declare registryName="${proctorName}${proctorNumber}acr"
 
 #DEBUG
 echo $resourceGroupName
