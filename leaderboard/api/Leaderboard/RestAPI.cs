@@ -35,14 +35,14 @@ namespace Leaderboard
         /// <param name="log"></param>
         /// <returns></returns>
         [FunctionName("ReportStatus")]
-        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, TraceWriter log)
         {
             try
             {
                 // Get Downtime Report
                 using (var scope = Container.BeginLifetimeScope())
                 {
-                    var service = scope.Resolve<DocumentService>();
+                    var service = scope.Resolve<IDocumentService>();
 
                     var requestBody = new StreamReader(req.Body).ReadToEnd();
                     log.Info(requestBody);
@@ -92,13 +92,13 @@ namespace Leaderboard
         }
 
         [FunctionName("GetTeamsStatus")]
-        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
         {
             using (var scope = Container.BeginLifetimeScope())
             {
                 try
                 {
-                    var service = scope.Resolve<DocumentService>();
+                    var service = scope.Resolve<IDocumentService>();
                     // Get Openhack Start/End time.
                     var openhack = await service.GetDocumentAsync<Openhack>();
                     // Get Team list
