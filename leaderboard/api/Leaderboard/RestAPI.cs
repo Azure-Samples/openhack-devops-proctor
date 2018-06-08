@@ -35,7 +35,7 @@ namespace Leaderboard
         /// <param name="log"></param>
         /// <returns></returns>
         [FunctionName("ReportStatus")]
-        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, TraceWriter log)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Leaderboard
         }
 
         [FunctionName("GetTeamsStatus")]
-        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
         {
             using (var scope = Container.BeginLifetimeScope())
             {
