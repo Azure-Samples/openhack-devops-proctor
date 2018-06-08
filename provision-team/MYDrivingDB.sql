@@ -59,7 +59,7 @@ CREATE TABLE [dbo].[IOTHubDatas](
 	[Version] [timestamp] NOT NULL,
 	[CreatedAt] [datetimeoffset](7) NOT NULL,
 	[UpdatedAt] [datetimeoffset](7) NULL,
-	[Deleted] [bit] NOT NULL,
+	[Deleted] [bit] NOT NULL DEFAULT 0,
  CONSTRAINT [PK_dbo.IOTHubDatas] PRIMARY KEY NONCLUSTERED
 (
 	[Id] ASC
@@ -91,7 +91,7 @@ CREATE TABLE [dbo].[POIs](
 	[Version] [timestamp] NOT NULL,
 	[CreatedAt] [datetimeoffset](7) NOT NULL,
 	[UpdatedAt] [datetimeoffset](7) NULL,
-	[Deleted] [bit] NOT NULL,
+	[Deleted] [bit] NOT NULL DEFAULT 0,
 	[Timestamp] [datetime] NOT NULL,
  CONSTRAINT [PK_dbo.POIs] PRIMARY KEY NONCLUSTERED
 (
@@ -260,49 +260,49 @@ ALTER TABLE [dbo].[Devices] ADD  DEFAULT (sysutcdatetime()) FOR [CreatedAt]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__IOTHubDatas__Id__36B12243]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='Id' AND object_id = object_id('dbo.IOTHubDatas')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[IOTHubDatas] ADD  DEFAULT (newid()) FOR [Id]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__IOTHubDat__Creat__37A5467C]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='CreatedAt' AND object_id = object_id('dbo.IOTHubDatas')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[IOTHubDatas] ADD  DEFAULT (sysutcdatetime()) FOR [CreatedAt]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__POIs__Id__3B75D760]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='Id' AND object_id = object_id('dbo.POIs')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[POIs] ADD  DEFAULT (newid()) FOR [Id]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__POIs__CreatedAt__3C69FB99]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='CreatedAt' AND object_id = object_id('dbo.POIs')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[POIs] ADD  DEFAULT (sysutcdatetime()) FOR [CreatedAt]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__POIs__Timestamp__5535A963]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='Timestamp' AND object_id = object_id('dbo.POIs')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[POIs] ADD  DEFAULT ('1900-01-01T00:00:00.000') FOR [Timestamp]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__TripPoints__Id__403A8C7D]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='Id' AND object_id = object_id('dbo.TripPoints')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[TripPoints] ADD  DEFAULT (newid()) FOR [Id]
 END
 
 GO
---IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DF__TripPoint__Creat__412EB0B6]') AND type = 'D')
+
 IF (SELECT object_definition(default_object_id) AS definition FROM sys.columns WHERE name ='CreatedAt' AND object_id = object_id('dbo.TripPoints')) IS NULL
 BEGIN
 ALTER TABLE [dbo].[TripPoints] ADD  DEFAULT (sysutcdatetime()) FOR [CreatedAt]
@@ -494,13 +494,6 @@ GO
 /******* Adding Additional Tables Needed for Simulator *********************/
 
 GO
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, QUOTED_IDENTIFIER ON;
-
-SET NUMERIC_ROUNDABORT OFF;
-
-
-
-GO
 PRINT N'Creating [dbo].[POISource]...';
 
 
@@ -548,83 +541,13 @@ CREATE TABLE [dbo].[TripPointSource] (
 
 
 GO
-PRINT N'Creating [dbo].[POIs].[nci_wi_POIs_55307BFB0FFEEFC3E0238C0CC3B42651]...';
+PRINT N'Creating index [dbo].[POIs].[nci_wi_POIs_55307BFB0FFEEFC3E0238C0CC3B42651]...';
 
 
 GO
 CREATE NONCLUSTERED INDEX [nci_wi_POIs_55307BFB0FFEEFC3E0238C0CC3B42651]
     ON [dbo].[POIs]([POIType] ASC)
     INCLUDE([TripId]);
-
-
-GO
-PRINT N'Creating unnamed constraint on [dbo].[IOTHubDatas]...';
-
-
-GO
-ALTER TABLE [dbo].[IOTHubDatas]
-    ADD DEFAULT ((0)) FOR [Deleted];
-
-
-GO
-PRINT N'Creating unnamed constraint on [dbo].[POIs]...';
-
-
-GO
-ALTER TABLE [dbo].[POIs]
-    ADD DEFAULT ((0)) FOR [Deleted];
-
-
-GO
-PRINT N'Altering [dbo].[UpdateUserProfilesOnInsert]...';
-
-
-GO
-ALTER TRIGGER [dbo].[UpdateUserProfilesOnInsert] ON [dbo].[POIs]
-FOR INSERT
-AS
-        -- Do it for all rows inserted (maybe bulk insert)
-        DECLARE crs CURSOR FOR
-                SELECT TripId FROM inserted
-        
-        DECLARE @TId nvarchar(100)
-        
-        OPEN crs
-        FETCH NEXT FROM crs INTO @TId
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-
-               -- Update Accelerations      
-               WITH ascnt1 AS (
-                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt1
-                                  FROM            dbo.POIs AS p INNER JOIN
-                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
-                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
-                                  WHERE        (p.POIType = 1)
-                                  GROUP BY p.TripId, up.UserId
-               )       
-               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardAccelerations = ascnt1.cnt1 FROM ascnt1
-               WHERE ascnt1.TripId = @TId AND dbo.UserProfiles.UserId = ascnt1.UserId;
-        
-               -- Update Hard Stops
-               WITH ascnt2 AS (
-                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt2
-                                  FROM            dbo.POIs AS p INNER JOIN
-                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
-                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
-                                  WHERE        (p.POIType = 2)
-                                  GROUP BY p.TripId, up.UserId
-               )       
-               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardStops = ascnt2.cnt2 FROM ascnt2
-               WHERE ascnt2.TripId = @TId AND dbo.UserProfiles.UserId = ascnt2.UserId;
-        
-        
-               FETCH NEXT FROM crs INTO @TId
-        END
-        CLOSE crs
-        DEALLOCATE crs
-GO
-PRINT N'Creating [dbo].[GetPoisForTrip]...';
 
 
 GO
