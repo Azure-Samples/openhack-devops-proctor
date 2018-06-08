@@ -78,17 +78,17 @@ if [[ -z "$resourceGroupLocation" ]]; then
 fi
 
 if [[ -z "$proctorName" ]]; then
-    echo "Enter a team name to be used in app provisioning:"
+    echo "Enter a proctor name to be used to provision proctor resources:"
     read proctorName
 fi
 
 if [[ -z "$teamName" ]]; then
-    echo "Enter a team name to be used in app provisioning:"
+    echo "Enter the base team name used for the already provisioned team environments:"
     read teamName
 fi
 
 if [[ -z "$totalTeams" ]]; then
-    echo "Enter the total number of teams provisioned:"
+    echo "Enter the total number of already provisioned team environments:"
     read totalTeams
 fi
 
@@ -186,20 +186,20 @@ echo "6-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceG
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
 echo "7-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
-bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation
+bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
-echo "8-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${proctorName})"
-bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}
+echo "8-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
+bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
-dnsURL='akstraefik'${proctorName}'.'$resourceGroupLocation'.cloudapp.azure.com'
-echo -e "DNS URL for "${proctorName}" is:\n"$dnsURL
+dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
+echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
 
 echo "9-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl
 
-echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m $proctorName -d <dnsURL>)"
-bash ./build_deploy_web.sh -u $proctorNumber -m $proctorName -d $dnsURL
+echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d <dnsURL>)"
+bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
 
 echo "11-Clean the working environment"
-bash ../provision-team/cleanup_environment.sh -t ${proctorName}
+bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
