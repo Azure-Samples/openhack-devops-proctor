@@ -167,6 +167,29 @@ else
     echo "Using existing resource group..."
 fi
 
+# Verify that the teamConfig dir exist
+if [ ! -d "$HOME/team_env" ]; then
+   mkdir $HOME/team_env
+fi
+
+# Verify that kvstore dir exist
+if [ ! -d "$HOME/team_env/kvstore" ]; then
+   mkdir $HOME/team_env/kvstore
+fi
+
+# Verify that the team dir exist
+if [ ! -d "$HOME/team_env/${proctorName}${proctorNumber}" ]; then
+   mkdir $HOME/team_env/${proctorName}${proctorNumber}
+fi
+
+kvstore set ${proctorName}${proctorNumber} subscriptionId ${subscriptionId}
+kvstore set ${proctorName}${proctorNumber} resourceGroupLocation ${resourceGroupLocation}
+kvstore set ${proctorName}${proctorNumber} teamNumber ${teamNumber}
+kvstore set ${proctorName}${proctorNumber} resourceGroup ${resourceGroupTeam}
+kvstore set ${proctorName}${proctorNumber} ACR ${registryName}
+kvstore set ${proctorName}${proctorNumber} AKS ${clusterName}
+kvstore set ${proctorName}${proctorNumber} teamFiles $HOME/team_env/${proctorName}${proctorNumber}
+
 echo "1-Provision CosmosDB  (bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName)"
 bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
 
