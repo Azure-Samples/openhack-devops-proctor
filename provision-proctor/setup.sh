@@ -118,7 +118,7 @@ declare clusterName="${proctorName}${proctorNumber}aks"
 declare cosmosDBName="${proctorName}${proctorNumber}db"
 declare storageAccount="${proctorName}${proctorNumber}sa"
 declare functionAppName="${proctorName}${proctorNumber}fun"
-declare apiUrl="https://"$functionAppName".azurewebsites.net"
+declare apiUrl="https://"$functionAppName".azurewebsites.net/api/ReportStatus"
 
 echo "=========================================="
 echo " VARIABLES"
