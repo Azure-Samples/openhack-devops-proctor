@@ -42,7 +42,7 @@ namespace Leaderboard
                 // Get Downtime Report
                 using (var scope = Container.BeginLifetimeScope())
                 {
-                    var service = scope.Resolve<DocumentService>();
+                    var service = scope.Resolve<IDocumentService>();
 
                     var requestBody = new StreamReader(req.Body).ReadToEnd();
                     log.Info(requestBody);
@@ -98,7 +98,7 @@ namespace Leaderboard
             {
                 try
                 {
-                    var service = scope.Resolve<DocumentService>();
+                    var service = scope.Resolve<IDocumentService>();
                     // Get Openhack Start/End time.
                     var openhack = await service.GetDocumentAsync<Openhack>();
                     // Get Team list
