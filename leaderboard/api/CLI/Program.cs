@@ -148,21 +148,20 @@ namespace CLI
             {
                 teamNum++;
                 var endpoint = element.Value.Value<JToken>("endpoint");
-                var newId = String.Format("{0:D2}", teamNum);
                 var team = new Team
                 {
-                    Id = newId,
+                    Id = element.Key,
                     Name = element.Key,
                     Challenges = GetInitialChallenges(),
                     Services = new Service[] {
                         new Service {
-                            Id = $"{newId}01"
+                            Id = $"{element.Key}user"
                         },
                         new Service {
-                            Id = $"{newId}02"
+                            Id = $"{element.Key}trips"
                         },
                         new Service {
-                            Id = $"{newId}03"
+                            Id = $"{element.Key}poi"
                         }
                     },
                     Score = 0                
@@ -172,20 +171,20 @@ namespace CLI
                     new Service
                     {
                         Id = $"{team.Id}01",
-                        Name = $"{team.Name}USER",
-                        Uri = $"{endpoint}/api/healthcheck/user"
+                        Name = $"{team.Name}user",
+                        Uri = $"{endpoint}/user"
                     },
                     new Service
                     {
                         Id = $"{team.Id}02",
-                        Name = $"{team.Name}TRIPS",
-                        Uri = $"{endpoint}/api/healthcheck/trips"
+                        Name = $"{team.Name}trips",
+                        Uri = $"{endpoint}/trips"
                     },
                     new Service
                     {
                         Id = $"{team.Id}03",
-                        Name = $"{team.Name}POI",
-                        Uri = $"{endpoint}/api/healthcheck/poi"
+                        Name = $"{team.Name}poi",
+                        Uri = $"{endpoint}/poi"
                     }
                 };
                 var histories = new History[] { };
