@@ -10,6 +10,6 @@
 
 export const environment = {
   production: false,
-  backendUrl: "https://removeohprep20.azurewebsites.net/api/SampleFunc"
+  backendUrl: "https://removeohprep20.azurewebsites.net/api/GetTeamsStatus"
 };
 
