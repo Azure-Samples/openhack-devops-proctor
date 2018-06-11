@@ -62,25 +62,24 @@ namespace Services
 
         public async Task<T> GetServiceAsync<T>(string id) where T : IDocument
         {
-            var docUri = UriFactory.CreateDocumentUri(databaseId, typeof(T).Name, id);
-            var doc = await client.ReadDocumentAsync<T>(docUri);
-            return doc.Document;
+            //var docUri = UriFactory.CreateDocumentUri(databaseId, typeof(T).Name, id);
+            //var doc = await client.ReadDocumentAsync<T>(docUri);
+            //return doc.Document;
 
-            //    var uri = UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name);
-            //    var query = client.CreateDocumentQuery<T>(
-            //        uri,
-            //        new FeedOptions { EnableCrossPartitionQuery = true })
-            //        .Where(f => f.Id == id)
-            //        .AsEnumerable<T>();
-            //    List<T> list = new List<T>();
-            //   foreach (var i in query)
-            //    {
-            //        list.Add(i);
-            //    }
-            //    //            var result = query.FirstOrDefault<T>();
-            //    var list2 = list;
-            //    return list.FirstOrDefault<T>();
-            //
+            var uri = UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name);
+            var query = client.CreateDocumentQuery<T>(
+                uri,
+                new FeedOptions { EnableCrossPartitionQuery = true })
+                .Where(f => f.Id == id)
+                .AsEnumerable<T>();
+            List<T> list = new List<T>();
+            foreach (var i in query)
+            {
+                list.Add(i);
+            }
+            var list2 = list;
+            return list.FirstOrDefault<T>();
+
         }
 
         public async Task<IList<T>> GetDocumentsAsync<T>(string id) where T :IDocument
