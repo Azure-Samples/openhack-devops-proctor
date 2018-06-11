@@ -170,19 +170,19 @@ namespace CLI
                 {
                     new Service
                     {
-                        Id = $"{team.Id}01",
+                        Id = $"{team.Id}user",
                         Name = $"{team.Name}user",
                         Uri = $"{endpoint}/user"
                     },
                     new Service
                     {
-                        Id = $"{team.Id}02",
+                        Id = $"{team.Id}trips",
                         Name = $"{team.Name}trips",
                         Uri = $"{endpoint}/trips"
                     },
                     new Service
                     {
-                        Id = $"{team.Id}03",
+                        Id = $"{team.Id}poi",
                         Name = $"{team.Name}poi",
                         Uri = $"{endpoint}/poi"
                     }
