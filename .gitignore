@@ -292,3 +292,6 @@ test_fetch_build/
 # SSH keys
 id_rsa
 id_rsa.pub
+
+# Mac
+.DS_Store

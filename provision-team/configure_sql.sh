@@ -49,13 +49,13 @@ fi
 if [[ -z "$resourceGroupName" ]]; then
     echo "Enter the resource group name:"
     read resourceGroupName
-    [[ "${relativeSaveLocation:?}" ]]
+    [[ "${resourceGroupName:?}" ]]
 fi
 
 if [[ -z "$sqlServerUsername" ]]; then
     echo "Enter the sql server user name:"
     read sqlServerUsername
-    [[ "${relativeSaveLocation:?}" ]]
+    [[ "${sqlServerUsername:?}" ]]
 fi
 
 if [[ -z "$teamName" ]]; then
@@ -108,7 +108,7 @@ az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName 
 sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MYDrivingDB.sql -e
 
 #Add Sample data
-sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MyDrivingDB-SampleTripData.sql -e
+bash ./sql_data_init.sh -s $sqlServerFQDN -u $sqlServerUsername -p $sqlPassword -d $sqlDBName
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
