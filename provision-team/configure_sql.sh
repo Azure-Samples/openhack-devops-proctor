@@ -49,13 +49,13 @@ fi
 if [[ -z "$resourceGroupName" ]]; then
     echo "Enter the resource group name:"
     read resourceGroupName
-    [[ "${relativeSaveLocation:?}" ]]
+    [[ "${resourceGroupName:?}" ]]
 fi
 
 if [[ -z "$sqlServerUsername" ]]; then
     echo "Enter the sql server user name:"
     read sqlServerUsername
-    [[ "${relativeSaveLocation:?}" ]]
+    [[ "${sqlServerUsername:?}" ]]
 fi
 
 if [[ -z "$teamName" ]]; then
