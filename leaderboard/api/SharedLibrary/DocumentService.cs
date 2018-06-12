@@ -70,7 +70,7 @@ namespace Services
             var query = client.CreateDocumentQuery<T>(
                 uri,
                 new FeedOptions { EnableCrossPartitionQuery = true })
-                .Where(f => f.Id == id)
+                .Where(f => f.id == id)
                 .AsEnumerable<T>();
             List<T> list = new List<T>();
             foreach (var i in query)
@@ -87,7 +87,7 @@ namespace Services
             var query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name),
                 new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true })
-                .Where(f => f.Id == id);           
+                .Where(f => f.id == id);           
             return query.ToList<T>();
         }
 

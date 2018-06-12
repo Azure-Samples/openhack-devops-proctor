@@ -150,18 +150,18 @@ namespace CLI
                 var endpoint = element.Value.Value<JToken>("endpoint");
                 var team = new Team
                 {
-                    Id = element.Key,
+                    id = element.Key,
                     Name = element.Key,
                     Challenges = GetInitialChallenges(),
                     Services = new Service[] {
                         new Service {
-                            Id = $"{element.Key}user"
+                            id = $"{element.Key}user"
                         },
                         new Service {
-                            Id = $"{element.Key}trips"
+                            id = $"{element.Key}trips"
                         },
                         new Service {
-                            Id = $"{element.Key}poi"
+                            id = $"{element.Key}poi"
                         }
                     },
                     Score = 0                
@@ -170,19 +170,19 @@ namespace CLI
                 {
                     new Service
                     {
-                        Id = $"{team.Id}user",
+                        id = $"{team.id}user",
                         Name = $"{team.Name}user",
                         Uri = $"{endpoint}/user"
                     },
                     new Service
                     {
-                        Id = $"{team.Id}trips",
+                        id = $"{team.id}trips",
                         Name = $"{team.Name}trips",
                         Uri = $"{endpoint}/trips"
                     },
                     new Service
                     {
-                        Id = $"{team.Id}poi",
+                        id = $"{team.id}poi",
                         Name = $"{team.Name}poi",
                         Uri = $"{endpoint}/poi"
                     }
@@ -208,7 +208,7 @@ namespace CLI
                 var NewId = String.Format("{0:D2}", i);
                 var team = new Team
                 {
-                    Id = NewId,
+                    id = NewId,
                     Name = $"Team{NewId}",
                     Score = 0
                 };
@@ -253,7 +253,7 @@ namespace CLI
                 var newId = String.Format("{0:D2}", i);
                 var challenge = new Challenge
                 {
-                    Id = newId,
+                    id = newId,
                     Status = ChallengeStatus.NotStarted.ToString()
                 };
                 this.inititalChallenges[i] = challenge;
@@ -325,7 +325,7 @@ namespace CLI
         {
             var query = client.CreateDocumentQuery<Team>(
                 UriFactory.CreateDocumentCollectionUri(DatabaseId, "Team"))
-                .Where(f => f.Id == key)
+                .Where(f => f.id == key)
                 .AsEnumerable();
             return query.FirstOrDefault<Team>();
         }
@@ -376,21 +376,21 @@ namespace CLI
             {
                new Challenge
                {
-                   Id = "1",
+                   id = "1",
                    StartDate = new DateTime(2018, 3, 10, 0,0,0,0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "2",
+                   id = "2",
                    StartDate = new DateTime(2018, 3, 10, 1, 0, 0, 0, DateTimeKind.Local),
                    EndDate = new DateTime(2018, 3, 10, 1, 30, 0, 0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "3",
+                   id = "3",
                    StartDate = new DateTime(2018, 3, 10, 2, 0, 0, 0, DateTimeKind.Local),
                    Status = "Open"
                }
@@ -400,13 +400,13 @@ namespace CLI
             {
                 new Service
                 {
-                    Id = $"{team.Id}01",
+                    id = $"{team.id}01",
                     Name = "EP01",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 },
                 new Service
                 {
-                    Id = $"{team.Id}02",
+                    id = $"{team.id}02",
                     Name = "EP02",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 }
@@ -417,29 +417,29 @@ namespace CLI
                 // ServiceId = ${team.Id}02 has currently down
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 1, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 2, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 3, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         }
@@ -456,35 +456,35 @@ namespace CLI
             {
                new Challenge
                {
-                   Id = "1",
+                   id = "1",
                    StartDate = new DateTime(2018, 3, 10, 0,0,0,0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "2",
+                   id = "2",
                    StartDate = new DateTime(2018, 3, 10, 1, 0, 0, 0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 1, 30, 0, 0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "3",
+                   id = "3",
                    StartDate = new DateTime(2018, 3, 10, 2, 0, 0, 0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 2, 30, 0,0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "4",
+                   id = "4",
                    StartDate = new DateTime(2018, 3, 10, 3, 0, 0, 0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 3, 30, 0,0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "5",
+                   id = "5",
                    StartDate = new DateTime(2018, 3, 10, 4, 0, 0, 0, DateTimeKind.Local),
                    Status = "Open"
                }
@@ -495,13 +495,13 @@ namespace CLI
             {
                 new Service
                 {
-                    Id = $"{team.Id}01",
+                    id = $"{team.id}01",
                     Name = "EP01",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 },
                 new Service
                 {
-                    Id = $"{team.Id}02",
+                    id = $"{team.id}02",
                     Name = "EP02",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 }
@@ -512,22 +512,22 @@ namespace CLI
                 // ServiceId = ${team.Id}02 had downtime however now alive
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 1, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 2, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         }
@@ -543,14 +543,14 @@ namespace CLI
             {
                new Challenge
                {
-                   Id = "1",
+                   id = "1",
                    StartDate = new DateTime(2018, 3, 10, 0,0,0,0, DateTimeKind.Local),
                    EndDate =   new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                    Status = "Close"
                },
                new Challenge
                {
-                   Id = "2",
+                   id = "2",
                    StartDate = new DateTime(2018, 3, 10, 1, 0, 0, 0, DateTimeKind.Local),
                    Status = "Open"
                }
@@ -560,13 +560,13 @@ namespace CLI
             {
                 new Service
                 {
-                    Id = $"{team.Id}01",
+                    id = $"{team.id}01",
                     Name = "EP01",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 },
                 new Service
                 {
-                    Id = $"{team.Id}02",
+                    id = $"{team.id}02",
                     Name = "EP02",
                     Uri = "https://sarmopenhack.azurewebsites.net/api/team01/health"
                 }
@@ -577,29 +577,29 @@ namespace CLI
                 // ServiceId = ${team.Id}02 has currently down
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 0, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 1, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 2, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         },
                 new History
                         {
-                            TeamId = team.Id,
-                            ServiceId = $"{team.Id}02",
+                            TeamId = team.id,
+                            ServiceId = $"{team.id}02",
                             Date = new DateTime(2018, 3, 10, 0, 30, 3, 0, DateTimeKind.Local),
                             StatusCode = 400,
                         }
@@ -617,7 +617,7 @@ namespace CLI
         {
             try
             {
-                var uri = UriFactory.CreateDocumentUri(databaseName, typeof(T).Name, document.Id);
+                var uri = UriFactory.CreateDocumentUri(databaseName, typeof(T).Name, document.id);
                 await client.ReadDocumentAsync(uri);
             } catch (DocumentClientException de)
             {

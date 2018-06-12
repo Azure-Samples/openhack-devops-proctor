@@ -12,7 +12,7 @@ namespace SharedLibrary.Test
         {
             return new Service
             {
-                Id = "0101",
+                id = "0101",
                 Name = "Team01USER",
                 Uri = "https://www.microsoft.com",
                 CurrentStatus = currentStatus
@@ -22,7 +22,7 @@ namespace SharedLibrary.Test
         {
             return new Service
             {
-                Id = "0102",
+                id = "0102",
                 Name = "Team01TRIPS",
                 Uri = "https://www.microsoft.com",
                 CurrentStatus = currentStatus
@@ -33,7 +33,7 @@ namespace SharedLibrary.Test
         {
             return new Service
             {
-                Id = "0103",
+                id = "0103",
                 Name = "Team01POI",
                 Uri = "https://www.microsoft.com",
                 CurrentStatus = currentStatus
@@ -53,7 +53,7 @@ namespace SharedLibrary.Test
             // Update the same Id's Service
             var team = new Team
             {
-                Id = "Team01",
+                id = "Team01",
                 Services = services,
                 CurrentState = true
             };
@@ -85,7 +85,7 @@ namespace SharedLibrary.Test
             var team = GetSampleTeam();
             var service04 = new Service
             {
-                Id = "0104",
+                id = "0104",
                 Name = "Team01SOME",
                 Uri = "https://www.microsoft.com",
                 CurrentStatus = true

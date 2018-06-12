@@ -62,7 +62,7 @@ namespace Leaderboard
                             // This method is called when CurrentStatus is changing. 
                             var statusHistory = new StatusHistory
                             {
-                                TeamId = targetTeam.Id,
+                                TeamId = targetTeam.id,
                                 Date = DateTime.UtcNow,
                                 // CurrentStatus is not updated in this time period
                                 // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
@@ -109,7 +109,7 @@ namespace Leaderboard
                         var histories = await service.GetDocumentsAsync<StatusHistory>(
                             (query) =>
                             {
-                                return query.Where(f => f.TeamId == team.Id);
+                                return query.Where(f => f.TeamId == team.id);
                             });
                         var downtime = StatusHistory.GetServiceDowntimeTotal(histories);
                         // TODO implement uptime and uppercent
