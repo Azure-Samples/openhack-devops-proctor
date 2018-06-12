@@ -112,7 +112,7 @@ TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd $relativeSaveLocation/openhack-devops-team/apis/poi
+pushd $relativeSaveLocation/openhack-devops-team/apis/poi/web
 
 docker build . -t $TAG
 
