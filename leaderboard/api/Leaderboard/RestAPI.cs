@@ -50,9 +50,10 @@ namespace Leaderboard
 
                     var targetService = await service.GetServiceAsync<Service>(report.ServiceId);
 
-                    //// Service current status update. 
+                    //// Service current status update.  
                     if (targetService.CurrentStatus != report.Status)
                     {
+                        targetService.CurrentStatus = report.Status;
                         await service.UpdateDocumentAsync<Service>(targetService);
                         var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
                         targetTeam.UpdateService(targetService);
