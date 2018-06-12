@@ -10,7 +10,7 @@ namespace Models
     /// </summary>
     public interface IDocument
     {
-        string Id { get; set; }
+        string id { get; set; }
     }
 
     /// <summary>
@@ -23,8 +23,7 @@ namespace Models
     public class Team : IDocument
     {
 
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string id { get; set; }
         public string Name { get; set; }
         public int Score { get; set; }
         public Challenge[] Challenges { get; set; }
@@ -52,7 +51,7 @@ namespace Models
             var hasUpdated = false;
             for(int i = 0; i < Services.Length; i++)
             {
-                if (Services[i].Id == service.Id)
+                if (Services[i].id == service.id)
                 {
                     Services[i] = service;
                     hasUpdated = true;
@@ -60,7 +59,7 @@ namespace Models
             }
             if (!hasUpdated)
             {
-                throw new InvalidOperationException($"Can not find the target Service: {service.Id}");
+                throw new InvalidOperationException($"Can not find the target Service: {service.id}");
             }
         }
 
@@ -83,7 +82,7 @@ namespace Models
     /// </summary>
     public class Challenge
     {
-        public string Id { get; set; }
+        public string id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Status { get; set; }
@@ -105,7 +104,7 @@ namespace Models
     public class Service : IDocument
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public string id { get; set; }
         public string Name { get; set; }
         public string Uri { get; set; }
         public bool CurrentStatus { get; set; }

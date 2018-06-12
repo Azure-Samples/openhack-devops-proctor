@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Documents.Client;
+﻿using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -63,22 +64,16 @@ namespace Services
         public async Task<T> GetServiceAsync<T>(string id) where T : IDocument
         {
             //var docUri = UriFactory.CreateDocumentUri(databaseId, typeof(T).Name, id);
-            //var doc = await client.ReadDocumentAsync<T>(docUri);
+            //var doc = await client.ReadDocumentAsync<T>(docUri, new RequestOptions { PartitionKey = new PartitionKey("id") });
             //return doc.Document;
 
             var uri = UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name);
             var query = client.CreateDocumentQuery<T>(
                 uri,
                 new FeedOptions { EnableCrossPartitionQuery = true })
-                .Where(f => f.Id == id)
+                .Where(f => f.id == id)
                 .AsEnumerable<T>();
-            List<T> list = new List<T>();
-            foreach (var i in query)
-            {
-                list.Add(i);
-            }
-            var list2 = list;
-            return list.FirstOrDefault<T>();
+            return query.FirstOrDefault<T>();
 
         }
 
@@ -87,7 +82,7 @@ namespace Services
             var query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name),
                 new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true })
-                .Where(f => f.Id == id);           
+                .Where(f => f.id == id);           
             return query.ToList<T>();
         }
 
