@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
@@ -21,7 +22,7 @@ type config struct {
 	RetryDuration int    `env:"SENTINEL_RETRY_DURATION" envDefault:"1000"`
 }
 
-type log struct {
+type logmsg struct {
 	TeamID     string
 	ServiceID  string
 	Date       time.Time
@@ -50,7 +51,7 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(fmt.Sprintf("Server: %s Status: %d", cfg.Endpoint, statusCode))
-		log := &log{
+		logmsg := &logmsg{
 			TeamID:     cfg.TeamID,
 			ServiceID:  cfg.ServiceID,
 			Date:       time.Now(),
@@ -59,20 +60,20 @@ func main() {
 
 		// Endpoint is dead
 		if statusCode != 200 {
-			log.Status = false
-			res, err := report(&cfg, log)
+			logmsg.Status = false
+			res, err := report(&cfg, logmsg)
 			if err != nil {
-				printAPIErrorMessage(&cfg, err, res, log)
+				printAPIErrorMessage(&cfg, err, res, logmsg)
 			}
 			fmt.Println("Dead! wait for recovery for 1000 ms")
 			time.Sleep(time.Duration(cfg.RetryDuration) * time.Millisecond)
 			lastStatus = false
 		} else {
 			if !lastStatus {
-				log.Status = true
-				res, err := report(&cfg, log)
+				logmsg.Status = true
+				res, err := report(&cfg, logmsg)
 				if err != nil {
-					printAPIErrorMessage(&cfg, err, res, log)
+					printAPIErrorMessage(&cfg, err, res, logmsg)
 				}
 			}
 			lastStatus = true
@@ -82,8 +83,8 @@ func main() {
 	fmt.Println("Hello")
 }
 
-func printAPIErrorMessage(cfg *config, err error, res *http.Response, log *log) {
-	logJSON, err := json.Marshal(*log)
+func printAPIErrorMessage(cfg *config, err error, res *http.Response, logmsg *logmsg) {
+	logJSON, err := json.Marshal(*logmsg)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Log marshal error: %s", err.Error()))
 		return
@@ -106,12 +107,17 @@ func getBody(resp *http.Response) (string, error) {
 	return "", nil
 }
 
-func report(cfg *config, log *log) (*http.Response, error) {
-	reportJSON, err := json.Marshal(*log)
+func report(cfg *config, logmsg *logmsg) (*http.Response, error) {
+	reportJSON, err := json.Marshal(*logmsg)
 	if err != nil {
 		return nil, err
 	}
 	res, err := http.Post((*cfg).APIURL, "application/json", bytes.NewReader(reportJSON))
+	if res.StatusCode != 200 {
+		log.Printf("Unable to post to functions API")
+		log.Printf(string(reportJSON))
+		log.Printf(res.Status)
+	}
 	return res, err
 }
 
