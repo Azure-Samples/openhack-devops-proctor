@@ -10,4 +10,6 @@
 
 export const environment = {
   production: false,
+  backendUrl: "https://devopsoh2subproc1fun.azurewebsites.net/api/GetTeamsStatus"
 };
+

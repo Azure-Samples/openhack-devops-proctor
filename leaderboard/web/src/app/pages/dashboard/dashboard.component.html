@@ -1,0 +1,9 @@
+<ng-container *ngFor="let rows of viewTeams">
+  <div class = "row">
+    <ng-container *ngFor="let t of rows.teams">
+      <div class="col">
+        <ngx-solar [chartValue]="t.uppercent" [teamName]="t.name" [uptime]="t.uptime" [point]="t.point"></ngx-solar>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
