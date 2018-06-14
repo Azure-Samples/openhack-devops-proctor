@@ -14,53 +14,44 @@ namespace DeviceSim.Controllers
     public class TripController
     {
         #region Variables
-       
-            //DBContext
+
+
+            private mydrivingDBContext ctx;
             private Trips CurrentTrip;
-            private List<Pois> poiList;
             private List<TripPointSource> tripInfo;
             private List<Poisource> tripPOIsource;
-            private mydrivingDBContext ctx;
-
-            private int tripCount = 0;
+            
+            
+        
+            
         #endregion
 
         #region Constructor
 
         //Create Trips from Data in the Database
-        public TripController()
+        public TripController(DBConnectionInfo dBConnectionInfo)
         {
+            ctx = new mydrivingDBContext(dBConnectionInfo);
+            //Select Random Trip 
+            GetSampleTrip();
             //Default Constructor
         }
         #endregion
 
+        #region Public Methods
 
-        public async Task CreateTrip(DBConnectionInfo dBConnectionInfo)
+        public async Task CreateTrip()
         {
+            //1 - Initialize Trip
+            CurrentTrip = new Trips()
+            {
+                RecordedTimeStamp = DateTime.UtcNow,
+                Name = $"Trip {DateTime.Now}",
+                Id = Guid.NewGuid().ToString(),
+                UserId = "Hacker 1"
+            };
 
-            ctx = new mydrivingDBContext(dBConnectionInfo);
-            //Use to AutoGenerate Trip Number
-            Random r = new Random();
-            tripCount += ctx.Trips.Count();
-
-            //Initialize Trip
-            CurrentTrip = new Trips();
-            //Simulation trip selection
-            List<string> tripNames = ctx.TripPointSource
-                                        .Select(p => p.Name)
-                                        .Distinct()
-                                        .ToList();
-
-            var tName = tripNames.ElementAt(r.Next(0, tripNames.Count));
-
-            //Choose Random Trip
-            tripInfo = ctx.TripPointSource
-                .Where(p => p.Name == tName)
-                .ToList();
-
-            Console.WriteLine($"Sample Trip Selected: {tName}");
-
-            CreateTripPoints(tripInfo.FirstOrDefault().Name);
+            CreateTripPoints();
 
             //TODO : Do proper Distance Calculation and Add a method to determine Rating
             CurrentTrip.EndTimeStamp = CurrentTrip.TripPoints.Last<TripPoints>().RecordedTimeStamp;
@@ -69,24 +60,54 @@ namespace DeviceSim.Controllers
             CurrentTrip.Distance = 5.95;
 
             //Get Trip POIs and Update Trip Summary Information 
-            GetTripPois();
+            CreateTripPois();
             //Update Driver Profile with Trip Data
             UpdateUserProfile();
+
             //Add trips to DB Instance
             await ctx.Trips.AddAsync(CurrentTrip);
-            await ctx.Pois.AddRangeAsync(poiList);
-            //Save Changes and Update Database
-            await ctx.SaveChangesAsync();
+            
+            
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
 
-            ctx.Dispose();
-
-                     
+            try
+            {
+                await ctx.SaveChangesAsync();
+                ctx.Dispose();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
         }
 
-        private void GetTripPois()
+
+        #endregion
+
+        #region Private Methods
+        private void GetSampleTrip()
+        {   
+            Random r = new Random();
+            //Get Sample Trip Names
+            List<string> tripNames = ctx.TripPointSource.Select(p => p.Name).Distinct().ToList();
+            //Choose Random Trip
+            var tName = tripNames.ElementAt(r.Next(0, tripNames.Count));
+
+            //Get Source TripPoints for Random Trip
+            tripInfo = ctx.TripPointSource.Where(p => p.Name == tName).ToList();
+            //Get Source POIs for Random Trip
+            tripPOIsource = ctx.Poisource.Where(p => p.TripId == (tripInfo.FirstOrDefault().Name)).ToList();
+            //Console.WriteLine($"Sample Trip Selected: {tName}");
+           
+        }
+
+        private void CreateTripPois()
         {
-            poiList = ctx.Pois.Where(p => p.TripId == CurrentTrip.Id).ToList<Pois>();
+            List<Pois> poiList = ctx.Pois.Where(p => p.TripId == CurrentTrip.Id).ToList<Pois>();
            
             //Generate POIs from Source
             foreach (var sPOI in tripPOIsource)
@@ -101,6 +122,9 @@ namespace DeviceSim.Controllers
                     RecordedTimeStamp = DateTime.Now.ToLongTimeString()
                 });
             }
+
+            //Add POI's to Database Context
+            ctx.Pois.AddRangeAsync(poiList);
 
             CurrentTrip.HardStops = poiList.Where(p => p.Poitype == 2).Count();
             CurrentTrip.HardAccelerations = poiList.Where(p => p.Poitype == 1).Count();
@@ -128,18 +152,11 @@ namespace DeviceSim.Controllers
             }
         }
 
-        private void CreateTripPoints(string SourceTrip)
+        private void CreateTripPoints()
         {
             try
             {
-                CurrentTrip.RecordedTimeStamp = DateTime.UtcNow;
-                //CurrentTrip.Name = $"Trip {tripCount}";
-                CurrentTrip.Name = $"Trip {DateTime.Now}";
-                CurrentTrip.Id = Guid.NewGuid().ToString(); //Create trip ID
-                                                            //TODO: Make this so that once Authenticated we use the Login Information from the JWT Token if Authentication will be used
-                CurrentTrip.UserId = "Hacker 1";//_toProcess[0][1]; //"MicrosoftAccount:cd3744e78c2d3d2d" //"Twitter:128169747"//Hacker1
-
-
+               
                 foreach (var tps in tripInfo)
                 {
                     TripPoints _tripPoint = new TripPoints()
@@ -167,8 +184,6 @@ namespace DeviceSim.Controllers
                 }
 
 
-                //Get Source POIs
-                tripPOIsource = ctx.Poisource.Where(p => p.TripId == SourceTrip).ToList();
 
                 //Update Time Stamps to current date and times before sending to IOT Hub
                 UpdateTripPointTimeStamps(CurrentTrip);
@@ -223,6 +238,8 @@ namespace DeviceSim.Controllers
                 Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
             }
         }
+        #endregion
+
     }
 
 

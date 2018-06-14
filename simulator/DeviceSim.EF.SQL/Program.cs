@@ -26,7 +26,8 @@ namespace DeviceSim
         private static DBConnectionInfo dBConnectionInfo;
         private static int WaitTime;
         private static string TeamName;
-        //private static bool UseApi; Will use later to switch between SQL and API Simulation
+        private static bool UseApi = false;
+      
        
         #endregion
 
@@ -35,6 +36,7 @@ namespace DeviceSim
             InitializeApp();
 
             Console.WriteLine($"***** {TeamName}-Driving Simulator *****");
+            Console.WriteLine($"Currently Using API Routes : {UseApi.ToString()}");
             Console.WriteLine($"*Starting Simulator - A new trip will be created every {WaitTime / 1000} seconds *");
 
             while (true)
@@ -54,9 +56,20 @@ namespace DeviceSim
 
         private static async Task CreateTripAsync()
         {
-            Console.WriteLine($"Trip Started at : {DateTime.Now}. ");
-            await CreateTrip();
-            Console.WriteLine($"Trip Completed at : {DateTime.Now}. ");    
+            
+            try
+            {
+                Console.WriteLine($"Starting Trip Creation : {DateTime.Now}. ");
+                await CreateTrip();
+                Console.WriteLine($"Trip Completed at : {DateTime.Now}. ");
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+               
         }
 
         private static void InitializeApp()
@@ -75,6 +88,7 @@ namespace DeviceSim
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
+            UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
 
         }
 
@@ -82,8 +96,18 @@ namespace DeviceSim
 
         private static async Task CreateTrip()
         {
-            TripController CurrentTrip = new TripController();
-            await CurrentTrip.CreateTrip(dBConnectionInfo);
+            try
+            {
+                TripController CurrentTrip = new TripController(dBConnectionInfo);
+                await CurrentTrip.CreateTrip();
+                await CurrentTrip.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
         }
 
 
