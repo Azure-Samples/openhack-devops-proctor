@@ -15,11 +15,6 @@ const socialLinks = [
     icon: 'socicon-github',
   },
   {
-    url: 'https://www.facebook.com/akveo/',
-    target: '_blank',
-    icon: 'socicon-facebook',
-  },
-  {
     url: 'https://twitter.com/akveo_inc',
     target: '_blank',
     icon: 'socicon-twitter',
