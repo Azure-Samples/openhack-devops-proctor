@@ -32,7 +32,8 @@
               "src/app/@theme/styles/styles.scss"
             ],
             "scripts": [
-              "node_modules/pace-js/pace.min.js"
+              "node_modules/pace-js/pace.min.js",
+              "node_modules/echarts/dist/echarts.min.js"
             ]
           },
           "configurations": {
