@@ -1,8 +1,0 @@
-{
-  "devopsohdev1": {
-    "endpoint": "http://akstraefikdevopsohdev1.eastus.cloudapp.azure.com"
-  },
-  "devopsohdev2": {
-    "endpoint": "http://akstraefikdevopsohdev2.eastus.cloudapp.azure.com"
-  }
-}
