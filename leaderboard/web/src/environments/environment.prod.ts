@@ -1,10 +1,4 @@
-/**
- * @license
- * Copyright Akveo. All Rights Reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- */
 export const environment = {
   production: true,
-  backendUrl: "https://removeohprep20.azurewebsites.net/api/GetTeamsStatus"
+  backendUrl: "https://devopsoh2subproc1fun.azurewebsites.net/api/GetTeamsStatus" //process.env.API_URL || ''
 };
-

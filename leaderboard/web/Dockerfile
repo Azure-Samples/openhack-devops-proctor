@@ -1,16 +1,13 @@
-FROM nginx:1.13.12-alpine AS base
-WORKDIR /app
-
-FROM node:8.9-alpine AS build
+FROM node:8-alpine AS build
 WORKDIR /usr/src/app
 RUN npm i -g @angular/cli
 COPY . .
-COPY package.json package.json
 RUN npm install --silent
 RUN npm run build
 
-FROM base AS final
+FROM nginx:1.13.12-alpine
 WORKDIR /app
-ENV API_URL='https://changeme.azurewebsites.net'
+ENV API_URL='https://devopsohfun.azurewebsites.net/api/GetTeamsStatus'
 RUN rm -rf /usr/share/nginx/html
+# COPY ./dist /usr/share/nginx/html # Useful for local builds
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html

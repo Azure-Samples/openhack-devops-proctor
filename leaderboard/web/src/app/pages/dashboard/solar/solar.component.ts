@@ -58,7 +58,7 @@ export class SolarComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.themeSubscription = this.theme.getJsTheme().delay(1).subscribe(config => {
+    this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
       const solarTheme: any = config.variables.solar;
 
