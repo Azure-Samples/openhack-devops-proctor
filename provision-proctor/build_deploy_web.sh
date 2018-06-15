@@ -6,15 +6,19 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_web.sh -m <proctor name> -d <dnsURL>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_web.sh -m <proctorName> -f <functionAppName> -d <dnsURL>" 1>&2; exit 1; }
 
 declare proctorName=""
+declare functionAppName=""
 
 # Initialize parameters specified from command line
-while getopts ":m:d:" arg; do
+while getopts ":m:f:d:" arg; do
     case "${arg}" in
         m)
             proctorName=${OPTARG}
+        ;;
+        f)
+            functionAppName=${OPTARG}
         ;;
         d)
             dnsURL=${OPTARG}
@@ -49,6 +53,11 @@ if [ -z "$proctorName" ] || [ -z "$dnsURL" ]; then
     usage
 fi
 
+if [[ -z "$functionAppName" ]]; then
+    echo "Enter the azure function name which is used for the Function App:"
+    read functionAppName
+fi
+
 declare resourceGroupName="${proctorName}-rg"
 declare registryName="${proctorName}acr"
 
@@ -75,7 +84,7 @@ echo "TAG: "$TAG
 
 pushd ../leaderboard/web
 
-docker build . -t $TAG
+docker build --build-arg FUNCTION_NAME="${functionAppName}" . -t $TAG
 
 docker push $TAG
 echo "Successfully pushed image: "$TAG
