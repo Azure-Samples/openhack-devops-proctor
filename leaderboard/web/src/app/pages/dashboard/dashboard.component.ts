@@ -56,25 +56,27 @@ export class DashboardComponent implements OnInit {
     let lastRow = -1;
     this.teams.forEach((team, index) => {
         const row = Math.floor(index / numberOfRow);
-        if (row != lastRow && lastRow != -1) {
+        if (row !== lastRow && lastRow !== -1) {
           viewTeams.push(
             {
-              "row": lastRow,
-              "teams": localTeams
-            }
+              'row': lastRow,
+              'teams': localTeams,
+            },
           )
           localTeams = [];
           lastRow = row;
         }
 
-        if (lastRow == -1) {
+        if (lastRow === -1) {
           lastRow = row;
         }
         localTeams.push(team);
     });
     viewTeams.push(
-      { "row": lastRow,
-     "teams": localTeams}
+      {
+        'row': lastRow,
+        'teams': localTeams,
+      },
     );
     this.viewTeams = viewTeams;
   }
