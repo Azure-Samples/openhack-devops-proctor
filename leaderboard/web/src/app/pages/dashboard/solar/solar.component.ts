@@ -23,20 +23,20 @@ declare const echarts: any;
 export class SolarComponent implements AfterViewInit, OnDestroy {
 
   private value = 0;
-  private teamUptime = 0;
-  private teamPoint = 0;
-  private teamName = "";
+  private teamUptime = 0; // tslint:disable-line
+  private teamPoint = 0; // tslint:disable-line
+  private teamName = ""; // tslint:disable-line
 
-  @Input("uptime")
+  @Input('uptime')
   set uptime(value: number) {
     this.teamUptime = value;
   }
-  @Input("teamName")
-  set name(value: string){
+  @Input('teamName')
+  set name(value: string) {
     this.teamName = value;
   }
 
-  @Input("point")
+  @Input('point')
   set point(value: number) {
     this.teamPoint = value;
   }
