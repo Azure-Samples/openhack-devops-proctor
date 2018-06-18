@@ -20,7 +20,7 @@ interface TeamResponse {
 })
 export class DashboardComponent implements OnInit {
   private teams = [];
-  private viewTeams: {[k: string]: any}[]; // tslint:disable-line
+  public viewTeams: {[k: string]: any}[]; // tslint:disable-line
   private pollingData: any; // tslint:disable-line
 
   constructor(private http: HttpClient) {
