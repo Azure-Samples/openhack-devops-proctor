@@ -2,6 +2,8 @@
 
 ## Description
 
+This script is used to install the Openhack team environment for the DevOps OpenHack.  This script will deploy all the necessary resources and configure the environment for a team to participate in the OpenHack.
+
 ## Pre-requisites
 
 - Access to [MyDriving github repository](https://github.com/Azure-Samples/openhack-devops-team)
@@ -15,7 +17,7 @@
 
     `./setup.sh -i <subscriptionId> -g <resourceGroupName> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>`
 
-**NOTE:** You will be asked to login to your subscription if you have not already done so using the azure cli.
+**NOTE:** You must login to the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.
 
 ### Parameters
 
