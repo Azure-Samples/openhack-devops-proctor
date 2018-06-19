@@ -6,11 +6,11 @@ This script is used to install the Openhack team environment for the DevOps Open
 
 ## Pre-requisites
 
-The required pre-requisites for installing a tea environment are installed as part of proctor VM Setup.  The [setup script](https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh) list all pre-reqs along with required versions.
+The required pre-requisites for installing a team environment are installed as part of proctor VM Setup.  The [setup script](https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh) lists all pre-reqs along with required versions.
 
 ## Usage
 
-    `./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> `
+    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> `
 
 **NOTE:** You must login to the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.
 
@@ -23,7 +23,7 @@ The required pre-requisites for installing a tea environment are installed as pa
 
 An example command to provision with a random team number:
 
-`./setup.sh -i <subscriptionId> -l eastus -n devopsoh`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh`
 
 An example command to provision with a specific team number:
-`./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 01`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 01`
