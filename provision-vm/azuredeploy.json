@@ -50,7 +50,7 @@
     "variables": {
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "skuversion": "16.04.201805220",
+        "skuversion": "16.04.201806150",
         "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
         "extensionName": "DockerExtension",
