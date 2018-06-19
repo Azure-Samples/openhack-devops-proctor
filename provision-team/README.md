@@ -6,16 +6,11 @@ This script is used to install the Openhack team environment for the DevOps Open
 
 ## Pre-requisites
 
-- Access to [MyDriving github repository](https://github.com/Azure-Samples/openhack-devops-team)
-- [Generate ssh key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) to get openhack-team-cli
-- [Helm](https://docs.helm.sh/using_helm/#installing-helm)
-- Azure [AZ cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
-- [Docker](https://docs.docker.com/install/)
-- [JQ](https://stedolan.github.io/jq/) (sudo apt-get install jq)
+The required pre-requisites for installing a team environment are installed as part of proctor VM Setup.  The [setup script](https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh) lists all pre-reqs along with required versions.
 
 ## Usage
 
-    `./setup.sh -i <subscriptionId> -g <resourceGroupName> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>`
+    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> `
 
 **NOTE:** You must login to the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.
 
@@ -28,7 +23,7 @@ This script is used to install the Openhack team environment for the DevOps Open
 
 An example command to provision with a random team number:
 
-`./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh`
 
 An example command to provision with a specific team number:
-`./setup.sh -i 9d05a3cd-f0f4-439f-883e-c855e054 -l eastus -n devopsoh -e 01`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 01`
