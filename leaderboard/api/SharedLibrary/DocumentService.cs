@@ -1,8 +1,10 @@
 ﻿using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Configuration;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,12 +27,30 @@ namespace Services
 
     public class DocumentService : IDocumentService
     {
-        private static DocumentClient client = new DocumentClient(
-    new Uri(
-        System.Environment.GetEnvironmentVariable("CosmosDBEndpointUri")),
-        System.Environment.GetEnvironmentVariable("CosmosDBPrimaryKey"));
+        private static DocumentClient client = null;
 
-        private static string databaseId = Environment.GetEnvironmentVariable("CosmosDBDatabaseId");
+        private static string databaseId = null;
+
+        static DocumentService()
+        {
+            var cosmosDBEndpointUri = System.Environment.GetEnvironmentVariable("CosmosDBEndpointUri");
+            var cosmosDBPrimaryKey = System.Environment.GetEnvironmentVariable("CosmosDBPrimaryKey");
+            databaseId = Environment.GetEnvironmentVariable("CosmosDBDatabaseId");
+
+            // In case of E2E testing, you can use appsettings.json for the testing. 
+            if (string.IsNullOrEmpty(cosmosDBEndpointUri) || string.IsNullOrEmpty(cosmosDBPrimaryKey) || string.IsNullOrEmpty(databaseId)) {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json");
+                var configration = builder.Build();
+                cosmosDBEndpointUri = configration["CosmosDBEndpointUri"];
+                cosmosDBPrimaryKey = configration["CosmosDBPrimaryKey"];
+                databaseId = configration["CosmosDBDatabaseId"];
+            }
+            client = new DocumentClient(new Uri(cosmosDBEndpointUri), cosmosDBPrimaryKey);
+
+        }
+
 
         // Generics Section
 

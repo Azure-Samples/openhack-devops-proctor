@@ -14,7 +14,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI", "CLI\CLI.csproj", "{B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary.Test", "SharedLibrary.Test\SharedLibrary.Test.csproj", "{11576BCF-38F6-4836-A507-1BF863D1BE19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leaderboard.Test", "Leaderboard.Test\Leaderboard.Test.csproj", "{C901A942-03CA-441D-9DE7-7F53FFBB76B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leaderboard.Test", "Leaderboard.Test\Leaderboard.Test.csproj", "{C901A942-03CA-441D-9DE7-7F53FFBB76B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D202DA77-74DE-44EE-B95C-13EB12A7663E} = {D202DA77-74DE-44EE-B95C-13EB12A7663E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
