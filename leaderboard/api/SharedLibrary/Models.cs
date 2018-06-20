@@ -257,7 +257,7 @@ namespace Models
     public class DowntimeRecord
     {
         public string TeamId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Time { get; set; }
     }
 
     /// <summary>
