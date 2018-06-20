@@ -19,7 +19,7 @@ namespace Leaderboard
 {
     public static class RestAPI
     {
-        private static IContainer Container { get; set; }
+        public static IContainer Container { get; set; }
 
         static RestAPI()
         {
