@@ -250,6 +250,15 @@ namespace Models
             return history;
         }
     }
+    /// <summary>
+    /// DowntimeRecord is a collection for Stream Analytics summary the downtime for each second.
+    /// TeamId is the PartitionKey
+    /// </summary>
+    public class DowntimeRecord
+    {
+        public string TeamId { get; set; }
+        public DateTime Date { get; set; }
+    }
 
     /// <summary>
     /// UptimeReport is report for SPA to report all Team uptime reports.
