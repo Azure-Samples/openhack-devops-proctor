@@ -2,6 +2,7 @@ using Microsoft.Azure.EventHubs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Models;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -126,10 +127,14 @@ namespace Leaderboard.Test
         public async Task TestEventHubAndStreamAnalyticsAsync()
         {
             // Cleanup the cosmos db
+            IDocumentService service = new DocumentService();
+            await service.RemoveCollectionIfExists<DowntimeRecord>();
+            await service.CreateCollectionIfExists<DowntimeRecord>("/TeamId", 2500);
 
             // Get the input data
             var messages = GetInputMessages();
             // Send it to the eventhubs
+
 
             // Wait for a while 
 
