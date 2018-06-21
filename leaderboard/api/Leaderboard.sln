@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leaderboard.Test", "Leaderb
 		{D202DA77-74DE-44EE-B95C-13EB12A7663E} = {D202DA77-74DE-44EE-B95C-13EB12A7663E}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataGenerator", "TestDataGenerator\TestDataGenerator.csproj", "{FBBF14F5-86D8-4FD4-ADA8-A3DB10DE6300}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{C901A942-03CA-441D-9DE7-7F53FFBB76B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C901A942-03CA-441D-9DE7-7F53FFBB76B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C901A942-03CA-441D-9DE7-7F53FFBB76B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBBF14F5-86D8-4FD4-ADA8-A3DB10DE6300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBBF14F5-86D8-4FD4-ADA8-A3DB10DE6300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBBF14F5-86D8-4FD4-ADA8-A3DB10DE6300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBBF14F5-86D8-4FD4-ADA8-A3DB10DE6300}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
