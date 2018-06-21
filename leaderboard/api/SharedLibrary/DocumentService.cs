@@ -29,9 +29,21 @@ namespace Services
         /// </summary>
         /// <returns></returns>
         DocumentClient GetClient();
-
+        /// <summary>
+        /// RemoveCollectionIfExists remove Collection if exists. 
+        /// </summary>
+        /// <typeparam name="T">Model class for the target collection</typeparam>
+        /// <returns></returns>
         Task RemoveCollectionIfExists<T>();
-        Task CreateCollectionIfExists<T>(string collectionName, string partitionKey = "", int offerThroughput = 0);
+        /// <summary>
+        /// CreateCollectionIfExists create a collection if exists. If you want to create collection with PratitionKey, 
+        /// Please add parameter of partitionKey and offerThroughput. Otherwise, you can execute this method without parameters.
+        /// </summary>
+        /// <typeparam name="T">Model class for the target collection</typeparam>
+        /// <param name="partitionKey">Optional: PartitionKey</param>
+        /// <param name="offerThroughput">Optional: offerThroughput</param>
+        /// <returns></returns>
+        Task CreateCollectionIfExists<T>(string partitionKey = "", int offerThroughput = 0);
 
         }
 
@@ -163,7 +175,7 @@ namespace Services
             }
         }
 
-        public async Task CreateCollectionIfExists<T>(string collectionName, string partitionKey = "", int offerThroughput = 0)
+        public async Task CreateCollectionIfExists<T>(string partitionKey = "", int offerThroughput = 0)
         {
             var downtimeReportCollection = new DocumentCollection();
             downtimeReportCollection.Id = typeof(T).Name;
