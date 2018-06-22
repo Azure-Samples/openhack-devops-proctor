@@ -254,10 +254,26 @@ namespace Models
     /// DowntimeRecord is a collection for Stream Analytics summary the downtime for each second.
     /// TeamId is the PartitionKey
     /// </summary>
-    public class DowntimeRecord
+    public class DowntimeRecord : IDocument
     {
-        public string TeamId { get; set; }
-        public DateTime Time { get; set; }
+        public string teamid { get; set; }
+        public DateTime time { get; set; }
+
+        public int count { get; set; }
+        public string id { get; set; }
+
+        public static int TotalCount(DowntimeRecord[] records, string teamId)
+        {
+            int totalCount = 0;
+            foreach(var record in records)
+            {
+                if (record.teamid == teamId)
+                {
+                    totalCount = totalCount + record.count;
+                }
+            }
+            return totalCount;
+        }
     }
 
     /// <summary>

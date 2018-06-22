@@ -125,10 +125,10 @@ namespace CLI
             Console.WriteLine($"---- Create Collection StatusHistory {sw.ElapsedMilliseconds} msec");
 
             sw.Restart();
-            // DowntimeReport Collection creation
+            // DowntimeRecord Collection creation
             var downtimeReportCollection = new DocumentCollection();
             downtimeReportCollection.Id = typeof(DowntimeRecord).Name;
-            downtimeReportCollection.PartitionKey.Paths.Add("/TeamId");
+            downtimeReportCollection.PartitionKey.Paths.Add("/teamid");
             await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId),
                 downtimeReportCollection, new RequestOptions { OfferThroughput = 2500 });
             sw.Stop();

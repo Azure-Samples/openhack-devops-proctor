@@ -43,7 +43,7 @@ namespace Services
         /// <param name="partitionKey">Optional: PartitionKey</param>
         /// <param name="offerThroughput">Optional: offerThroughput</param>
         /// <returns></returns>
-        Task CreateCollectionIfExists<T>(string partitionKey = "", int offerThroughput = 0);
+        Task CreateCollectionIfNotExists<T>(string partitionKey = "", int offerThroughput = 0);
 
         }
 
@@ -75,7 +75,9 @@ namespace Services
 
             var cosmosDBEndpointUri = configration["CosmosDBEndpointUri"];
             var cosmosDBPrimaryKey = configration["CosmosDBPrimaryKey"];
-            var databaseId = configration["CosmosDBDatabaseId"];
+            databaseId = configration["CosmosDBDatabaseId"];
+
+
            
             client = new DocumentClient(new Uri(cosmosDBEndpointUri), cosmosDBPrimaryKey);
 
@@ -175,11 +177,11 @@ namespace Services
             }
         }
 
-        public async Task CreateCollectionIfExists<T>(string partitionKey = "", int offerThroughput = 0)
+        public async Task CreateCollectionIfNotExists<T>(string partitionKey = "", int offerThroughput = 0)
         {
             var downtimeReportCollection = new DocumentCollection();
             downtimeReportCollection.Id = typeof(T).Name;
-            if (string.IsNullOrEmpty(partitionKey))
+            if (!string.IsNullOrEmpty(partitionKey))
             {
                 // Collection with PratitionKey
                 downtimeReportCollection.PartitionKey.Paths.Add(partitionKey);
