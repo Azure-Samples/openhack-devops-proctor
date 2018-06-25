@@ -1,5 +1,10 @@
 # Infrastructure VM deployment script
 
+## Pre-requisites
+
+Have an SSH key to use and be familiar with how to SSH using SSH key to an Ubuntu VM. If needed see these articles:
+[for mac](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys) or [for Windows](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/ssh-from-windows)
+
 ## Usage
 
 Login with your PowerShell console.
