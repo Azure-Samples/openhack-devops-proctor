@@ -60,20 +60,6 @@ namespace Leaderboard
                         var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
                         targetTeam.UpdateService(targetService);
 
-                        await targetTeam.UpdateCurrentStateWithFunctionAsync(async () =>
-                        {
-                            // This method is called when CurrentStatus is changing. 
-                            var statusHistory = new StatusHistory
-                            {
-                                TeamId = targetTeam.id,
-                                Date = DateTime.UtcNow,
-                                // CurrentStatus is not updated in this time period
-                                // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
-                                // If it is false, then it means go to the failure state.
-                                Status = targetTeam.GetTotalStatus() ? DowntimeStatus.Finished : DowntimeStatus.Started
-                            };
-                            await service.CreateDocumentAsync<StatusHistory>(statusHistory);
-                        });
                         await service.UpdateDocumentAsync<Team>(targetTeam);
                     }
 
@@ -109,12 +95,21 @@ namespace Leaderboard
                     var list = new List<UptimeReport>();
                     foreach (var team in teams)
                     {
-                        var histories = await service.GetDocumentsAsync<StatusHistory>(
+                        var downtimeSummaries = await service.GetDocumentsAsync<DowntimeSummary>(
                             (query) =>
                             {
                                 return query.Where(f => f.TeamId == team.id);
                             });
-                        var downtime = StatusHistory.GetServiceDowntimeTotal(histories);
+                        TimeSpan downtime; 
+                        if (downtimeSummaries != null && downtimeSummaries.Count != 0)
+                        {
+                            var downtimeSummary = downtimeSummaries.First<DowntimeSummary>();
+                            downtime = TimeSpan.FromSeconds(downtimeSummary.Downtime);
+                        } else
+                        {
+                            downtime = TimeSpan.FromSeconds(0);
+                        }
+                        
                         // TODO implement uptime and uppercent
                         list.Add(
                             new UptimeReport
