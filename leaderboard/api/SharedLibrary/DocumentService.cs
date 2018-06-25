@@ -45,6 +45,8 @@ namespace Services
         /// <returns></returns>
         Task CreateCollectionIfNotExists<T>(string partitionKey = "", int offerThroughput = 0);
 
+
+        Task<IList<T>> QueryBySQLAsync<T>(string sql, string collectionName);
         }
 
 
@@ -155,6 +157,13 @@ namespace Services
             var queryBase = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(databaseId, typeof(T).Name));
             var query = queryFunction(queryBase);
+            return query.ToList<T>();
+        }
+
+        public async Task<IList<T>> QueryBySQLAsync<T>(string sql, string collectionName)
+        {
+            var query = client.CreateDocumentQuery<T>(
+                UriFactory.CreateDocumentCollectionUri(databaseId, collectionName));
             return query.ToList<T>();
         }
 

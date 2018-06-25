@@ -277,6 +277,17 @@ namespace Models
     }
 
     /// <summary>
+    /// Model class for summary the downtime for each teams
+    /// It is created by CosmosDB trigger functions
+    /// </summary>
+    public class DowntimeSummary : IDocument
+    {
+        public string TeamId { get; set; }
+        public int Downtime { get; set; }
+        public string id { get { return this.TeamId; }  set { } }
+    }
+
+    /// <summary>
     /// UptimeReport is report for SPA to report all Team uptime reports.
     /// </summary>
     public class UptimeReport

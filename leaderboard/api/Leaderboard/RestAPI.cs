@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using Autofac;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Azure.Documents;
+using System.Collections;
 
 namespace Leaderboard
 {
@@ -136,6 +138,41 @@ namespace Leaderboard
 
 
         }
+        [FunctionName("DowntimeBatch")]
+        public static async Task DowntimeBatch([CosmosDBTrigger(
+            databaseName: "leaderboard",
+            collectionName: "DowntimeRecord",
+            ConnectionStringSetting ="CosmosDBConnection",
+            LeaseCollectionName = "leases",
+            CreateLeaseCollectionIfNotExists = true)] IReadOnlyList<Document> documents,
+            TraceWriter log)
+        {
+            if (documents != null && documents.Count > 0)
+            {
+                var ht = new Hashtable();
+                foreach (var document in documents)
+                {
+                    // remove the duplication. 
+                    ht[document.GetPropertyValue<DowntimeRecord>("teamid")] = "";
+                }
+                using (var scope = Container.BeginLifetimeScope())
+                {
+                    var service = scope.Resolve<IDocumentService>();
+                    foreach (var teamId in ht.Keys)
+                    {
+                        // Read the document teamid and count with sum.
+                        var result = await service.QueryBySQLAsync<DowntimeSummary>("SELECT teamid as TeamId, Sum(count) as Downtime FROM DowntimeRecord", "DowntimeRecord");
+                        if (result != null && result.Count != 0)
+                        {
+                            var downtimeSummary = result.First<DowntimeSummary>();
+                            await service.UpdateDocumentAsync<DowntimeSummary>(downtimeSummary);
+
+                        }
+                    }
+                }
+            }
+        }
+
 
         [FunctionName("SampleFunc")]
         public static async Task<IActionResult> SampleFunc([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
