@@ -6,7 +6,6 @@
     <OutputType>File</OutputType>
     <AssemblyName>DowntimeReport</AssemblyName>
     <StartFile>Script.asaql</StartFile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ASATargetsFilePath>$(AppData)\Microsoft\DataLake\MsBuild\1.0\StreamAnalytics.targets</ASATargetsFilePath>
     <Name>DowntimeReport</Name>
     <RootNamespace>DowntimeReport</RootNamespace>
@@ -23,10 +22,13 @@
     <Script Include="Script.asaql" />
   </ItemGroup>
   <ItemGroup>
-    <Configure Include="Inputs\Input.json">
+    <Configure Include="Inputs\downtime.json">
       <SubType>Input</SubType>
     </Configure>
-    <Configure Include="Outputs\Output.json">
+    <Configure Include="Inputs\local_downtime.json">
+      <SubType>InputMock</SubType>
+    </Configure>
+    <Configure Include="Outputs\cosmosdb.json">
       <SubType>Output</SubType>
     </Configure>
     <Configure Include="JobConfig.json">

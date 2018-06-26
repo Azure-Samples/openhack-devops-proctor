@@ -1,3 +1,25 @@
-{
-	"ScriptType": "Input"
+﻿{
+  "Sample": null,
+  "EventHubProperties": {
+    "ConsumerGroupName": null,
+    "EventHubName": "downtime",
+    "ServiceBusNamespace": "dooh2tsushipro",
+    "SharedAccessPolicyKey": null,
+    "SharedAccessPolicyName": "RootManageSharedAccessKey"
+  },
+  "BlobStorageProperties": null,
+  "IoTHubProperties": null,
+  "BlobReferenceProperties": null,
+  "DataSourceCredentialDomain": "b27d0264-4d68-4bb4-8ff9-07e39e9e886b.StreamAnalyticsCredential",
+  "Name": "downtime",
+  "Type": "Data Stream",
+  "DataSourceType": "Event Hub",
+  "Serialization": {
+    "Encoding": "UTF8",
+    "Type": "Json",
+    "FieldDelimiter": null,
+    "Format": null
+  },
+  "CompresssionType": "None",
+  "ScriptType": "Input"
 }
