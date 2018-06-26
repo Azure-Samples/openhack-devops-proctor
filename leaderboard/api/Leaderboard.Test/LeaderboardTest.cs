@@ -48,9 +48,9 @@ namespace Leaderboard.Test
         {
             return new DowntimeRecord()
             {
-                teamid = teamId, 
-                time = time, 
-                count = count
+                TeamId = teamId, 
+                Time = time, 
+                Count = count
             };
         }
 
@@ -141,7 +141,7 @@ namespace Leaderboard.Test
             var client = service.GetClient();
             var query = client.CreateDocumentQuery<DowntimeRecord>(
                 UriFactory.CreateDocumentCollectionUri("leaderboard", "DowntimeRecord"))
-                .Where(f => f.teamid == teamId)
+                .Where(f => f.TeamId == teamId)
                 .AsEnumerable();
             return query.ToList<DowntimeRecord>();
         }

@@ -256,10 +256,10 @@ namespace Models
     /// </summary>
     public class DowntimeRecord : IDocument
     {
-        public string teamid { get; set; }
-        public DateTime time { get; set; }
+        public string TeamId { get; set; }
+        public DateTime Time { get; set; }
 
-        public int count { get; set; }
+        public int Count { get; set; }
         public string id { get; set; }
 
         public static int TotalCount(DowntimeRecord[] records, string teamId)
@@ -267,9 +267,9 @@ namespace Models
             int totalCount = 0;
             foreach(var record in records)
             {
-                if (record.teamid == teamId)
+                if (record.TeamId == teamId)
                 {
-                    totalCount = totalCount + record.count;
+                    totalCount = totalCount + record.Count;
                 }
             }
             return totalCount;
