@@ -128,12 +128,20 @@ namespace CLI
             // DowntimeRecord Collection creation
             var downtimeReportCollection = new DocumentCollection();
             downtimeReportCollection.Id = typeof(DowntimeRecord).Name;
-            downtimeReportCollection.PartitionKey.Paths.Add("/teamid");
+            downtimeReportCollection.PartitionKey.Paths.Add("/TeamId");
             await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId),
                 downtimeReportCollection, new RequestOptions { OfferThroughput = 2500 });
             sw.Stop();
             Console.WriteLine($"---- Create Collection downtimeReport {sw.ElapsedMilliseconds} msec");
 
+            sw.Restart();
+            // DowntimeSummary
+            var downtimeSummaryCollection = new DocumentCollection();
+            downtimeSummaryCollection.Id = typeof(DowntimeSummary).Name;
+            await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DatabaseId),
+    downtimeSummaryCollection);
+            sw.Stop();
+            Console.WriteLine($"---- Create Collection DowntimeSummary {sw.ElapsedMilliseconds} msec");
         }
 
         /// <summary>
