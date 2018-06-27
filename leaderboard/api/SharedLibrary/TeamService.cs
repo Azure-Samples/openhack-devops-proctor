@@ -37,5 +37,15 @@ namespace Services
 
         }
 
+        public async Task<int> QueryDowntimeAsync(string teamId)
+        {
+            var client = service.GetClient();
+           
+            return client.CreateDocumentQuery<DowntimeRecord>(
+                UriFactory.CreateDocumentCollectionUri(service.GetDatabaseId(), typeof(DowntimeRecord).Name))
+                .Where<DowntimeRecord>(r => r.TeamId == teamId)
+                .Sum<DowntimeRecord>(r => r.Count);
+        }
+
     }
 }

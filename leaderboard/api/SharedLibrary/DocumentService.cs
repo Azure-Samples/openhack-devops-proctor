@@ -29,6 +29,13 @@ namespace Services
         /// </summary>
         /// <returns></returns>
         DocumentClient GetClient();
+
+        /// <summary>
+        /// Get the databaseId
+        /// </summary>
+        /// <returns></returns>
+        string GetDatabaseId()
+
         /// <summary>
         /// RemoveCollectionIfExists remove Collection if exists. 
         /// </summary>
@@ -97,7 +104,14 @@ namespace Services
         {
             return client;
         }
-
+        /// <summary>
+        /// Get the databaseId
+        /// </summary>
+        /// <returns></returns>
+        public string GetDatabaseId()
+        {
+            return databaseId;
+        }
 
         // Generics Section
 
