@@ -147,8 +147,9 @@ namespace Leaderboard
                 var ht = new Hashtable();
                 foreach (var document in documents)
                 {
+                    log.Info(JsonConvert.SerializeObject(document));
                     // remove the duplication. 
-                    ht[document.GetPropertyValue<DowntimeRecord>("teamid")] = "";
+                    ht[document.GetPropertyValue<string>("TeamId")] = "";
                 }
                 using (var scope = Container.BeginLifetimeScope())
                 {
@@ -156,10 +157,20 @@ namespace Leaderboard
                     foreach (var teamId in ht.Keys)
                     {
                         // Read the document teamid and count with sum.
-                        var result = await service.QueryBySQLAsync<DowntimeSummary>("SELECT teamid as TeamId, Sum(count) as Downtime FROM DowntimeRecord", "DowntimeRecord");
+                        var result = await service.QueryBySQLWithoutTypeAsync($"SELECT VALUE Sum(c.Count) from DowntimeRecord as c Where c.TeamId = \"{teamId}\" ", "DowntimeRecord");
                         if (result != null && result.Count != 0)
                         {
-                            var downtimeSummary = result.First<DowntimeSummary>();
+                            var downtime = (int)result.First<dynamic>();
+
+                            var downtimeSummary = new DowntimeSummary()
+                            {
+                                Downtime = downtime,
+                                TeamId = (string)teamId
+                            };
+                            downtimeSummary.TeamId = (string)teamId;
+                            log.Info($"Sum----TeamId: {teamId}");
+                            // log.Info(JsonConvert.SerializeObject(result));
+                            log.Info(JsonConvert.SerializeObject(downtimeSummary));
                             await service.UpdateDocumentAsync<DowntimeSummary>(downtimeSummary);
 
                         }

@@ -5,6 +5,7 @@
     "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
     "CosmosDBEndpointUri": "YOUR_COSMOS_ENDPOINT",
     "CosmosDBPrimaryKey": "YOUR_COSMOS_PRIMARY_KEY",
-    "CosmosDBDatabaseId": "leaderboard"
+    "CosmosDBDatabaseId": "leaderboard",
+    "CosmosDBConnection": "YOUR_COSMOS_CONNECTION_STRING_HERE"
   }
 }

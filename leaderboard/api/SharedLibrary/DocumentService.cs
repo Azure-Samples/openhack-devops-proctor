@@ -47,6 +47,7 @@ namespace Services
 
 
         Task<IList<T>> QueryBySQLAsync<T>(string sql, string collectionName);
+        Task<IList<dynamic>> QueryBySQLWithoutTypeAsync(string sql, string collectionName);
         }
 
 
@@ -163,8 +164,14 @@ namespace Services
         public async Task<IList<T>> QueryBySQLAsync<T>(string sql, string collectionName)
         {
             var query = client.CreateDocumentQuery<T>(
-                UriFactory.CreateDocumentCollectionUri(databaseId, collectionName));
+                UriFactory.CreateDocumentCollectionUri(databaseId, collectionName), sql);
             return query.ToList<T>();
+        }
+        public async Task<IList<dynamic>> QueryBySQLWithoutTypeAsync(string sql, string collectionName)
+        {
+            var query = client.CreateDocumentQuery(
+                UriFactory.CreateDocumentCollectionUri(databaseId, collectionName), sql);
+            return query.ToList();
         }
 
         public async Task RemoveCollectionIfExists<T>() {
