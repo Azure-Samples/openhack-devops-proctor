@@ -14,5 +14,5 @@ az login
 #### Deploy proctor environment
 
 ```shell
-nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> > <proctorName><proctorNumber>.out &"
+nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> > <proctorName><proctorNumber>.out"
 ```
