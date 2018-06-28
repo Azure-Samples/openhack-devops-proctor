@@ -147,7 +147,7 @@ namespace Leaderboard
         public static async Task DowntimeBatch([CosmosDBTrigger(
             databaseName: "leaderboard",
             collectionName: "DowntimeRecord",
-            ConnectionStringSetting ="CosmosDBConnection",
+            ConnectionStringSetting ="CosmosDBConnectionString",
             LeaseCollectionName = "leases",
             CreateLeaseCollectionIfNotExists = true)] IReadOnlyList<Document> documents,
             TraceWriter log)

@@ -1,0 +1,180 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "StreamAnalyticsJobName": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 63,
+        "metadata": {
+          "description": "Stream Analytics Job Name, can contain alphanumeric characters and hypen and must be 3-63 characters long"
+        }
+      },
+      "Location": {
+        "type": "string"
+      },
+      "OutputStartMode": {
+        "type": "string",
+        "allowedValues": [
+          "JobStartTime",
+          "CustomTime",
+          "JobStartTime"
+        ]
+      },
+      "DataLocale": {
+        "type": "string"
+      },
+      "OutputErrorPolicy": {
+        "type": "string",
+        "allowedValues": [
+          "Drop",
+          "Stop"
+        ]
+      },
+      "EventsLateArrivalMaxDelayInSeconds": {
+        "type": "int"
+      },
+      "EventsOutOfOrderMaxDelayInSeconds": {
+        "type": "int"
+      },
+      "EventsOutOfOrderPolicy": {
+        "type": "string",
+        "allowedValues": [
+          "Adjust",
+          "Drop"
+        ]
+      },
+      "StreamingUnits": {
+        "type": "int",
+        "minValue": 1,
+        "maxValue": 48,
+        "metadata": {
+          "description": "Number of Streaming Units"
+        },
+        "allowedValues": [
+          1,
+          3,
+          6,
+          12,
+          18,
+          24,
+          30,
+          36,
+          42,
+          48
+        ]
+      },
+      "CompatibilityLevel": {
+        "type": "string",
+        "allowedValues": [
+          "1.0",
+          "1.1"
+        ]
+      },
+      "Input_downtime_serviceBusNamespace": {
+        "type": "string"
+      },
+      "Input_downtime_eventHubName": {
+        "type": "string"
+      },
+      "Input_downtime_sharedAccessPolicyName": {
+        "type": "string"
+      },
+      "Input_downtime_sharedAccessPolicyKey": {
+        "type": "string"
+      },
+      "Output_cosmosdb_accountId": {
+        "type": "string"
+      },
+      "Output_cosmosdb_accountKey": {
+        "type": "string"
+      },
+      "Output_cosmosdb_database": {
+        "type": "string"
+      },
+      "Output_cosmosdb_collectionNamePattern": {
+        "type": "string"
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.StreamAnalytics/StreamingJobs",
+        "apiVersion": "2015-10-01",
+        "name": "[parameters('StreamAnalyticsJobName')]",
+        "location": "[parameters('Location')]",
+        "properties": {
+          "outputStartMode": "[parameters('OutputStartMode')]",
+          "outputStartTime": null,
+          "sku": {
+            "name": "standard"
+          },
+          "eventsOutOfOrderPolicy": "[parameters('EventsOutOfOrderPolicy')]",
+          "outputErrorPolicy": "[parameters('OutputErrorPolicy')]",
+          "eventsOutOfOrderMaxDelayInSeconds": "[parameters('EventsOutOfOrderMaxDelayInSeconds')]",
+          "eventsLateArrivalMaxDelayInSeconds": "[parameters('EventsLateArrivalMaxDelayInSeconds')]",
+          "dataLocale": "[parameters('DataLocale')]",
+          "compatibilityLevel": "[parameters('CompatibilityLevel')]",
+          "inputs": [
+            {
+              "name": "downtime",
+              "properties": {
+                "type": "Stream",
+                "datasource": {
+                  "type": "Microsoft.ServiceBus/EventHub",
+                  "properties": {
+                    "serviceBusNamespace": "[parameters('Input_downtime_serviceBusNamespace')]",
+                    "eventHubName": "[parameters('Input_downtime_eventHubName')]",
+                    "consumerGroupName": null,
+                    "sharedAccessPolicyName": "[parameters('Input_downtime_sharedAccessPolicyName')]",
+                    "sharedAccessPolicyKey": "[parameters('Input_downtime_sharedAccessPolicyKey')]"
+                  }
+                },
+                "compression": {
+                  "type": "None"
+                },
+                "serialization": {
+                  "type": "Json",
+                  "properties": {
+                    "encoding": "UTF8"
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "cosmosdb",
+              "properties": {
+                "serialization": {
+                  "type": "Json",
+                  "properties": {
+                    "encoding": "UTF8",
+                    "format": "LineSeparated"
+                  }
+                },
+                "datasource": {
+                  "type": "Microsoft.Storage/DocumentDB",
+                  "properties": {
+                    "accountId": "[parameters('Output_cosmosdb_accountId')]",
+                    "accountKey": "[parameters('Output_cosmosdb_accountKey')]",
+                    "database": "[parameters('Output_cosmosdb_database')]",
+                    "collectionNamePattern": "[parameters('Output_cosmosdb_collectionNamePattern')]",
+                    "partitionKey": null,
+                    "documentId": null
+                  }
+                }
+              }
+            }
+          ],
+          "transformation": {
+            "name": "Transformation",
+            "properties": {
+              "streamingUnits": "[parameters('StreamingUnits')]",
+              "query": "WITH SelectPreviousEvent AS\r\n(\r\nSELECT\r\n    TeamId,\r\n    System.TimeStamp As Time,\r\n    Count(*) as Count\r\nFROM\r\n    downtime TIMESTAMP BY Date\r\nGROUP BY\r\n  TeamId,\r\n  TumblingWindow(second, 1)\r\n)\r\n\r\nSELECT \r\n  TeamId,\r\n  System.Timestamp As Time,\r\n  Count(*) As Count\r\nINTO\r\n    [cosmosdb]\r\nFROM SelectPreviousEvent\r\nGroup BY\r\n  TeamId,\r\n  TumblingWindow(minute, 1)"
+            }
+          },
+          "functions": []
+        }
+      }
+    ]
+  }

@@ -39,7 +39,13 @@
         },
         "packageUrl": {
             "type": "string"
-        }
+        },
+        "cosmosDBConnectionString": {
+            "type": "string"
+        },        
+        "evebtHubsConnectionString": {
+            "type": "string"
+        }  
     },
     "resources": [
         {
@@ -88,6 +94,18 @@
                         {
                             "name": "CosmosDBDatabaseId",
                             "value": "leaderboard"
+                        },
+                        {
+                            "name": "CosmosDBConnectionString",
+                            "value": "[parameters('cosmosDBConnectionString')]"
+                        },
+                        {
+                            "name": "EventHubsEntityPath",
+                            "value": "downtime"
+                        },
+                        {
+                            "name": "EvebtHubsConnectionString",
+                            "value": "[parameters('evebtHubsConnectionString')]"
                         }
                     ],
                     "alwaysOn": true
