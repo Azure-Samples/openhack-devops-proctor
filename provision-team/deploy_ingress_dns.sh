@@ -47,9 +47,31 @@ if [[ -z "$teamName" ]]; then
     read teamName
 fi
 
+echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: tiller
+    namespace: kube-system
+EOF
+
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade --wait
+helm init --upgrade --service-account tiller --wait
 
 tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
 
