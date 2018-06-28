@@ -16,6 +16,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Azure.Documents;
 using System.Collections;
+using SharedLibrary;
 
 namespace Leaderboard
 {
@@ -28,6 +29,7 @@ namespace Leaderboard
             var builder = new ContainerBuilder();
             builder.RegisterType<DocumentService>().As<IDocumentService>().SingleInstance();
             builder.RegisterType<TeamService>().As<TeamService>().SingleInstance();
+            builder.RegisterType<EventHubMessagingService>().As<MessagingService>().SingleInstance();
             Container = builder.Build();
         }
 
@@ -45,6 +47,7 @@ namespace Leaderboard
                 using (var scope = Container.BeginLifetimeScope())
                 {
                     var service = scope.Resolve<IDocumentService>();
+                    
 
                     var requestBody = new StreamReader(req.Body).ReadToEnd();
                     log.Info(requestBody);
@@ -52,7 +55,9 @@ namespace Leaderboard
 
                     var targetService = await service.GetServiceAsync<Service>(report.ServiceId);
 
-                    //// Service current status update.  
+                    /// TODO Keep this logic until the new EventHub based service works. 
+                    /// This logic might need when we create other leaderboard screens. 
+                    /// Service current status update.  
                     if (targetService.CurrentStatus != report.Status)
                     {
                         targetService.CurrentStatus = report.Status;
@@ -69,6 +74,11 @@ namespace Leaderboard
                     // {
                     await service.CreateDocumentAsync<History>(report.GetHistory());
                     // }
+
+                    // Transfer message to the Event Hubs
+                    var messagingService = scope.Resolve<MessagingService>();
+                    await messagingService.SendMessageAsync(requestBody);
+
                     return new OkObjectResult("{'status': 'accepted'}");
                 }
             }
