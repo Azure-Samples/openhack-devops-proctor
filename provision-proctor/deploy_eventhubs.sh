@@ -41,13 +41,11 @@ fi
 if [[ -z "$namespaceName" ]]; then
     echo "Enter the name of the namespace name of the EventHubs:"
     read namespaceName
-    [[ "${namespaceName}"]]
 fi
 
 if [[ -z "$location" ]]; then
     echo "Enter the name of the location of the EventHubs:"
     read location
-    [[ "${location}"]]
 fi
 
 
@@ -65,4 +63,3 @@ az eventhubs namespace create -g dooh2tsushipro0109-rg -n dooh2tsushisome -l eas
 
  az eventhubs eventhub create --name downtime --namespace-name $namespaceName -g $resourceGroupName --message-retention 1 --partition-count 2
 
- 
