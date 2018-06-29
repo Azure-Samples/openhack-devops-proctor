@@ -10,7 +10,7 @@ $adminPassword = $AdminPassword #'AzureP@ssw0rd!'
 $AdminUser = 'azureuser'
 $environmentHeader = "procoh"
 $proctorVMName = $environmentHeader + "vm" + $num
-$resourceGroupName = "ProctorResource" + $num
+$resourceGroupName = "Proctor" + $num
 
 Write-Output ""
 Write-Output "**************************************************************************************************"
