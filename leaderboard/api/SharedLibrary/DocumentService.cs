@@ -34,7 +34,7 @@ namespace Services
         /// Get the databaseId
         /// </summary>
         /// <returns></returns>
-        string GetDatabaseId()
+        string GetDatabaseId();
 
         /// <summary>
         /// RemoveCollectionIfExists remove Collection if exists. 
