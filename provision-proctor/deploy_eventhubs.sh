@@ -13,7 +13,7 @@ declare resourceGroupName=""
 declare namespaceName=""
 declare location=""
 # Initialize parameters specified from command line
-while getopts ":g:n:" arg; do
+while getopts ":g:n:l:" arg; do
     case "${arg}" in
         g)
             resourceGroupName=${OPTARG}
