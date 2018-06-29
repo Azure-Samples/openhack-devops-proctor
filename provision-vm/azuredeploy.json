@@ -228,5 +228,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "sshConnectString": {
+          "type": "string",
+          "value": "[concat(parameters('adminUsername'), '@', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        }
+    }
 }
