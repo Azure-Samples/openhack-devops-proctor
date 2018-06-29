@@ -83,3 +83,14 @@ echo -e "Retriving eventhubs primary key string\n"
 eventhubsKey=$(az eventhubs namespace authorization-rule keys list --resource-group $resourceGroupName --namespace-name $eventHubsNamespace --name RootManageSharedAccessKey --query primaryKey --output tsv)
 
 az group deployment create --name StreamAnalyticsDeployment --resource-group $resourceGroupName --template-file stream_analytics_arm_template.json --parameters @stream_analytics_arm_parameter.json --parameters StreamAnalyticsJobName=$streamAnalyticsJobName Location=$location Input_downtime_serviceBusNamespace=$eventHubsNamespace Input_downtime_sharedAccessPolicyKey=$eventhubsKey Output_cosmosdb_accountId=$cosmosDBName Output_cosmosdb_accountKey=$cosmosdbKey
+
+
+# Start Stream Analytics Job
+
+echo -e "Starting Stream Analytics Job\n"
+token=$(az account get-access-token --query accessToken --output tsv)
+subscriptionId=$(az account show --query id --output tsv)
+
+curl -X POST https://management.azure.com/subscriptions/$subscriptionId/re
+sourceGroups/$resourceGroupName/providers/Microsoft.StreamAnalytics/streamingjobs/$streamAnalyticsJobName/start?api-version=
+2015-10-01 -H "Authorization: Bearer $token" -H "Content-type: application/json" -d '{"outputStartMode" : "JobStartTime"}' -v
