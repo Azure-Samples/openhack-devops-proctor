@@ -6,7 +6,7 @@ imageTag: 1.5.4
 serviceType: LoadBalancer
 loadBalancerIP:
 # loadBalancerSourceRanges: []
-externalTrafficPolicy: Cluster
+externalTrafficPolicy: Local
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
