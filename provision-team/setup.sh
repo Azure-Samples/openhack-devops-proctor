@@ -191,6 +191,8 @@ kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
 kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
 
+az configure --defaults 'output=json'
+
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation)"
 bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupTeam -k $keyVaultName -l $resourceGroupLocation
 
