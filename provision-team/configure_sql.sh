@@ -114,3 +114,6 @@ bash ./sql_data_init.sh -s $sqlServerFQDN -u $sqlServerUsername -p $sqlPassword 
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
+
+#Create launch.json and tasks.json files
+bash ./build_launch_json.sh -s $sqlServer -u $sqlServerUsername -p $sqlPassword -t $teamName

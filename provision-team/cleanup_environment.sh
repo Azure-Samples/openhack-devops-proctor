@@ -33,4 +33,4 @@ if [ -f $HOME/.kube/config ]; then
 fi
 
 # 3- Delete the working directory
-rm -rf ./test_fetch_build
+# rm -rf ./test_fetch_build
