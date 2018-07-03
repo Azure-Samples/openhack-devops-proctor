@@ -80,6 +80,11 @@ while true; do
         echo $time "seconds waiting"
 done
 
+# Adding sleep 45 as per https://github.com/kubernetes/charts/commit/977d130375c88dd1b0a23977522db8d748fd49d3#diff-3e80d6cfbb2cf233c8f914f6fde79ec5
+echo -e "\nSleeping for 45 seconds to ensure Traefik is ready\n"
+sleep 45 
+
+
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
 helm install stable/traefik --name team-ingress --version 1.27.0 -f $relativeSaveLocation"/traefik$teamName.yaml"
