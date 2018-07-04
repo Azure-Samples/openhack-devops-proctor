@@ -112,7 +112,7 @@ if [[ -z "$proctorNumber" ]]; then
     proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
 fi
 
-declare resourceGroupProctor="${proctorName}${proctorNumber}-rg";
+declare resourceGroupProctor="${proctorName}${proctorNumber}rg";
 declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
 declare cosmosDBName="${proctorName}${proctorNumber}db"

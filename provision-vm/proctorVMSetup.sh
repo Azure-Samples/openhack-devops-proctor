@@ -79,6 +79,6 @@ sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
 sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 # Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
-sudo apt-get install -y azure-cli=2.0.31-1~xenial
+sudo apt-get install -y azure-cli=2.0.38-1~xenial
 
 sudo apt-get upgrade -y
