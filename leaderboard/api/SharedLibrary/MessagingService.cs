@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SharedLibrary
 {
-    public interface MessagingService
+    public interface IMessagingService
     {
         Task SendMessageAsync(string message);
     }

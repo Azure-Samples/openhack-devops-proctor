@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Microsoft.Azure.Documents;
 using System.Collections;
 using SharedLibrary;
+using Microsoft.Extensions.Logging;
 
 namespace Leaderboard
 {
@@ -29,7 +30,7 @@ namespace Leaderboard
             var builder = new ContainerBuilder();
             builder.RegisterType<DocumentService>().As<IDocumentService>().SingleInstance();
             builder.RegisterType<TeamService>().As<TeamService>().SingleInstance();
-            builder.RegisterType<EventHubMessagingService>().As<MessagingService>().SingleInstance();
+            builder.RegisterType<EventHubMessagingService>().As<IMessagingService>().SingleInstance();
             Container = builder.Build();
         }
 
@@ -39,7 +40,7 @@ namespace Leaderboard
         /// <param name="log"></param>
         /// <returns></returns>
         [FunctionName("ReportStatus")]
-        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
             {
@@ -50,7 +51,7 @@ namespace Leaderboard
                     
 
                     var requestBody = new StreamReader(req.Body).ReadToEnd();
-                    log.Info(requestBody);
+                    log.LogInformation(requestBody);
                     var report = JsonConvert.DeserializeObject<DowntimeReport>(requestBody);
 
                     var targetService = await service.GetServiceAsync<Service>(report.ServiceId);
@@ -76,7 +77,7 @@ namespace Leaderboard
                     // }
 
                     // Transfer message to the Event Hubs
-                    var messagingService = scope.Resolve<MessagingService>();
+                    var messagingService = scope.Resolve<IMessagingService>();
                     await messagingService.SendMessageAsync(requestBody);
 
                     return new OkObjectResult("{'status': 'accepted'}");
@@ -84,14 +85,14 @@ namespace Leaderboard
             }
             catch (Exception e)
             {
-                log.Error($"Report Status error: {e.Message}");
-                log.Error(e.StackTrace);
+                log.LogError($"Report Status error: {e.Message}");
+                log.LogError(e.StackTrace);
                 return new BadRequestObjectResult("{'status': 'error', 'message': '{" + e.Message + "'}");
             }
         }
 
         [FunctionName("GetTeamsStatus")]
-        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, ILogger log)
         {
             using (var scope = Container.BeginLifetimeScope())
             {
@@ -135,8 +136,8 @@ namespace Leaderboard
                     return new OkObjectResult(result);
                 } catch (Exception e)
                 {
-                    log.Error($"Get Team status error: {e.Message}");
-                    log.Error(e.StackTrace);
+                    log.LogError($"Get Team status error: {e.Message}");
+                    log.LogError(e.StackTrace);
                     return new BadRequestObjectResult("{'status': 'error', 'message': '{" + e.Message + "'}");
                 }
             }
@@ -150,14 +151,14 @@ namespace Leaderboard
             ConnectionStringSetting ="CosmosDBConnectionString",
             LeaseCollectionName = "leases",
             CreateLeaseCollectionIfNotExists = true)] IReadOnlyList<Document> documents,
-            TraceWriter log)
+            ILogger log)
         {
             if (documents != null && documents.Count > 0)
             {
                 var ht = new Hashtable();
                 foreach (var document in documents)
                 {
-                    log.Info(JsonConvert.SerializeObject(document));
+                    log.LogInformation(JsonConvert.SerializeObject(document));
                     // remove the duplication. 
                     ht[document.GetPropertyValue<string>("TeamId")] = "";
                 }
@@ -176,8 +177,8 @@ namespace Leaderboard
                            TeamId = (string)teamId
                         };
                         downtimeSummary.TeamId = (string)teamId;
-                        log.Info($"Sum----TeamId: {teamId}");
-                        log.Info(JsonConvert.SerializeObject(downtimeSummary));
+                        log.LogInformation($"Sum----TeamId: {teamId}");
+                        log.LogInformation(JsonConvert.SerializeObject(downtimeSummary));
                         await service.UpdateDocumentAsync<DowntimeSummary>(downtimeSummary);
                     }
                 }

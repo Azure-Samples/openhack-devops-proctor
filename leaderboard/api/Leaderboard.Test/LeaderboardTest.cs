@@ -114,7 +114,7 @@ namespace Leaderboard.Test
 
         }
         
-        private async Task<List<DowntimeReport>> SendMessagesAsync(MessagingService service)
+        private async Task<List<DowntimeReport>> SendMessagesAsync(IMessagingService service)
         {
             Console.WriteLine("-----Send Messages");
 
@@ -171,7 +171,7 @@ namespace Leaderboard.Test
             await DeleteAllDocuments(service, "Team02");
 
             // Send it to the eventhubs
-            MessagingService messagingService = new EventHubMessagingService();
+            IMessagingService messagingService = new EventHubMessagingService();
             // await messagingService.SendMessageAsync(jsonMessages);
 
             // Send message from Input sample data with current time

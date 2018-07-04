@@ -8,7 +8,7 @@ using System.IO;
 
 namespace SharedLibrary
 {
-    public class EventHubMessagingService : MessagingService
+    public class EventHubMessagingService : IMessagingService
     {
         private static EventHubClient eventHubClient;
         private const string CONFIG_FILE = "appsettings.json";
