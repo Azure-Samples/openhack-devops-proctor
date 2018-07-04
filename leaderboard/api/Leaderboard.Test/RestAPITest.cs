@@ -54,7 +54,7 @@ namespace Leaderboard.Test
             documentServiceMock.Setup(c => c.CreateDocumentAsync<History>(input.GetHistory())).Returns(Task.FromResult("")); // do nothing
 
             Mock<IMessagingService> messagingServiceMock = new Mock<IMessagingService>();
-            messagingServiceMock.Setup(c => c.SendMessageAsync(inputJson)).Returns(Task.FromResult(""));
+            messagingServiceMock.Setup(c => c.SendMessageAsync(inputJson)).Returns(Task.FromResult("")).Verifiable();
 
 
             builder.RegisterInstance(documentServiceMock.Object).As<IDocumentService>();
@@ -67,11 +67,11 @@ namespace Leaderboard.Test
             requestMock.Setup(c => c.Body).Returns(new MemoryStream(System.Text.Encoding.ASCII.GetBytes(inputJson)));
             // Create a mock of TraceWriter
             Mock<ILogger> writerMock = new Mock<ILogger>();
-           // writerMock.Setup(c => c.LogInformation(It.IsAny<string>(), null));
 
             var response = RestAPI.ReportStatus(requestMock.Object, writerMock.Object);
 
-            messagingServiceMock.Verify(c => c.SendMessageAsync(inputJson));
+            messagingServiceMock.Verify();
+
 
         }
     }
