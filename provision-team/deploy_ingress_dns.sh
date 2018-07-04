@@ -49,13 +49,15 @@ fi
 
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade --wait
+
 
 kubectl create serviceaccount --namespace kube-system tiller
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 
 helm init --service-account tiller
+
+helm init --upgrade --wait
 
 tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
 
