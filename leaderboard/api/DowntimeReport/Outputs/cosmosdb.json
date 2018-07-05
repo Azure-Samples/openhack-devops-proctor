@@ -1,0 +1,29 @@
+﻿{
+  "EventHubProperties": null,
+  "BlobStorageProperties": null,
+  "SQLDatabaseProperties": null,
+  "TableStorageProperties": null,
+  "ServiceBusQueueProperties": null,
+  "ServiceBusTopicProperties": null,
+  "DocumentDbProperties": {
+    "AccountId": "dooh2tsushipro0109db",
+    "AccountKey": null,
+    "CollectionNamePattern": "DowntimeRecord",
+    "Database": "leaderboard",
+    "DocumentId": null,
+    "PartitionKey": null
+  },
+  "PowellBIProperties": null,
+  "AzureDataLakeStoreProperties": null,
+  "AzureFunctionProperties": null,
+  "DataSourceCredentialDomain": "ccba9977-ae7d-45e3-b072-90a8baa80039.StreamAnalyticsCredential",
+  "Name": "cosmosdb",
+  "DataSourceType": "DocumentDB",
+  "Serialization": {
+    "Encoding": "UTF8",
+    "Type": "Json",
+    "FieldDelimiter": null,
+    "Format": "LineSeparated"
+  },
+  "ScriptType": "Output"
+}

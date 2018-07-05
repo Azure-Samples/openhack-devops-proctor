@@ -250,6 +250,42 @@ namespace Models
             return history;
         }
     }
+    /// <summary>
+    /// DowntimeRecord is a collection for Stream Analytics summary the downtime for each second.
+    /// TeamId is the PartitionKey
+    /// </summary>
+    public class DowntimeRecord : IDocument
+    {
+        public string TeamId { get; set; }
+        public DateTime Time { get; set; }
+
+        public int Count { get; set; }
+        public string id { get; set; }
+
+        public static int TotalCount(DowntimeRecord[] records, string teamId)
+        {
+            int totalCount = 0;
+            foreach(var record in records)
+            {
+                if (record.TeamId == teamId)
+                {
+                    totalCount = totalCount + record.Count;
+                }
+            }
+            return totalCount;
+        }
+    }
+
+    /// <summary>
+    /// Model class for summary the downtime for each teams
+    /// It is created by CosmosDB trigger functions
+    /// </summary>
+    public class DowntimeSummary : IDocument
+    {
+        public string TeamId { get; set; }
+        public int Downtime { get; set; }
+        public string id { get { return this.TeamId; }  set { } }
+    }
 
     /// <summary>
     /// UptimeReport is report for SPA to report all Team uptime reports.

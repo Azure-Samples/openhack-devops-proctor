@@ -29,7 +29,7 @@ fi
 
 pushd .
 cd ../leaderboard/api/Leaderboard
-dotnet restore
+dotnet restore -s https://www.myget.org/F/azure-appservice/api/v2 -s https://api.nuget.org/v3/index.json
 dotnet publish -c Release
 
 cd bin/Release/netstandard2.0/publish

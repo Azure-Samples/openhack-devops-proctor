@@ -14,18 +14,23 @@ using Newtonsoft.Json;
 using Autofac;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Azure.Documents;
+using System.Collections;
+using SharedLibrary;
+using Microsoft.Extensions.Logging;
 
 namespace Leaderboard
 {
     public static class RestAPI
     {
-        private static IContainer Container { get; set; }
+        public static IContainer Container { get; set; }
 
         static RestAPI()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<DocumentService>().As<IDocumentService>().SingleInstance();
             builder.RegisterType<TeamService>().As<TeamService>().SingleInstance();
+            builder.RegisterType<EventHubMessagingService>().As<IMessagingService>().SingleInstance();
             Container = builder.Build();
         }
 
@@ -35,7 +40,7 @@ namespace Leaderboard
         /// <param name="log"></param>
         /// <returns></returns>
         [FunctionName("ReportStatus")]
-        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> ReportStatus([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
             {
@@ -43,14 +48,17 @@ namespace Leaderboard
                 using (var scope = Container.BeginLifetimeScope())
                 {
                     var service = scope.Resolve<IDocumentService>();
+                    
 
                     var requestBody = new StreamReader(req.Body).ReadToEnd();
-                    log.Info(requestBody);
+                    log.LogInformation(requestBody);
                     var report = JsonConvert.DeserializeObject<DowntimeReport>(requestBody);
 
                     var targetService = await service.GetServiceAsync<Service>(report.ServiceId);
 
-                    //// Service current status update.  
+                    /// TODO Keep this logic until the new EventHub based service works. 
+                    /// This logic might need when we create other leaderboard screens. 
+                    /// Service current status update.  
                     if (targetService.CurrentStatus != report.Status)
                     {
                         targetService.CurrentStatus = report.Status;
@@ -58,20 +66,6 @@ namespace Leaderboard
                         var targetTeam = await service.GetServiceAsync<Team>(report.TeamId);
                         targetTeam.UpdateService(targetService);
 
-                        await targetTeam.UpdateCurrentStateWithFunctionAsync(async () =>
-                        {
-                            // This method is called when CurrentStatus is changing. 
-                            var statusHistory = new StatusHistory
-                            {
-                                TeamId = targetTeam.id,
-                                Date = DateTime.UtcNow,
-                                // CurrentStatus is not updated in this time period
-                                // If the ServiceStatusTotal(GetTotalStatus) is true, then it means recorver from failure.
-                                // If it is false, then it means go to the failure state.
-                                Status = targetTeam.GetTotalStatus() ? DowntimeStatus.Finished : DowntimeStatus.Started
-                            };
-                            await service.CreateDocumentAsync<StatusHistory>(statusHistory);
-                        });
                         await service.UpdateDocumentAsync<Team>(targetTeam);
                     }
 
@@ -81,19 +75,24 @@ namespace Leaderboard
                     // {
                     await service.CreateDocumentAsync<History>(report.GetHistory());
                     // }
+
+                    // Transfer message to the Event Hubs
+                    var messagingService = scope.Resolve<IMessagingService>();
+                    await messagingService.SendMessageAsync(requestBody);
+
                     return new OkObjectResult("{'status': 'accepted'}");
                 }
             }
             catch (Exception e)
             {
-                log.Error($"Report Status error: {e.Message}");
-                log.Error(e.StackTrace);
+                log.LogError($"Report Status error: {e.Message}");
+                log.LogError(e.StackTrace);
                 return new BadRequestObjectResult("{'status': 'error', 'message': '{" + e.Message + "'}");
             }
         }
 
         [FunctionName("GetTeamsStatus")]
-        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
+        public static async Task<IActionResult> GetTeamsStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, ILogger log)
         {
             using (var scope = Container.BeginLifetimeScope())
             {
@@ -107,12 +106,21 @@ namespace Leaderboard
                     var list = new List<UptimeReport>();
                     foreach (var team in teams)
                     {
-                        var histories = await service.GetDocumentsAsync<StatusHistory>(
+                        var downtimeSummaries = await service.GetDocumentsAsync<DowntimeSummary>(
                             (query) =>
                             {
                                 return query.Where(f => f.TeamId == team.id);
                             });
-                        var downtime = StatusHistory.GetServiceDowntimeTotal(histories);
+                        TimeSpan downtime; 
+                        if (downtimeSummaries != null && downtimeSummaries.Count != 0)
+                        {
+                            var downtimeSummary = downtimeSummaries.First<DowntimeSummary>();
+                            downtime = TimeSpan.FromSeconds(downtimeSummary.Downtime);
+                        } else
+                        {
+                            downtime = TimeSpan.FromSeconds(0);
+                        }
+                        
                         // TODO implement uptime and uppercent
                         list.Add(
                             new UptimeReport
@@ -128,14 +136,55 @@ namespace Leaderboard
                     return new OkObjectResult(result);
                 } catch (Exception e)
                 {
-                    log.Error($"Get Team status error: {e.Message}");
-                    log.Error(e.StackTrace);
+                    log.LogError($"Get Team status error: {e.Message}");
+                    log.LogError(e.StackTrace);
                     return new BadRequestObjectResult("{'status': 'error', 'message': '{" + e.Message + "'}");
                 }
             }
 
 
         }
+        [FunctionName("DowntimeBatch")]
+        public static async Task DowntimeBatch([CosmosDBTrigger(
+            databaseName: "leaderboard",
+            collectionName: "DowntimeRecord",
+            ConnectionStringSetting ="CosmosDBConnectionString",
+            LeaseCollectionName = "leases",
+            CreateLeaseCollectionIfNotExists = true)] IReadOnlyList<Document> documents,
+            ILogger log)
+        {
+            if (documents != null && documents.Count > 0)
+            {
+                var ht = new Hashtable();
+                foreach (var document in documents)
+                {
+                    log.LogInformation(JsonConvert.SerializeObject(document));
+                    // remove the duplication. 
+                    ht[document.GetPropertyValue<string>("TeamId")] = "";
+                }
+                using (var scope = Container.BeginLifetimeScope())
+                {
+                    var service = scope.Resolve<IDocumentService>();
+                    var teamService = scope.Resolve<TeamService>();
+                    foreach (var teamId in ht.Keys)
+                    {
+                        // Read the document teamid and count with sum.
+                        var downtime = await teamService.QueryDowntimeAsync((string)teamId);
+
+                        var downtimeSummary = new DowntimeSummary()
+                        {
+                           Downtime = downtime,
+                           TeamId = (string)teamId
+                        };
+                        downtimeSummary.TeamId = (string)teamId;
+                        log.LogInformation($"Sum----TeamId: {teamId}");
+                        log.LogInformation(JsonConvert.SerializeObject(downtimeSummary));
+                        await service.UpdateDocumentAsync<DowntimeSummary>(downtimeSummary);
+                    }
+                }
+            }
+        }
+
 
         [FunctionName("SampleFunc")]
         public static async Task<IActionResult> SampleFunc([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]HttpRequest req, TraceWriter log)
