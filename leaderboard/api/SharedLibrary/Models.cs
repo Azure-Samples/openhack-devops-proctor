@@ -46,7 +46,7 @@ namespace Models
             }
         }
 
-        public void UpdateService(Service service)
+        public virtual void UpdateService(Service service)
         {
             var hasUpdated = false;
             for(int i = 0; i < Services.Length; i++)

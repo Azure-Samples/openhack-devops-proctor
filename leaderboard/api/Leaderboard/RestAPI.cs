@@ -76,9 +76,14 @@ namespace Leaderboard
                     await service.CreateDocumentAsync<History>(report.GetHistory());
                     // }
 
-                    // Transfer message to the Event Hubs
-                    var messagingService = scope.Resolve<IMessagingService>();
-                    await messagingService.SendMessageAsync(requestBody);
+                    // Only the donwtime report is transfered to the EventHubs.
+                    if (!report.Status)
+                    {
+                        // Transfer message to the Event Hubs
+                        var messagingService = scope.Resolve<IMessagingService>();
+                        await messagingService.SendMessageAsync(requestBody);
+
+                    }
 
                     return new OkObjectResult("{'status': 'accepted'}");
                 }
