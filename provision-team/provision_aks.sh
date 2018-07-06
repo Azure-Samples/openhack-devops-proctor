@@ -69,7 +69,7 @@ fi
 if [ -f "~/.azure/aksServicePrincipal.json" ]; then
     NOW=$(date +"%Y%m%d-%H%M")
     mv ~/.azure/aksServicePrincipal.json ~/.azure/aksServicePrincipal_$NOW.json
-    echo "renamed existing local AKS Service Principal to ~/.azure/aksServicePrincipal_"$NOW".json" 
+    echo "renamed existing local AKS Service Principal to ~/.azure/aksServicePrincipal_"$NOW".json"
 fi
 
 echo "Creating AKS Cluster..."
