@@ -12,7 +12,7 @@ declare teamNumber=""
 declare azcliVerifiedVersion="2.0.38"
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:c:" arg; do
+while getopts ":i:l:n:e:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -55,7 +55,7 @@ if [ ! $? == 0 ]; then
 else
     currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
     if [ $currentCliVersion != $azcliVersion ]; then
-       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVersion"
+       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
        exit 1
     fi
 fi
