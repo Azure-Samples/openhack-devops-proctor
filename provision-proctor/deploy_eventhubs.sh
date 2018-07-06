@@ -57,7 +57,6 @@ echo -e "\n"
 
 # create EventHubs namespace , name must be lowercase.
 az eventhubs namespace create -n $namespaceName -g $resourceGroupName -l $location --sku Basic 
-az eventhubs namespace create -g dooh2tsushipro0109-rg -n dooh2tsushisome -l eastus --sku Basic
 
 # create EventHub name
 
