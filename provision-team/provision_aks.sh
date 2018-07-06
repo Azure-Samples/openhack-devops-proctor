@@ -69,13 +69,13 @@ fi
 if [ -f "~/.azure/aksServicePrincipal.json" ]; then
     NOW=$(date +"%Y%m%d-%H%M")
     mv ~/.azure/aksServicePrincipal.json ~/.azure/aksServicePrincipal_$NOW.json
-    echo "renamed existing local AKS Service Principal to ~/.azure/aksServicePrincipal_"$NOW".json" 
+    echo "renamed existing local AKS Service Principal to ~/.azure/aksServicePrincipal_"$NOW".json"
 fi
 
 echo "Creating AKS Cluster..."
 (
     set -x
-    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.9.6 --disable-rbac
+    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.9.6
 )
 
 if [ $? == 0 ];
