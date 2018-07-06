@@ -40,7 +40,7 @@ if [ -z "$proctorName" ] || [ -z "$dnsURL" ]; then
     usage
 fi
 
-declare resourceGroupName="${proctorName}-rg"
+declare resourceGroupName="${proctorName}rg"
 declare registryName="${proctorName}acr"
 declare functionAppName="${proctorName}fun"
 
