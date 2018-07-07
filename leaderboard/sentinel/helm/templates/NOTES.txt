@@ -1,8 +1,6 @@
-{{ .Values.teams.totalNumber }} total teams are deployed with one pod for each of the 3 services. 
+Teams are deployed with one deployment with the 3 services. 
 
 TeamID      |  ApiURL
-{{- range $i, $e := until (.Values.teams.totalNumber|int) }}
-{{ $.Values.teams.baseName }}{{ add1 $i }}  | http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com 
-{{- end }}
+{{ $.Values.teams.name }}  | {{ $.Values.teams.endpointUrl }} 
 
 Happy Sentinel
