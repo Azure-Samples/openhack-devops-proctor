@@ -3,14 +3,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams>" 1>&2; exit 1; }
+usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare proctorName=""
 declare proctorNumber=""
 declare teamName=""
-declare totalTeams=""
 
 # Initialize parameters specified from command line
 while getopts ":i:l:m:u:n:e:" arg; do
@@ -29,9 +28,6 @@ while getopts ":i:l:m:u:n:e:" arg; do
         ;;
         n)
             teamName=${OPTARG}
-        ;;
-        e)
-            totalTeams=${OPTARG}
         ;;
     esac
 done
@@ -85,11 +81,6 @@ fi
 if [[ -z "$teamName" ]]; then
     echo "Enter the base team name used for the already provisioned team environments:"
     read teamName
-fi
-
-if [[ -z "$totalTeams" ]]; then
-    echo "Enter the total number of already provisioned team environments:"
-    read totalTeams
 fi
 
 if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ]; then
@@ -223,8 +214,8 @@ bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n $
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
 
-echo "9-Build sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl)"
-bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl
+echo "9-Build sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
 # Using all the entries in kvstore to deploy sentinel
 echo "10-Deploy sentinel to AKS"
