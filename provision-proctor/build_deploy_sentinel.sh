@@ -113,8 +113,3 @@ docker push $TAG
 echo "Successfully pushed image: "$TAG
 
 popd
-
-installPath="../leaderboard/sentinel/helm"
-echo -e "\nhelm install ... from: " $installPath
-
-helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$resourceGroupLocation,teams.baseName=$teamName,teams.apiUrl=$apiUrl
