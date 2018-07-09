@@ -105,7 +105,7 @@ TAG=$ACR_ID"/devopsoh/sentinel"
 
 echo "TAG: "$TAG
 
-pushd ../leaderboard/sentinel
+pushd ../leaderboardv2/sentinel
 
 docker build . -t $TAG
 
@@ -114,7 +114,7 @@ echo "Successfully pushed image: "$TAG
 
 popd
 
-installPath="../leaderboard/sentinel/helm"
+installPath="../leaderboardv2/sentinel/helm"
 echo -e "\nhelm install ... from: " $installPath
 
 helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$resourceGroupLocation,teams.baseName=$teamName,teams.apiUrl=$apiUrl
