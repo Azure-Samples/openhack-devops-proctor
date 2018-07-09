@@ -51,10 +51,12 @@ func main() {
 			panic(err)
 		}
 		fmt.Println(fmt.Sprintf("Server: %s Status: %d", cfg.Endpoint, statusCode))
+		currentTime := time.Now()
+		currentTimeRound := currentTime.Round(time.Duration(time.Second))
 		logmsg := &logmsg{
 			TeamID:      cfg.TeamID,
 			ServiceType: cfg.ServiceType,
-			Date:        time.Now(),
+			Date:        currentTimeRound,
 			StatusCode:  statusCode,
 		}
 
