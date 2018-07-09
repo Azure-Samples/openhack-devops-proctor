@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <Folder Include="New Folder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,5 +18,8 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\ValuesController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Properties\launchSettings.json" />
   </ItemGroup>
 </Project>
