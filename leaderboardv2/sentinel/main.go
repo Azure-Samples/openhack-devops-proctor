@@ -27,7 +27,6 @@ type logmsg struct {
 	ServiceType string
 	CreatedDate time.Time
 	StatusCode  int
-	Status      bool
 }
 
 func main() {
@@ -42,7 +41,6 @@ func main() {
 		return
 	}
 
-	lastStatus := false
 	ticker := time.NewTicker(time.Duration(cfg.Interval) * time.Second)
 	for t := range ticker.C {
 		fmt.Println("Tick ...", t)
@@ -62,23 +60,12 @@ func main() {
 
 		// Endpoint is dead
 		if statusCode != 200 {
-			logmsg.Status = false
 			res, err := report(&cfg, logmsg)
 			if err != nil {
 				printAPIErrorMessage(&cfg, err, res, logmsg)
 			}
 			fmt.Println("Dead! wait for recovery for 1000 ms")
 			time.Sleep(time.Duration(cfg.RetryDuration) * time.Millisecond)
-			lastStatus = false
-		} else {
-			if !lastStatus {
-				logmsg.Status = true
-				res, err := report(&cfg, logmsg)
-				if err != nil {
-					printAPIErrorMessage(&cfg, err, res, logmsg)
-				}
-			}
-			lastStatus = true
 		}
 	}
 
