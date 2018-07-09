@@ -11,7 +11,8 @@ usage() { echo "Usage: deploy_sentinel.sh -p <proctorEnvironmentName> -n <teamNa
 declare -a keys
 declare registryName=""
 declare apiUrl=""
-declare teamList="" 
+declare teamList=""
+declare teamName=""
 
 # Initialize parameters specified from command line
 while getopts ":p:n:" arg; do
