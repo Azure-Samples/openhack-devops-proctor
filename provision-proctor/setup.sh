@@ -227,7 +227,7 @@ echo "9-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $r
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl
 
 echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d <dnsURL>)"
-bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
+bash ./build_deploy_web.sh -g ${resourceGroupProctor} -r $registryName -f $functionAppName -d $dnsURL
 
 echo "11-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
