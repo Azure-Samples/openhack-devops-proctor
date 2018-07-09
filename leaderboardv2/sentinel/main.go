@@ -15,7 +15,7 @@ import (
 type config struct {
 	Endpoint      string `env:"SENTINEL_ENDPOINT,required"`
 	PORT          int    `env:"SENTINEL_PORT" envDefault:"80"`
-	TeamID        string `env:"SENTINEL_TEAM_ID,required"`
+	TeamName      string `env:"SENTINEL_TEAM_NAME,required"`
 	ServiceType   string `env:"SENTINEL_SERVICE_TYPE,required"`
 	APIURL        string `env:"SENTINEL_API_URL,required"`
 	Interval      int    `env:"SENTINEL_POLLING_INTERVAL" envDefault:"1"`
@@ -23,7 +23,7 @@ type config struct {
 }
 
 type logmsg struct {
-	TeamID      string
+	TeamName    string
 	ServiceType string
 	CreatedDate time.Time
 	StatusCode  int
@@ -52,7 +52,7 @@ func main() {
 		currentTime := time.Now()
 		currentTimeRound := currentTime.Round(time.Duration(time.Second))
 		logmsg := &logmsg{
-			TeamID:      cfg.TeamID,
+			TeamName:    cfg.TeamName,
 			ServiceType: cfg.ServiceType,
 			CreatedDate: currentTimeRound,
 			StatusCode:  statusCode,
