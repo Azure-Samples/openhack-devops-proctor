@@ -33,7 +33,7 @@ if [[ -z "$proctorEnvName" ]]; then
 fi
 
 chartPath="../leaderboard/sentinel/helm"
-echo -e "\nhelm install ... from: " $installPath
+echo -e "\nhelm install ... from: " $chartPath
 
 # Getting the registry name and the apiUrl from kvstore
 registryName="$(kvstore get $proctorEnvName ACR).azurecr.io"
