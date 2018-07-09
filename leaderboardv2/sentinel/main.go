@@ -25,7 +25,7 @@ type config struct {
 type logmsg struct {
 	TeamID      string
 	ServiceType string
-	Date        time.Time
+	CreatedDate time.Time
 	StatusCode  int
 	Status      bool
 }
@@ -56,7 +56,7 @@ func main() {
 		logmsg := &logmsg{
 			TeamID:      cfg.TeamID,
 			ServiceType: cfg.ServiceType,
-			Date:        currentTimeRound,
+			CreatedDate: currentTimeRound,
 			StatusCode:  statusCode,
 		}
 
