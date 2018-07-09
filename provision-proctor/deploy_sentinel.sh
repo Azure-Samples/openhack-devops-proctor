@@ -13,6 +13,7 @@ declare registryName=""
 declare apiUrl=""
 declare teamList=""
 declare teamName=""
+declare teamEndPoint=""
 
 # Initialize parameters specified from command line
 while getopts ":p:n:" arg; do
@@ -50,9 +51,9 @@ for team in $teamList; do
   keys=$(kvstore keys $team)
 
   if [[ " ${keys[@]} " =~ "endpoint" ]]; then
-     teamEndpoint=$(kvstore get $team endpoint)
+     teamEndPoint=$(kvstore get $team endpoint)
      echo "Deploying monitoring for $team at http://$teamEndPoint"
-     helm install $chartPath --name $team --set image.repository=$registryName,teams.endpointUrl="http://$teamEndpoint",teams.apiUrl=$apiUrl,teams.name=$team
+     helm install $chartPath --name $team --set image.repository=$registryName,teams.endpointUrl="http://$teamEndPoint",teams.apiUrl=$apiUrl,teams.name=$team
   fi
 
 done
