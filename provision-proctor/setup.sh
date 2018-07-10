@@ -194,46 +194,27 @@ kvstore set ${proctorName}${proctorNumber} teamName ${teamName}
 kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
 kvstore set ${proctorName}${proctorNumber} ACR ${registryName}
 kvstore set ${proctorName}${proctorNumber} AKS ${clusterName}
-kvstore set ${proctorName}${proctorNumber} cosmosDBName ${cosmosDBName}
-kvstore set ${proctorName}${proctorNumber} functionAppName ${functionAppName}
-kvstore set ${proctorName}${proctorNumber} eventHubsNamespace ${eventHubsNamespace}
-kvstore set ${proctorName}${proctorNumber} streamAnalyticsJobName ${streamAnalyticsJobName}
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 kvstore set ${proctorName}${proctorNumber} teamFiles $HOME/team_env/${proctorName}${proctorNumber}
 
-echo "1-Provision CosmosDB  (bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName)"
-bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
-
-echo "2-Seed CosmosDB  (bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s <openhackStartTime> -e <openhackEndTime> -n <number of challenges>)"
-bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s '2018-06-07T00:00:00' -e '2018-06-15T00:00:00' -n '3'
-
-echo "3-Provision EventHubs"
-bash ./deploy_eventhubs.sh -g $resourceGroupProctor -n $eventHubsNamespace -l $resourceGroupLocation
-
-echo "4-Provision StreamAnalytics"
-bash ./deploy_stream_analytics.sh -g $resourceGroupProctor -n $streamAnalyticsJobName -l $resourceGroupLocation -e $eventHubsNamespace -c $cosmosDBName
-
-echo "5-Build Azure Function  (bash ./build_function.sh -v $proctorNumber)"
-bash ./build_function.sh -v $proctorNumber
-
-echo "6-Provision Azure Function"
-bash ./deploy_function.sh -i $subscriptionId -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip" -e $eventHubsNamespace
-
-echo "7-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "8-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
-echo "9-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
-echo "10-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
+echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
 bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
+
+echo "5-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
+bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
 echo "11-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiUrl
