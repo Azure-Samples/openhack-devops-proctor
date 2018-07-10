@@ -33,7 +33,7 @@ namespace Sentinel.Controllers
         }
 
         [HttpPost(Name = "CreateLogMessageForTeam")]
-        public IActionResult CreateLogMessageForTeam(LogMessage msg)
+        public IActionResult CreateLogMessageForTeam([FromBody] LogMessage msg)
         {
             _context.Add<LogMessage>(msg);
             _context.SaveChanges();

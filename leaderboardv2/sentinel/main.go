@@ -24,9 +24,10 @@ type config struct {
 
 type logmsg struct {
 	TeamName    string
-	ServiceType string
+	Type        string
 	CreatedDate time.Time
 	StatusCode  int
+	EndpointUri string
 }
 
 func main() {
@@ -53,9 +54,10 @@ func main() {
 		currentTimeRound := currentTime.Round(time.Duration(time.Second))
 		logmsg := &logmsg{
 			TeamName:    cfg.TeamName,
-			ServiceType: cfg.ServiceType,
+			Type:        cfg.ServiceType,
 			CreatedDate: currentTimeRound,
 			StatusCode:  statusCode,
+			EndpointUri: cfg.Endpoint,
 		}
 
 		// Endpoint is dead
@@ -101,6 +103,7 @@ func report(cfg *config, logmsg *logmsg) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	res, err := http.Post((*cfg).APIURL, "application/json", bytes.NewReader(reportJSON))
 	if res.StatusCode != 200 {
 		log.Printf("Unable to post to functions API")
