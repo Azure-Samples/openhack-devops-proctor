@@ -9,7 +9,7 @@ repository:
   pullPolicy: Always
 image:
   name: sentinel-api
-  label: sentiel-api
+  label: sentinel-api
   containerPort: 8080
 service:
   externalPort: 80

@@ -110,7 +110,7 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-installPath="../leaderboardv2/web/helm"
+installPath="../leaderboardv2/api/web/helm"
 echo -e "\nhelm install from: " $installPath "\n\n"
 
 BASE_URI='http://'$dnsUrl
