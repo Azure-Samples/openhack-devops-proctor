@@ -87,8 +87,8 @@ cat "./sql-secret.yaml" \
     | sed "s/userreplace/$sqlUserbase64/g" \
     | sed "s/passwordreplace/$sqlPasswordbase64/g" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
-    | tee $relativeSaveLocation"/sql-secret-$proctorName.yaml"
-kubectl apply -f $relativeSaveLocation"/sql-secret-$proctorName.yaml"
+    | tee "./sql-secret-$proctorName.yaml"
+kubectl apply -f "./sql-secret-$proctorName.yaml"
 
 
 #Create firewall rule to run schema create
