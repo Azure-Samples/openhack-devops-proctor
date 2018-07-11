@@ -2,8 +2,8 @@ FROM node:8-alpine AS build
 WORKDIR /usr/src/app
 RUN npm i -g @angular/cli
 COPY . .
-ARG FUNCTION_NAME
-RUN grep -l 'devopsoh2subproc1fun' src/environments/*.ts | xargs sed -i.bak -e "s|devopsoh2subproc1fun|$FUNCTION_NAME|g"
+ARG DNS_URL
+RUN grep -l 'devopsoh2subproc1fun' src/environments/*.ts | xargs sed -i.bak -e "s|devopsoh2subproc1fun|$DNS_URL|g"
 RUN npm install --silent
 RUN npm run build:prod
 
