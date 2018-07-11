@@ -104,7 +104,7 @@ randomChar() {
 }
 
 randomNum() {
-    echo $(( $RANDOM % 10 ))
+    echo -n $(( $RANDOM % 10 ))
 }
 
 randomCharUpper() {
