@@ -42,13 +42,12 @@ fi
 
 declare resourceGroupName="${proctorName}rg"
 declare registryName="${proctorName}acr"
-declare functionAppName="${proctorName}fun"
+declare dnspName="${proctorName}fun"
 
 #DEBUG
 echo $resourceGroupName
 echo $dnsURL
 echo $proctorName
-echo $functionAppName
 echo -e '\n'
 
 #get the acr repsotiory id to tag image with.
@@ -68,7 +67,7 @@ echo "TAG: "$TAG
 
 pushd ../leaderboard/web
 
-docker build --build-arg FUNCTION_NAME="${functionAppName}" . -t $TAG
+docker build --build-arg DNS_URL="${dnsURL}" . -t $TAG
 
 docker push $TAG
 echo "Successfully pushed image: "$TAG

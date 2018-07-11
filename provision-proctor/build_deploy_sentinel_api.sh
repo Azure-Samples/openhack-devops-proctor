@@ -7,17 +7,16 @@ IFS=$'\n\t'
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 #script requires latest version of .netcore to be installed ()
 
-usage() { echo "Usage: build_deploy_sentinel_api.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -d <dns host Url> -n <team name> -g <registry name>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_sentinel_api.sh -b <build flavor> -r <resourceGroupName>  -t <image tag> -d <dns host Url> -g <registry name>" 1>&2; exit 1; }
 
 declare buildFlavor=""
 declare resourceGroupName=""
 declare imageTag=""
 declare dnsUrl=""
-declare teamName=""
 declare registryName=""
 
 # Initialize parameters specified from command line
-while getopts ":b:r:t:d:n:g:" arg; do
+while getopts ":b:r:t:d:g:" arg; do
     case "${arg}" in
         b)
             buildFlavor=${OPTARG}
@@ -30,9 +29,6 @@ while getopts ":b:r:t:d:n:g:" arg; do
         ;;
         d)
             dnsUrl=${OPTARG}
-        ;;
-        n)
-            teamName=${OPTARG}
         ;;
         g)
             registryName=${OPTARG}
@@ -72,11 +68,6 @@ fi
 if [ -z "$buildFlavor" ] || [ -z "$resourceGroupName" ] || [ -z "$imageTag" ] || [ -z "$dnsUrl" ]; then
     echo "Either one of buildFlavor, resourceGroupName, imageTag, or dnsUrl is empty"
     usage
-fi
-
-if [[ -z "$teamName" ]]; then
-    echo "Enter a team name for the helm chart values filename:"
-    read teamName
 fi
 
 #DEBUG
