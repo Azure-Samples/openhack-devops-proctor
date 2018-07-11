@@ -56,6 +56,7 @@ if [[ -z "$proctorName" ]]; then
     echo "Enter a proctor name"
     read proctorName
 fi
+mkdir -p $HOME/proctor_env/$proctorName
 touch $HOME/proctor_env/$proctorName/launch.json
 touch $HOME/proctor_env/$proctorName/tasks.json
 cp ../provision-team/templates/launch.json.template $HOME/team_env/$proctorName/launch.json

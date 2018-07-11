@@ -95,7 +95,7 @@ kubectl apply -f "./sql-secret-$proctorName.yaml"
 az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName -s $sqlServer --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.254
 
 #Create schema in db
-sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ../leaderboardv2/data/CreateLeaderboardDb.sql -e
+sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./CreateLeaderboardDb.sql -e
 
 #Add Sample data
 # We don't need it for leaderboard. 
