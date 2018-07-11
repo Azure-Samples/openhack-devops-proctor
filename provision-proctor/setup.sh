@@ -107,6 +107,12 @@ randomNum() {
     echo $(( $RANDOM % 10 ))
 }
 
+randomCharUpper() {
+    s=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    p=$(( $RANDOM % 26))
+    echo -n ${s:$p:1}
+}
+
 if [[ -z "$proctorNumber" ]]; then
     echo "Using a random proctor environment number since not specified."
     proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
