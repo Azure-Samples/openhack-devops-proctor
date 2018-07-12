@@ -42,7 +42,6 @@ fi
 
 declare resourceGroupName="${proctorName}rg"
 declare registryName="${proctorName}acr"
-declare dnspName="${proctorName}fun"
 
 #DEBUG
 echo $resourceGroupName
