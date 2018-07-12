@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backendUrl: 'https://devopsoh2subproc1fun.azurewebsites.net/api/GetTeamsStatus', // process.env.API_URL || ''
+  backendUrl: 'http://devopsoh2subproc1fun/api/sentinel', // process.env.API_URL || ''
 };

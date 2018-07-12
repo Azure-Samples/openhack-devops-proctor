@@ -13,7 +13,7 @@ spec:
     - name: SENTINEL_TEAM_NAME
       value: {{ $.Values.teams.baseName }}{{ add1 $i }}
     - name: SENTINEL_SERVICE_TYPE
-      value: 2
+      value: "2"
     - name: SENTINEL_ENDPOINT
       value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/api/healthcheck/user"
     - name: SENTINEL_PORT
@@ -38,7 +38,7 @@ spec:
     - name: SENTINEL_TEAM_NAME
       value: {{ $.Values.teams.baseName }}{{ add1 $i }}
     - name: SENTINEL_SERVICE_TYPE
-      value: 3
+      value: "3"
     - name: SENTINEL_ENDPOINT
       value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/api/healthcheck/trips"
     - name: SENTINEL_PORT
@@ -63,7 +63,7 @@ spec:
     - name: SENTINEL_TEAM_NAME
       value: {{ $.Values.teams.baseName }}{{ add1 $i }}
     - name: SENTINEL_SERVICE_TYPE
-      value: 1
+      value: "1"
     - name: SENTINEL_ENDPOINT
       value: "http://akstraefik{{ $.Values.teams.baseName }}{{ add1 $i }}.{{ $.Values.teams.location }}.cloudapp.azure.com/api/healthcheck/poi"
     - name: SENTINEL_PORT
