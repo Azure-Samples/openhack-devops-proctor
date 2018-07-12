@@ -75,7 +75,7 @@ fi
 echo "Creating AKS Cluster..."
 (
     set -x
-    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --enable-rbac --node-count 3 --generate-ssh-keys -k 1.10.3
+    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --enable-rbac --node-count 3 --generate-ssh-keys -k 1.10.5
 )
 
 if [ $? == 0 ];
