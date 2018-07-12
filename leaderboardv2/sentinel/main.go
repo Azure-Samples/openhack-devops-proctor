@@ -47,8 +47,7 @@ func main() {
 		fmt.Println("Tick ...", t)
 		statusCode, err := healthCheck(&cfg)
 		if err != nil {
-			fmt.Printf("HealthCheck Error: Do you have a proper target endpoint?: %v", err)
-			fmt.Println("")
+			fmt.Printf("HealthCheck Error: Do you have a proper target endpoint?: %v \n", err)
 			statusCode = 0 // If they don't have a proper response, the statusCode becomes 0.
 		}
 		fmt.Println(fmt.Sprintf("Server: %s Status: %d", cfg.Endpoint, statusCode))
