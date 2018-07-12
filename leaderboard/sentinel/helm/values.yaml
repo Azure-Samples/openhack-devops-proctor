@@ -7,7 +7,6 @@ services:
   pollingInterval: 30
   retryDuration: 3
 teams:
-  totalNumber: 1
-  baseName: devopsoh
-  location: eastus
+  name: testdcaro
+  endpointUrl: http://akstraefikteam02.eastus.cloudapp.azure.com
   apiUrl: https://changeme.azurewebsites.net # Azure Functions API where the health events get logged through
