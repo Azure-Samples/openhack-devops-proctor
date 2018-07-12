@@ -48,26 +48,10 @@ if [[ -z "$teamName" ]]; then
 fi
 
 echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
-cat <<EOF | kubectl create -f -
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
-EOF
+
+kubectl create serviceaccount --namespace kube-system tiller
+
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 
 echo "Upgrading tiller (helm server) to match client version."
 
@@ -101,6 +85,11 @@ while true; do
         time=$(($time+10))
         echo $time "seconds waiting"
 done
+
+# Adding sleep 45 as per https://github.com/kubernetes/charts/commit/977d130375c88dd1b0a23977522db8d748fd49d3#diff-3e80d6cfbb2cf233c8f914f6fde79ec5
+echo -e "\nSleeping for 45 seconds to ensure Traefik is ready\n"
+sleep 45
+
 
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 

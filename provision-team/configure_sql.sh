@@ -99,6 +99,8 @@ cat "./sql-secret.yaml" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
     | tee $relativeSaveLocation"/sql-secret-$teamName.yaml"
 kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml"
+kubectl create namespace simulator
+kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml" -n simulator
 
 
 #Create firewall rule to run schema create
@@ -112,3 +114,6 @@ bash ./sql_data_init.sh -s $sqlServerFQDN -u $sqlServerUsername -p $sqlPassword 
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
+
+#Create launch.json and tasks.json files
+bash ./build_launch_json.sh -s $sqlServer -u $sqlServerUsername -p $sqlPassword -t $teamName
