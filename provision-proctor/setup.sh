@@ -214,10 +214,9 @@ bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n $
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
 
-echo "9-Build sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
-bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
+echo "9-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-# Using all the entries in kvstore to deploy sentinel
 echo "10-Deploy sentinel to AKS"
 bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber} 
 
