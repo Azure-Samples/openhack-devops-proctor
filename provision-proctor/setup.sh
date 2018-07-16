@@ -225,7 +225,7 @@ bash ./configure_sql.sh -g $resourceGroupProctor -u $sqlServerUsername -n ${proc
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
 apiUrl='http://'$dnsURL'/api/sentinel'
-echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
+echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiUrl
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 
 echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
