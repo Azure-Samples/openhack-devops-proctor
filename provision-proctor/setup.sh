@@ -3,14 +3,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams>" 1>&2; exit 1; }
+usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare proctorName=""
 declare proctorNumber=""
 declare teamName=""
-declare totalTeams=""
 
 # Initialize parameters specified from command line
 while getopts ":i:l:m:u:n:e:" arg; do
@@ -29,9 +28,6 @@ while getopts ":i:l:m:u:n:e:" arg; do
         ;;
         n)
             teamName=${OPTARG}
-        ;;
-        e)
-            totalTeams=${OPTARG}
         ;;
     esac
 done
@@ -85,11 +81,6 @@ fi
 if [[ -z "$teamName" ]]; then
     echo "Enter the base team name used for the already provisioned team environments:"
     read teamName
-fi
-
-if [[ -z "$totalTeams" ]]; then
-    echo "Enter the total number of already provisioned team environments:"
-    read totalTeams
 fi
 
 if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ]; then
@@ -255,11 +246,14 @@ echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
 echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
 bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName
 
-echo "8-Build and deploy sentinel to AKS  (bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiURL)"
-bash ./build_deploy_sentinel.sh -r $resourceGroupProctor -g $registryName -n $teamName -e $totalTeams -l $resourceGroupLocation -a $apiURL
+echo "9-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
-bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
+echo "10-Deploy sentinel to AKS"
+bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
+
+echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d <dnsURL>)"
+bash ./build_deploy_web.sh -g ${resourceGroupProctor} -r $registryName -f $functionAppName -d $dnsURL
 
 echo "10-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}

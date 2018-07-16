@@ -6,12 +6,10 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_sentinel.sh -r <resourceGroupName> -g <acr registry name> -n <teamName> -e <number of teams> -l <location> -a <apiUrl>" 1>&2; exit 1; }
+usage() { echo "Usage: build_sentinel.sh -r <resourceGroupName> -g <acr registry name> -l <location> -a <apiUrl>" 1>&2; exit 1; }
 
 declare resourceGroupName=""
 declare registryName=""
-declare teamName=""
-declare totalTeams=""
 declare resourceGroupLocation=""
 declare apiUrl=""
 
@@ -21,14 +19,8 @@ while getopts ":r:g:n:e:l:a:" arg; do
         r)
             resourceGroupName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
-        ;;
-        n)
-            teamName=${OPTARG}
-        ;;
-        e)
-            totalTeams=${OPTARG}
         ;;
         l)
             resourceGroupLocation=${OPTARG}
@@ -55,16 +47,6 @@ if [[ -z "$registryName" ]]; then
     [[ "${registryName:?}" ]]
 fi
 
-if [[ -z "$teamName" ]]; then
-    echo "Enter the base team name used to provision the teams:"
-    read teamName
-fi
-
-if [[ -z "$totalTeams" ]]; then
-    echo "Enter the total number of teams provisioned:"
-    read totalTeams
-fi
-
 if [[ -z "$resourceGroupLocation" ]]; then
     echo "Enter the resource group location where the teams were provisioned:"
     read resourceGroupLocation
@@ -76,7 +58,7 @@ if [[ -z "$apiUrl" ]]; then
     [[ "${apiUrl:?}" ]]
 fi
 
-if [ -z "$resourceGroupName" ] || [ -z "$registryName" ] || [[ -z "$teamName" ]] || [[ -z "$resourceGroupLocation" ]] || [[ -z "$apiUrl" ]]; then
+if [ -z "$resourceGroupName" ] || [ -z "$registryName" ] || [[ -z "$resourceGroupLocation" ]] || [[ -z "$apiUrl" ]]; then
     echo "One of the parameters are missing"
     usage
 fi
@@ -84,8 +66,6 @@ fi
 #DEBUG
 echo $resourceGroupName
 echo $registryName
-echo $teamName
-echo $totalTeams
 echo $resourceGroupLocation
 echo $apiUrl
 echo -e '\n'
