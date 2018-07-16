@@ -3,12 +3,13 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> " 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare teamName=""
 declare teamNumber=""
+declare azcliVerifiedVersion="2.0.38"
 
 # Initialize parameters specified from command line
 while getopts ":i:l:n:e:" arg; do
@@ -51,6 +52,12 @@ if [ ! $? == 0 ]; then
     echo "The script need the az command line to be installed\n"
     echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
     exit 1
+else
+    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
+    if [ $currentCliVersion != $azcliVersion ]; then
+       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
+       exit 1
+    fi
 fi
 
 #Prompt for parameters is some required parameters are missing

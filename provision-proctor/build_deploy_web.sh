@@ -6,15 +6,19 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_web.sh -m <proctorName> -d <dnsURL>" 1>&2; exit 1; }
-
-declare proctorName=""
+usage() { echo "Usage: build_deploy_web.sh -g <resourceGroupName> -r <registryName> -f <functionAppName> -d <dnsURL>" 1>&2; exit 1; }
 
 # Initialize parameters specified from command line
-while getopts ":m:d:" arg; do
+while getopts ":g:r:f:d:" arg; do
     case "${arg}" in
-        m)
-            proctorName=${OPTARG}
+        g)
+            resourceGroupName=${OPTARG}
+        ;;
+        r)
+            registryName=${OPTARG}
+        ;;
+        f)
+            functionAppName=${OPTARG}
         ;;
         d)
             dnsURL=${OPTARG}
@@ -23,9 +27,9 @@ while getopts ":m:d:" arg; do
 done
 shift $((OPTIND-1))
 
-if [[ -z "$proctorName" ]]; then
-    echo "Enter a team name for the helm chart values filename:"
-    read proctorName
+if [[ -z "$resourceGroupName" ]]; then
+    echo "Enter the resource group name of the proctor environment"
+    read resourceGroupName
 fi
 
 if [[ -z "$dnsURL" ]]; then
@@ -35,8 +39,8 @@ if [[ -z "$dnsURL" ]]; then
     [[ "${dnsURL:?}" ]]
 fi
 
-if [ -z "$proctorName" ] || [ -z "$dnsURL" ]; then
-    echo "A parameter is missing."
+if [ -z "$registryName" ]; then
+    echo "The name of the ACR registry is missing"
     usage
 fi
 
@@ -45,9 +49,12 @@ declare registryName="${proctorName}acr"
 declare functionAppName="${proctorName}fun"
 
 #DEBUG
+echo "=================================="
+echo "Leaderboard variables"
+echo "=================================="
 echo $resourceGroupName
 echo $dnsURL
-echo $proctorName
+echo $registryName
 echo $functionAppName
 echo -e '\n'
 
