@@ -8,10 +8,7 @@ Under the leaderboard subdirectory, you can find these directories which corresp
 
 ### api
 
-An Azure Functions (v2) API which connects to CosmosDB with the following routes:
-
-* `/api/GetTeamsStatus` (GET) - Reports the list of teams and downtime which is used by the web component dashboard.
-* `/api/ReportStatus` (POST) - Where the sentinel posts the downtime report.
+An dotnet Core 2.1 API which connects to a SQL azure database backend.  This is where sentinel POSTs the downtime status and the web leaderboard GETs the report status. It contains a helm chart in the `helm` sub-directory.
 
 ### sentinel
 

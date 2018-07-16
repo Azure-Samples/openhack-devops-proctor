@@ -19,8 +19,8 @@ spec:
         env:
         - name: SENTINEL_TEAM_ID
           value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}user
+        - name: SENTINEL_SERVICE_TYPE
+          value: "2"
         - name: SENTINEL_ENDPOINT
           value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/user"
         - name: SENTINEL_PORT
@@ -37,8 +37,8 @@ spec:
         env:
         - name: SENTINEL_TEAM_ID
           value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}trip
+        - name: SENTINEL_SERVICE_TYPE
+          value: "3"
         - name: SENTINEL_ENDPOINT
           value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/trips"
         - name: SENTINEL_PORT
@@ -55,8 +55,8 @@ spec:
         env:
         - name: SENTINEL_TEAM_ID
           value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}poi
+        - name: SENTINEL_SERVICE_TYPE
+          value: "1"
         - name: SENTINEL_ENDPOINT
           value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/poi"
         - name: SENTINEL_PORT

@@ -24,13 +24,9 @@ Required Environment Variables is here. You need to set required Environment Var
 ```
 	Endpoint      string `env:"SENTINEL_ENDPOINT,required"`
 	PORT          int    `env:"SENTINEL_PORT" envDefault:"80"`
-	TeamID        string `env:"SENTINEL_TEAM_ID, required"`
-	ServiceID     string `env:"SENTINEL_SERVICE_ID,required"`
-	Addrs         string `env:"SENTINEL_MONGO_ADDRESS,required"`
-	Database      string `env:"SENTINEL_MONGO_DATABASE" envDefault:"sentineldb"`
-	Username      string `env:"SENTINEL_MONGO_USERNAME,required"`
-	Password      string `env:"SENTINEL_MONGO_PASSWORD,required"`
-	Collection    string `env:"SENTINEL_MONGO_COLLECTION_NAME" envDefault:"collection"`
+	TeamID        string `env:"SENTINEL_TEAM_ID,required"`
+	ServiceType   string `env:"SENTINEL_SERVICE_TYPE,required"`
+	APIURL        string `env:"SENTINEL_API_URL,required"`
 	Interval      int    `env:"SENTINEL_POLLING_INTERVAL" envDefault:"1"`
 	RetryDuration int    `env:"SENTINEL_RETRY_DURATION" envDefault:"1000"`
 ```
@@ -38,12 +34,13 @@ Required Environment Variables is here. You need to set required Environment Var
 for example 
 
 ```
-SENTINEL_ENDPOINT=https://www.some.com/health
-SENTINEL_TEAM_ID=1
-SENTINEL_SERVICE_ID=1
-SENTINEL_MONGO_ADDRESS=golang-couch.documents.azure.com:10255
-SENTINEL_MONGO_USERNAME=username
-SENTINEL_MONGO_PASSWORD="Azure database connect password from Azure Portal"
+SENTINEL_ENDPOINT="http://bing.com" 
+SENTINEL_PORT="80" 
+SENTINEL_TEAM_ID="devteam" 
+SENTINEL_SERVICE_TYPE="poi" 
+SENTINEL_API_URL="https://changeme.azurewebsites.net" 
+SENTINEL_POLLING_INTERVAL="5" 
+SENTINEL_RETRY_DURATION="1000"
 ```
 
 For more detail, please refer [Azure Cosmos DB: Build a MongoDB API console app with Golang and the Azure portal](https://docs.microsoft.com/ja-jp/azure/cosmos-db/create-mongodb-golang)
