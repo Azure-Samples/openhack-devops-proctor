@@ -81,15 +81,16 @@ sqlPassword=$(az keyvault secret show --vault-name $keyVaultName --name sqlServe
 sqlServerFQDNbase64=$(echo -n $sqlServerFQDN | base64)
 sqlPasswordbase64=$(echo -n $sqlPassword | base64)
 sqlUserbase64=$(echo -n $sqlServerUsername | base64)
+sqlDbNamebase64=$(echo -n leaderboard | base64)
 
 # Replace the secrets file with encoded values and create the secret on the cluster
 cat "../provision-team/sql-secret.yaml" \
     | sed "s/userreplace/$sqlUserbase64/g" \
     | sed "s/passwordreplace/$sqlPasswordbase64/g" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
+    | sed "s/bXlkcml2aW5nREI=/$sqlDbNamebase64/g" \
     | tee "./sql-secret-$proctorName.yaml"
 kubectl apply -f "./sql-secret-$proctorName.yaml"
-
 
 #Create firewall rule to run schema create
 az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName -s $sqlServer --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.254
