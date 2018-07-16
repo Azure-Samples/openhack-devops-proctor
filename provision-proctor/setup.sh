@@ -119,14 +119,6 @@ declare sqlServerUsername="${proctorName}${proctorNumber}sa"
 declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="leaderboard"
 
-
-declare cosmosDBName="${proctorName}${proctorNumber}db"
-declare storageAccount="${proctorName}${proctorNumber}sa"
-declare functionAppName="${proctorName}${proctorNumber}fun"
-declare eventHubsNamespace="${proctorName}${proctorNumber}eh"
-declare streamAnalyticsJobName="${proctorName}${proctorNumber}sa"
-declare apiUrl="https://"$functionAppName".azurewebsites.net/api/ReportStatus"
-
 echo "=========================================="
 echo " VARIABLES"
 echo "=========================================="
@@ -144,13 +136,6 @@ echo "sqlServerName             = "${sqlServerName}
 echo "sqlServerUsername         = "${sqlServerUsername}
 echo "sqlServerPassword         = "${sqlServerPassword}
 echo "sqlDBName                 = "${sqlDBName}
-
-echo "cosmosDBName              = "${cosmosDBName}
-echo "storageAccount            = "${storageAccount}
-echo "functionAppName           = "${functionAppName}
-echo "eventHubsNamespace        = "${eventHubsNamespace}
-echo "streamAnalyticsJobName    = "${streamAnalyticsJobName}
-echo "apiUrl                    = "${apiUrl}
 echo "=========================================="
 
 #login to azure using your credentials
@@ -213,7 +198,6 @@ kvstore set ${proctorName}${proctorNumber} sqlServerUserName ${sqlServerUsername
 kvstore set ${proctorName}${proctorNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${proctorName}${proctorNumber} sqlDbName ${sqlDBName}
 
-kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 kvstore set ${proctorName}${proctorNumber} teamFiles $HOME/team_env/${proctorName}${proctorNumber}
 
 echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation)"
@@ -242,6 +226,7 @@ dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.clou
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
 apiURL='http://'$dnsURL'/api/sentinel'
 echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
+kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 
 echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
 bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName

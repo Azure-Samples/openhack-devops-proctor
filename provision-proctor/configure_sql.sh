@@ -83,7 +83,7 @@ sqlPasswordbase64=$(echo -n $sqlPassword | base64)
 sqlUserbase64=$(echo -n $sqlServerUsername | base64)
 
 # Replace the secrets file with encoded values and create the secret on the cluster
-cat "./sql-secret.yaml" \
+cat "../provision-team/sql-secret.yaml" \
     | sed "s/userreplace/$sqlUserbase64/g" \
     | sed "s/passwordreplace/$sqlPasswordbase64/g" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
