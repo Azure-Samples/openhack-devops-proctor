@@ -19,7 +19,7 @@ while getopts ":r:g:n:e:l:a:" arg; do
         r)
             resourceGroupName=${OPTARG}
         ;;
-        g)  
+        g)
             registryName=${OPTARG}
         ;;
         l)
@@ -85,7 +85,7 @@ TAG=$ACR_ID"/devopsoh/sentinel"
 
 echo "TAG: "$TAG
 
-pushd ../leaderboard/sentinel
+pushd ../leaderboardv2/sentinel
 
 docker build . -t $TAG
 
@@ -93,3 +93,8 @@ docker push $TAG
 echo "Successfully pushed image: "$TAG
 
 popd
+
+installPath="../leaderboardv2/sentinel/helm"
+echo -e "\nhelm install ... from: " $installPath
+
+helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$resourceGroupLocation,teams.baseName=$teamName,teams.apiUrl=$apiUrl

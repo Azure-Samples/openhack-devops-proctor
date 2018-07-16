@@ -46,7 +46,6 @@ fi
 
 declare resourceGroupName="${proctorName}rg"
 declare registryName="${proctorName}acr"
-declare functionAppName="${proctorName}fun"
 
 #DEBUG
 echo "=================================="
@@ -54,8 +53,7 @@ echo "Leaderboard variables"
 echo "=================================="
 echo $resourceGroupName
 echo $dnsURL
-echo $registryName
-echo $functionAppName
+echo $proctorName
 echo -e '\n'
 
 #get the acr repsotiory id to tag image with.
@@ -73,16 +71,16 @@ TAG=$ACR_ID"/devopsoh/"leaderboard
 
 echo "TAG: "$TAG
 
-pushd ../leaderboard/web
+pushd ../leaderboardv2/web
 
-docker build --build-arg FUNCTION_NAME="${functionAppName}" . -t $TAG
+docker build --build-arg DNS_URL="${dnsURL}" . -t $TAG
 
 docker push $TAG
 echo "Successfully pushed image: "$TAG
 
 popd
 
-installPath="../leaderboard/web/helm"
+installPath="../leaderboardv2/web/helm"
 echo -e "\nhelm install ... from: " $installPath
 
 BASE_URI='http://'$dnsURL

@@ -95,7 +95,13 @@ randomChar() {
 }
 
 randomNum() {
-    echo $(( $RANDOM % 10 ))
+    echo -n $(( $RANDOM % 10 ))
+}
+
+randomCharUpper() {
+    s=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    p=$(( $RANDOM % 26))
+    echo -n ${s:$p:1}
 }
 
 if [[ -z "$proctorNumber" ]]; then
@@ -106,6 +112,14 @@ fi
 declare resourceGroupProctor="${proctorName}${proctorNumber}rg";
 declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
+declare keyVaultName="${proctorName}${proctorNumber}kv"
+
+declare sqlServerName="${proctorName}${proctorNumber}sql"
+declare sqlServerUsername="${proctorName}${proctorNumber}sa"
+declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
+declare sqlDBName="leaderboard"
+
+
 declare cosmosDBName="${proctorName}${proctorNumber}db"
 declare storageAccount="${proctorName}${proctorNumber}sa"
 declare functionAppName="${proctorName}${proctorNumber}fun"
@@ -124,6 +138,13 @@ echo "teamName                  = "${teamName}
 echo "resourceGroupProctor      = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
+echo "keyvaultName              = "${keyVaultName}
+
+echo "sqlServerName             = "${sqlServerName}
+echo "sqlServerUsername         = "${sqlServerUsername}
+echo "sqlServerPassword         = "${sqlServerPassword}
+echo "sqlDBName                 = "${sqlDBName}
+
 echo "cosmosDBName              = "${cosmosDBName}
 echo "storageAccount            = "${storageAccount}
 echo "functionAppName           = "${functionAppName}
@@ -185,46 +206,45 @@ kvstore set ${proctorName}${proctorNumber} teamName ${teamName}
 kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
 kvstore set ${proctorName}${proctorNumber} ACR ${registryName}
 kvstore set ${proctorName}${proctorNumber} AKS ${clusterName}
-kvstore set ${proctorName}${proctorNumber} cosmosDBName ${cosmosDBName}
-kvstore set ${proctorName}${proctorNumber} functionAppName ${functionAppName}
-kvstore set ${proctorName}${proctorNumber} eventHubsNamespace ${eventHubsNamespace}
-kvstore set ${proctorName}${proctorNumber} streamAnalyticsJobName ${streamAnalyticsJobName}
+kvstore set ${proctorName}${proctorNumber} keyVaultName ${keyVaultName}
+
+kvstore set ${proctorName}${proctorNumber} sqlServerName ${sqlServerName}
+kvstore set ${proctorName}${proctorNumber} sqlServerUserName ${sqlServerUsername}
+kvstore set ${proctorName}${proctorNumber} sqlServerPassword ${sqlServerPassword}
+kvstore set ${proctorName}${proctorNumber} sqlDbName ${sqlDBName}
+
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 kvstore set ${proctorName}${proctorNumber} teamFiles $HOME/team_env/${proctorName}${proctorNumber}
 
-echo "1-Provision CosmosDB  (bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName)"
-bash ./deploy_cosmos_db.sh -g $resourceGroupProctor -n $cosmosDBName
+echo "0-Provision KeyVault  (bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation)"
+bash ./provision_kv.sh -i $subscriptionId -g $resourceGroupProctor -k $keyVaultName -l $resourceGroupLocation
 
-echo "2-Seed CosmosDB  (bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s <openhackStartTime> -e <openhackEndTime> -n <number of challenges>)"
-bash ./seed_cosmos_db.sh -g $resourceGroupProctor -c $cosmosDBName -s '2018-06-07T00:00:00' -e '2018-06-15T00:00:00' -n '3'
-
-echo "3-Provision EventHubs"
-bash ./deploy_eventhubs.sh -g $resourceGroupProctor -n $eventHubsNamespace -l $resourceGroupLocation
-
-echo "4-Provision StreamAnalytics"
-bash ./deploy_stream_analytics.sh -g $resourceGroupProctor -n $streamAnalyticsJobName -l $resourceGroupLocation -e $eventHubsNamespace -c $cosmosDBName
-
-echo "5-Build Azure Function  (bash ./build_function.sh -v $proctorNumber)"
-bash ./build_function.sh -v $proctorNumber
-
-echo "6-Provision Azure Function"
-bash ./deploy_function.sh -i $subscriptionId -g $resourceGroupProctor -l $resourceGroupLocation -s $storageAccount -f $functionAppName -c $cosmosDBName -z "Leaderboard$proctorNumber.zip" -e $eventHubsNamespace
-
-echo "7-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
+echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProctor -r $registryName -l $resourceGroupLocation
 
-echo "8-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
+echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
-echo "9-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
+echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
-echo "10-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
+echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
 bash ../provision-team/deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
+
+echo "5-Provision SQL  (bash ./provision_sql.sh -g $resourceGroupProctor -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
+bash ./provision_sql.sh -g $resourceGroupProctor -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
+
+echo "6-Configure SQL  (bash ./configure_sql.sh  -g $resourceGroupProctor -u $sqlServerUsername -n ${proctorName}${proctorNumber} -k $keyVaultName -d $sqlDBName)"
+bash ./configure_sql.sh -g $resourceGroupProctor -u $sqlServerUsername -n ${proctorName}${proctorNumber} -k $keyVaultName -d $sqlDBName
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
+apiURL='http://'$dnsURL'/api/sentinel'
+echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
+
+echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
+bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName
 
 echo "9-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
@@ -235,5 +255,5 @@ bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
 echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d <dnsURL>)"
 bash ./build_deploy_web.sh -g ${resourceGroupProctor} -r $registryName -f $functionAppName -d $dnsURL
 
-echo "13-Clean the working environment"
+echo "10-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}

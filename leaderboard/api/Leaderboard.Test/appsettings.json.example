@@ -1,7 +1,0 @@
-﻿{
-  "EventHubsEntityPath": "YOUR_EVENTHUB_ENTITY_PATH_HERE",
-  "EvebtHubsConnectionString": "YOUR_EVENTHUB_CONNECTION_STRING_HERE",
-  "CosmosDBEndpointUri": "YOUR_COSMOSDB_ENDPOINT_URI",
-  "CosmosDBPrimaryKey": "YOUR_COSMOSDB_PRIMARY_KEY",
-  "CosmosDBDatabaseId": "leaderboard"
-}

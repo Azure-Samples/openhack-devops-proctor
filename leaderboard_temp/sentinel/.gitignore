@@ -1,0 +1,5 @@
+vendor
+_vendor-*
+/sentinel
+/sentinel.exe
+setenv.sh
