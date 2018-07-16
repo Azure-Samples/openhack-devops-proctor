@@ -1,69 +1,57 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Values.teams.name }}
+  name: "{{ .Values.image.name }}-deploy"
+  labels:
+    deploy: {{ .Values.image.label }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      team: {{ $.Values.teams.name }}
+      app: {{ .Values.image.label }}
   template:
     metadata:
       labels:
-        team: {{ $.Values.teams.name }}
+        app: {{ .Values.image.label }}
     spec:
+      imagePullSecrets:
+      - name: acrsecret
       containers:
-      - name: {{ $.Values.teams.name }}-user
-        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+      - image: "{{ .Values.repository.image }}:{{ .Values.repository.tag }}"
+        imagePullPolicy: {{ .Values.repository.pullPolicy }}
+        name: {{ .Values.image.name }}
+        ports:
+          - containerPort: {{ .Values.image.containerPort }}
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
         env:
-        - name: SENTINEL_TEAM_ID
-          value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}user
-        - name: SENTINEL_ENDPOINT
-          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/user"
-        - name: SENTINEL_PORT
-          value: "{{ $.Values.services.port }}"
-        - name: SENTINEL_API_URL
-          value: "{{ $.Values.teams.apiUrl }}"
-        - name: SENTINEL_POLLING_INTERVAL
-          value: "{{ $.Values.services.pollingInterval }}"
-        - name: SENTINEL_RETRY_DURATION
-          value: "{{ $.Values.services.retryDuration }}"
-      - name: {{ $.Values.teams.name }}-trip
-        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-        imagePullPolicy: {{ $.Values.image.pullPolicy }}
-        env:
-        - name: SENTINEL_TEAM_ID
-          value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}trip
-        - name: SENTINEL_ENDPOINT
-          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/trips"
-        - name: SENTINEL_PORT
-          value: "{{ $.Values.services.port }}"
-        - name: SENTINEL_API_URL
-          value: "{{ $.Values.teams.apiUrl }}"
-        - name: SENTINEL_POLLING_INTERVAL
-          value: "{{ $.Values.services.pollingInterval }}"
-        - name: SENTINEL_RETRY_DURATION
-          value: "{{ $.Values.services.retryDuration }}"
-      - name: {{ $.Values.teams.name }}-poi
-        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
-        imagePullPolicy: {{ $.Values.image.pullPolicy }}
-        env:
-        - name: SENTINEL_TEAM_ID
-          value: {{ $.Values.teams.name }}
-        - name: SENTINEL_SERVICE_ID
-          value: {{ $.Values.teams.name }}poi
-        - name: SENTINEL_ENDPOINT
-          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/poi"
-        - name: SENTINEL_PORT
-          value: "{{ $.Values.services.port }}"
-        - name: SENTINEL_API_URL
-          value: "{{ $.Values.teams.apiUrl }}"
-        - name: SENTINEL_POLLING_INTERVAL
-          value: "{{ $.Values.services.pollingInterval }}"
-        - name: SENTINEL_RETRY_DURATION
-          value: "{{ $.Values.services.retryDuration }}"
+          - name: SQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: sql
+                key: sql_user
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sql
+                key: sql_password
+          - name: SQL_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: sql
+                key: sql_server
+          - name: SQL_DBNAME
+            valueFrom:
+              secretKeyRef:
+                name: sql
+                key: sql_dbname
+          - name: WEB_SERVER_BASE_URI
+            value: 'http://0.0.0.0'
+          - name: WEB_PORT
+            value: '8080'
+          - name: ASPNETCORE_ENVIRONMENT
+            value: 'Production'
+            
