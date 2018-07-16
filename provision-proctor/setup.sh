@@ -224,7 +224,7 @@ bash ./configure_sql.sh -g $resourceGroupProctor -u $sqlServerUsername -n ${proc
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
-apiURL='http://'$dnsURL'/api/sentinel'
+apiUrl='http://'$dnsURL'/api/sentinel'
 echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 
