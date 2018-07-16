@@ -1,7 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel", "web/Sentinel.csproj", "{A867EF3E-ED1D-486E-9863-63BC36EBA5A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel", "web\Sentinel.csproj", "{A867EF3E-ED1D-486E-9863-63BC36EBA5A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{D63C302E-A3A5-47AF-BAA8-93E2D15DC9E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +15,9 @@ Global
 		{A867EF3E-ED1D-486E-9863-63BC36EBA5A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A867EF3E-ED1D-486E-9863-63BC36EBA5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A867EF3E-ED1D-486E-9863-63BC36EBA5A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D63C302E-A3A5-47AF-BAA8-93E2D15DC9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D63C302E-A3A5-47AF-BAA8-93E2D15DC9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D63C302E-A3A5-47AF-BAA8-93E2D15DC9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D63C302E-A3A5-47AF-BAA8-93E2D15DC9E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
