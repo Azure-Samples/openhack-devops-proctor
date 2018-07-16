@@ -1,4 +1,4 @@
-echo "############### Installing Azure CLI v2.0.31 ###############"
+echo "############### Installing Azure CLI v2.0.41 ###############"
 AZ_REPO=$(lsb_release -cs)
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
      sudo tee /etc/apt/sources.list.d/azure-cli.list
@@ -12,7 +12,7 @@ sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.7/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.9/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -56,15 +56,6 @@ source /home/azureuser/.bashrc
 
 echo "############### Install Powershell Core and AzureRM modules ###############"
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
-
-# Can likely remove because same steps as SQL cmd line tools
-# Import the public repository GPG keys
-# curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-# Register the Microsoft Ubuntu repository
-# sudo curl -o /etc/apt/sources.list.d/microsoft.list https://packages.microsoft.com/config/ubuntu/16.04/prod.list
-# Update the list of products
-# sudo apt-get update
-
 # Install PowerShell
 sudo apt-get install -y powershell
 # Start PowerShell and install AzureRm modules
@@ -80,7 +71,7 @@ sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 
 # Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
-sudo apt-get install -y azure-cli=2.0.38-1~xenial
+sudo apt-get install -y azure-cli=2.0.41-1~xenial
 
 echo azure-cli hold | sudo dpkg --set-selection
 

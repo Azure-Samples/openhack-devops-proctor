@@ -99,6 +99,8 @@ cat "./sql-secret.yaml" \
     | sed "s/serverreplace/$sqlServerFQDNbase64/g" \
     | tee $relativeSaveLocation"/sql-secret-$teamName.yaml"
 kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml"
+kubectl create namespace simulator
+kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml" -n simulator
 
 
 #Create firewall rule to run schema create
