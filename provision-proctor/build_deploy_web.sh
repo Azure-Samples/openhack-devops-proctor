@@ -71,7 +71,7 @@ TAG=$ACR_ID"/devopsoh/"leaderboard
 
 echo "TAG: "$TAG
 
-pushd ../leaderboardv2/web
+pushd ../leaderboard/web
 
 docker build --build-arg DNS_URL="${dnsURL}" . -t $TAG
 
@@ -80,7 +80,7 @@ echo "Successfully pushed image: "$TAG
 
 popd
 
-installPath="../leaderboardv2/web/helm"
+installPath="../leaderboard/web/helm"
 echo -e "\nhelm install ... from: " $installPath
 
 BASE_URI='http://'$dnsURL

@@ -91,7 +91,7 @@ TAG=$ACR_ID"/devopsoh/"$imageTag
 
 echo "TAG: "$TAG
 
-pushd ../leaderboardv2/api/web
+pushd ../leaderboard/api/web
 
 docker build . -t $TAG
 
@@ -101,7 +101,7 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
-installPath="../leaderboardv2/api/web/helm"
+installPath="../leaderboard/api/helm"
 echo -e "\nhelm install from: " $installPath "\n\n"
 
 BASE_URI='http://'$dnsUrl
