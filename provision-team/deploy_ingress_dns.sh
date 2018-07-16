@@ -49,13 +49,13 @@ fi
 
 echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
 
-kubectl create serviceaccount --namespace kube-system tiller
+kubectl create serviceaccount --namespace kube-system tillersa
 
-kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
 
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade --service-account tiller --wait
+helm init --upgrade --service-account tillersa --wait
 
 tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
 
