@@ -19,7 +19,7 @@ while getopts ":g:r:f:d:" arg; do
         ;;
         f)
             functionAppName=${OPTARG}
-        ;;       
+        ;;
         d)
             dnsURL=${OPTARG}
         ;;
@@ -44,10 +44,8 @@ if [ -z "$registryName" ]; then
     usage
 fi
 
-if [ -z "$functionAppName" ]; then
-    echo "The name of the Azure function to deploy"
-    usage
-fi
+declare resourceGroupName="${proctorName}rg"
+declare registryName="${proctorName}acr"
 
 #DEBUG
 echo "=================================="
@@ -55,8 +53,7 @@ echo "Leaderboard variables"
 echo "=================================="
 echo $resourceGroupName
 echo $dnsURL
-echo $registryName
-echo $functionAppName
+echo $proctorName
 echo -e '\n'
 
 #get the acr repsotiory id to tag image with.
@@ -76,7 +73,7 @@ echo "TAG: "$TAG
 
 pushd ../leaderboard/web
 
-docker build --build-arg FUNCTION_NAME="${functionAppName}" . -t $TAG
+docker build --build-arg DNS_URL="${dnsURL}" . -t $TAG
 
 docker push $TAG
 echo "Successfully pushed image: "$TAG
