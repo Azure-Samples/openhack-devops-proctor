@@ -32,7 +32,7 @@ namespace Sentinel
         {
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                    .AddJsonOptions(Options => 
+                    .AddJsonOptions(Options =>
             {
                 Options.SerializerSettings.Formatting = Formatting.Indented;
             });
@@ -40,6 +40,9 @@ namespace Sentinel
             var connectionString = SentinelConfiguration.GetConnectionString(this.Configuration);
 
             services.AddDbContext<LogMessageContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            services.AddDbContext<LeaderboardContext>(options =>
                 options.UseSqlServer(connectionString));
         }
 
