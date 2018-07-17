@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Sentinel.Data;
 using Sentinel.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Sentinel.Controllers
 {
@@ -29,6 +30,14 @@ namespace Sentinel.Controllers
         [Produces("application/json", Type = typeof(LogMessage))]
         public List<LogMessage> GetLogMessagesForTeam(string teamName)
         {
+
+            ILoggerFactory loggerFactory = new LoggerFactory()
+                .AddDebug()
+                .AddConsole();
+
+            ILogger logger = loggerFactory.CreateLogger("Service");
+            logger.LogInformation("Service sees {0}",teamName);
+
             return _context.LogMessages.Where(msg => msg.TeamName == teamName).ToList<LogMessage>();
         }
 
