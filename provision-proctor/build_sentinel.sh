@@ -53,7 +53,7 @@ if [[ -z "$resourceGroupLocation" ]]; then
 fi
 
 if [[ -z "$apiUrl" ]]; then
-    echo "Enter the Azure functions api URL i.e. https://mysite.azurewebsites.net :"
+    echo "Enter the backend api URL:"
     read apiUrl
     [[ "${apiUrl:?}" ]]
 fi
@@ -93,8 +93,3 @@ docker push $TAG
 echo "Successfully pushed image: "$TAG
 
 popd
-
-installPath="../leaderboard/sentinel/helm"
-echo -e "\nhelm install ... from: " $installPath
-
-helm install $installPath --name sentinel --set image.repository=$TAG,teams.totalNumber=$totalTeams,teams.location=$resourceGroupLocation,teams.baseName=$teamName,teams.apiUrl=$apiUrl
