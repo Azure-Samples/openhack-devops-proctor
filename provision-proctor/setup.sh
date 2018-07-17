@@ -224,21 +224,21 @@ bash ./configure_sql.sh -g $resourceGroupProctor -u $sqlServerUsername -n ${proc
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${proctorName}${proctorNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${proctorName}${proctorNumber}" is:\n"$dnsURL
-apiURL='http://'$dnsURL'/api/sentinel'
-echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiURL
+apiUrl='http://'$dnsURL'/api/sentinel'
+echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiUrl
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 
 echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
 bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName
 
-echo "9-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+echo "8-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-echo "10-Deploy sentinel to AKS"
+echo "9-Deploy sentinel to AKS"
 bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
 
-echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d <dnsURL>)"
-bash ./build_deploy_web.sh -g ${resourceGroupProctor} -r $registryName -f $functionAppName -d $dnsURL
+echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
+bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
 
-echo "10-Clean the working environment"
+echo "11-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}

@@ -39,13 +39,14 @@ echo -e "\nhelm install ... from: " $chartPath
 
 # Getting the registry name and the apiUrl from kvstore
 registryName="$(kvstore get $proctorEnvName ACR).azurecr.io"
-apiUrl="http://$(kvstore get $proctorEnvName functionAppName).azurewebsites.net/api/ReportStatus"
+apiUrl="$(kvstore get $proctorEnvName apiUrl)"
 
 if [[ -z "$teamName" ]]; then
   teamList=$(kvstore ls)
 else
   teamList=$teamName
 fi
+TAG=$registryName"/devopsoh/sentinel"
 
 for team in $teamList; do
   keys=$(kvstore keys $team)
@@ -53,7 +54,7 @@ for team in $teamList; do
   if [[ " ${keys[@]} " =~ "endpoint" ]]; then
      teamEndPoint=$(kvstore get $team endpoint)
      echo "Deploying monitoring for $team at http://$teamEndPoint"
-     helm install $chartPath --name $team --set image.repository=$registryName,teams.endpointUrl="http://$teamEndPoint",teams.apiUrl=$apiUrl,teams.name=$team
+     helm install $chartPath --name $team --set image.repository=$TAG,teams.endpointUrl="http://$teamEndPoint",teams.apiUrl=$apiUrl,teams.name=$team
   fi
 
 done
