@@ -3,6 +3,7 @@ using Xunit;
 using Sentinel.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 
@@ -27,6 +28,12 @@ namespace IntegrationTests
             // Act
             var response = await client.GetAsync(url);
 
+            ILoggerFactory loggerFactory = new LoggerFactory()
+                .AddDebug()
+                .AddConsole();
+
+            ILogger logger = loggerFactory.CreateLogger("Debug");
+            logger.LogInformation("Status Code is {0}",response.StatusCode);
 
             // Asserts (Check status code, content type and actual response)
             response.EnsureSuccessStatusCode(); // Status Code 200-299
