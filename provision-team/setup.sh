@@ -138,7 +138,7 @@ echo "sqlDBName                 = "${sqlDBName}
 echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
 echo "jenkinsVMPassword         = "${jenkinsVMPassword}
-echo "jenkinsURL                = "${jenkinsURL}
+echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com
 echo "=========================================="
 
 
