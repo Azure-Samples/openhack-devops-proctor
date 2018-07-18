@@ -202,7 +202,7 @@ kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
 kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
 kvstore set ${teamName}${teamNumber} jenkinsVMPassword ${jenkinsVMPassword}
-kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}
+kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com
 
 az configure --defaults 'output=json'
 
