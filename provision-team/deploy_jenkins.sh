@@ -10,6 +10,53 @@ declare resourceGroupLocation=""
 declare jenkinsVMPassword=""
 declare jenkinsURL=""
 
+# Initialize parameters specified from command line
+while getopts ":g:l:p:u:" arg; do
+    case "${arg}" in
+        g)
+            resourceGroupName=${OPTARG}
+        ;;
+        resourceGroupLocation)
+            resourceGroupLocation=${OPTARG}
+        ;;
+        p)
+            jenkinsVMPassword=${OPTARG}
+        ;;
+        u)
+            jenkinsURL=${OPTARG}
+        ;;
+    esac
+done
+shift $((OPTIND-1))
+
+#Prompt for parameters is some required parameters are missing
+if [[ -z "$resourceGroupName" ]]; then
+    echo "This script will look for an existing resource group, otherwise a new one will be created "
+    echo "You can create new resource groups with the CLI using: az group create "
+    echo "Enter a resource group name"
+    read resourceGroupName
+    [[ "${resourceGroupName:?}" ]]
+fi
+
+if [[ -z "$resourceGroupLocation" ]]; then
+    echo "If creating a *new* resource group, you need to set a location "
+    echo "You can lookup locations with the CLI using: az account list-locations "
+    echo "Enter resource group location:"
+    read resourceGroupLocation
+    [[ "${resourceGroupLocation:?}" ]]
+fi
+
+if [[ -z "$jenkinsVMPassword" ]]; then
+    echo "Enter a password for the Jenkins VM:"
+    read jenkinsVMPassword
+fi
+
+if [[ -z "$jenkinsURL" ]]; then
+    echo "Enter a DNS label for the Jenkins VM:"
+    read jenkinsURL
+fi
+
+
     # Create a resource group.
     az group create --name $resourceGroupName --location $resourceGroupLocation
 
