@@ -53,6 +53,8 @@ kubectl create serviceaccount --namespace kube-system tillersa
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
 
+kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
 echo "Upgrading tiller (helm server) to match client version."
 
 helm init --upgrade --service-account tillersa --wait
