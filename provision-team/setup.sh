@@ -138,7 +138,7 @@ echo "sqlDBName                 = "${sqlDBName}
 echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
 echo "jenkinsVMPassword         = "${jenkinsVMPassword}
-echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com
+echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 echo "=========================================="
 
 
@@ -202,7 +202,7 @@ kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
 kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
 kvstore set ${teamName}${teamNumber} jenkinsVMPassword ${jenkinsVMPassword}
-kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com
+kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 
 az configure --defaults 'output=json'
 
