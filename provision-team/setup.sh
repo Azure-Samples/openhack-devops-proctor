@@ -252,5 +252,8 @@ bash ./build_deploy_simulator.sh -n ${teamName}${teamNumber} -q '18000'
 echo "12-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
+echo "13-Deploy Jenkins VM (# bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL) "
+bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL
+
 echo "13-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
