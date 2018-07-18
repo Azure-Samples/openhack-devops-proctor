@@ -16,7 +16,7 @@ while getopts ":g:l:p:u:" arg; do
         g)
             resourceGroupName=${OPTARG}
         ;;
-        resourceGroupLocation)
+        l)
             resourceGroupLocation=${OPTARG}
         ;;
         p)
