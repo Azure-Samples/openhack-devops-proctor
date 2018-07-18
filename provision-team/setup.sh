@@ -137,7 +137,7 @@ echo "sqlServerPassword         = "${sqlServerPassword}
 echo "sqlDBName                 = "${sqlDBName}
 echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
-echo "jenkinsVMPassword         = "${jenkinsURL}
+echo "jenkinsVMPassword         = "${jenkinsVMPassword}
 echo "jenkinsURL                = "${jenkinsURL}
 echo "=========================================="
 
@@ -201,6 +201,8 @@ kvstore set ${teamName}${teamNumber} sqlServerUserName ${sqlServerUsername}
 kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
 kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
+kvstore set ${teamName}${teamNumber} jenkinsVMPassword ${jenkinsVMPassword}
+kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}
 
 az configure --defaults 'output=json'
 
