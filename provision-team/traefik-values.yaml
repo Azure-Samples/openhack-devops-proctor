@@ -1,5 +1,6 @@
 # https://github.com/kubernetes/charts/blob/master/stable/traefik/values.yaml
 ## Default values for Traefik
+imageTag: 1.7
 externalTrafficPolicy: Local
 replicas: 1
 debug:
