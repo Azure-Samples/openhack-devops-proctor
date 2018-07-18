@@ -253,7 +253,7 @@ echo "12-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
 echo "13-Deploy Jenkins VM (# bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL) "
-bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL
+bash ./deploy_jenkins.sh -g ${resourceGroupTeam} -l ${resourceGroupLocation} -p ${jenkinsVMPassword} -u ${jenkinsURL}
 
 echo "14-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
