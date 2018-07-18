@@ -95,7 +95,7 @@ sleep 45
 
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-helm install stable/traefik --name team-ingress --version 1.35.0 -f $relativeSaveLocation"/traefik$teamName.yaml"
+helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml"
 
 echo "Waiting for public IP:"
 time=0
