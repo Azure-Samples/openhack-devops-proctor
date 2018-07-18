@@ -117,6 +117,8 @@ declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
 declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
+declare jenkinsVMPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
+declare jenkinsURL="jenkins${teamName}${teamNumber}"
 
 echo "=========================================="
 echo " VARIABLES"
@@ -135,6 +137,8 @@ echo "sqlServerPassword         = "${sqlServerPassword}
 echo "sqlDBName                 = "${sqlDBName}
 echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
+echo "jenkinsVMPassword         = "${jenkinsURL}
+echo "jenkinsURL                = "${jenkinsURL}
 echo "=========================================="
 
 
