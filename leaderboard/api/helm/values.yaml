@@ -24,6 +24,12 @@ ingress:
       - path: /api/sentinel
         serviceName: sentinel-api-svc
         servicePort: 80
+      - path: /api/leaderboard
+        serviceName: sentinel-api-svc
+        servicePort: 80
+      - path: /api/healthcheck/sentinel
+        serviceName: sentinel-api-svc
+        servicePort: 80
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

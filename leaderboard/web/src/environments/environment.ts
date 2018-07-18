@@ -10,7 +10,7 @@
 
 export const environment = {
   production: false,
-  backendUrl: 'http://devopsoh2subproc1fun/api/sentinel',
+  backendUrl: 'http://devopsoh2subproc1fun/api/leaderboard',
 };
 
 
