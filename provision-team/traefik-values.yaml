@@ -1,10 +1,16 @@
 # https://github.com/kubernetes/charts/blob/master/stable/traefik/values.yaml
 ## Default values for Traefik
-imageTag: 1.7
+imageTag: 1.6-alpine
 externalTrafficPolicy: Local
 replicas: 1
 debug:
   enabled: true
+deploymentStrategy: {
+type: RollingUpdate
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+}
 ssl:
   enabled: true
   enforced: false
