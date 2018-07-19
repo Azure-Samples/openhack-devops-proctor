@@ -88,7 +88,7 @@ done
 
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-APISERVER=$(kubectl config view | grep server | cut -f 2- -d ":" | tr -d " ")
+APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
 helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
