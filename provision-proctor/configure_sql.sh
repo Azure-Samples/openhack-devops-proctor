@@ -63,7 +63,7 @@ if [[ -z "$sqlDBName" ]]; then
     read sqlDBName
 fi
 
-INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+INGRESS_IP=$(kubectl get svc proctor-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 # Get the name of the SQL server
 sqlServer=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerName -o tsv --query value)

@@ -53,8 +53,6 @@ kubectl create serviceaccount --namespace kube-system tillersa
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
 
-kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
-
 echo "Upgrading tiller (helm server) to match client version."
 
 helm init --upgrade --service-account tillersa --wait
@@ -69,11 +67,11 @@ done
 
 echo "tiller upgrade complete."
 
-echo "Updating information of available charts locally from chart repositories"
-helm repo update
+#echo "Updating information of available charts locally from chart repositories"
+#helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
-cat "${0%/*}/traefik-values.yaml" \
+cat "../provision-team/traefik-values.yaml" \
     | sed "s/akstraefikreplaceme/akstraefik$teamName/g" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
@@ -88,26 +86,24 @@ while true; do
         echo $time "seconds waiting"
 done
 
-# Adding sleep 45 as per https://github.com/kubernetes/charts/commit/977d130375c88dd1b0a23977522db8d748fd49d3#diff-3e80d6cfbb2cf233c8f914f6fde79ec5
-echo -e "\nSleeping for 45 seconds to ensure Traefik is ready\n"
-sleep 45
-
-
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml"
+APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
+echo "Apiserver is: " $APISERVER
+
+helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
 echo "Waiting for public IP:"
 time=0
 while true; do
-        INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        INGRESS_IP=$(kubectl get svc proctor-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [[ "${INGRESS_IP}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then break; fi
         sleep 10
         time=$(($time+10))
         echo $time "seconds waiting"
 done
 
-INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+INGRESS_IP=$(kubectl get svc proctor-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 DNS_HOSTNAME=akstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com
 echo -e "\n\nExternal DNS hostname is https://"$DNS_HOSTNAME "which maps to IP " $INGRESS_IP
