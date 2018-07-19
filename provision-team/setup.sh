@@ -117,6 +117,8 @@ declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
 declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
+declare jenkinsVMPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
+declare jenkinsURL="jenkins${teamName}${teamNumber}"
 
 echo "=========================================="
 echo " VARIABLES"
@@ -135,6 +137,8 @@ echo "sqlServerPassword         = "${sqlServerPassword}
 echo "sqlDBName                 = "${sqlDBName}
 echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
+echo "jenkinsVMPassword         = "${jenkinsVMPassword}
+echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 echo "=========================================="
 
 
@@ -197,6 +201,8 @@ kvstore set ${teamName}${teamNumber} sqlServerUserName ${sqlServerUsername}
 kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
 kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
+kvstore set ${teamName}${teamNumber} jenkinsVMPassword ${jenkinsVMPassword}
+kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 
 az configure --defaults 'output=json'
 
@@ -246,5 +252,8 @@ bash ./build_deploy_simulator.sh -n ${teamName}${teamNumber} -q '18000'
 echo "12-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
-echo "13-Clean the working environment"
+echo "13-Deploy Jenkins VM (# bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL) "
+bash ./deploy_jenkins.sh -g ${resourceGroupTeam} -l ${resourceGroupLocation} -p ${jenkinsVMPassword} -u ${jenkinsURL}
+
+echo "14-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
