@@ -7,9 +7,25 @@ import 'rxjs/add/operator/map';
 
 interface TeamResponse {
   name: string;
+  downtimesecond: number;
+  point: number;
+}
+
+interface Team {
+  name: string;
   uptime: number;
   uppercent: number;
   point: number;
+}
+const TOTAL_TIME = 68400;
+function convertTeam(teamResponse: TeamResponse) :Team {
+  let team :Team = {
+    name: teamResponse.name,
+    uptime: (TOTAL_TIME - teamResponse.downtimesecond),
+    uppercent: ((TOTAL_TIME - teamResponse.downtimesecond) / TOTAL_TIME) * 100,
+    point: teamResponse.point
+  }
+  return team;
 }
 
 @Injectable()
@@ -48,6 +64,11 @@ export class DashboardComponent implements OnInit {
 //    console.log("length:" + this.viewTeams.length);
   }
 
+
+
+
+
+
   Convert() {
     const numberOfRow = 4;
     const viewTeams: {[k: string]: any}[] = [];
@@ -70,7 +91,7 @@ export class DashboardComponent implements OnInit {
         if (lastRow === -1) {
           lastRow = row;
         }
-        localTeams.push(team);
+        localTeams.push(convertTeam(team));
     });
     viewTeams.push(
       {
