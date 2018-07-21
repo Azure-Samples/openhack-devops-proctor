@@ -6,9 +6,9 @@ import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/map';
 
 interface TeamResponse {
-  name: string;
-  downtimesecond: number;
-  point: number;
+  teamName: string;
+  downTimeSeconds: number;
+  points: number;
 }
 
 interface Team {
@@ -18,14 +18,13 @@ interface Team {
   point: number;
 }
 const TOTAL_TIME = 68400;
-function convertTeam(teamResponse: TeamResponse) :Team {
-  let team :Team = {
-    name: teamResponse.name,
-    uptime: (TOTAL_TIME - teamResponse.downtimesecond),
-    uppercent: ((TOTAL_TIME - teamResponse.downtimesecond) / TOTAL_TIME) * 100,
-    point: teamResponse.point
+function convertTeam(teamResponse: TeamResponse): Team {
+   return {
+    'name': teamResponse.teamName,
+    'uptime': (TOTAL_TIME - teamResponse.downTimeSeconds),
+    'uppercent': ((TOTAL_TIME - teamResponse.downTimeSeconds) / TOTAL_TIME) * 100,
+    'point': teamResponse.points,
   }
-  return team;
 }
 
 @Injectable()
@@ -46,7 +45,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const url = environment.backendUrl;
+    const url = environment.backendUrl; // environment.backendUrl;
     this.pollingData = Observable.interval(5000)
       .subscribe((value) => {
         this.http.get(url)
