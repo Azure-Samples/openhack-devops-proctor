@@ -40,6 +40,17 @@ namespace Sentinel.Controllers
             return _context.Teams.ToList<Team>();
         }
 
+        [HttpPost("teams", Name = "CreateTeam")]
+        public IActionResult CreateTeam([FromBody] Team tm)
+        {
+            Team t = new Team();
+            t.TeamName = tm.TeamName;
+            t.DownTimeSeconds = 0;
+            t.Points = 0;
 
+            _context.Add(t);
+            _context.SaveChanges();
+            return Ok(t);
+        }
     }
 }
