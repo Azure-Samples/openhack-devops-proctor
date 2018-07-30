@@ -27,17 +27,5 @@ spec:
       - backend:
           serviceName: {{ template "traefik.fullname" . }}-dashboard
           servicePort: 80
-        path: /dashboard
-      - backend:
-          serviceName: {{ template "traefik.fullname" . }}-dashboard
-          servicePort: 80
-        path: /api/providers
-      - backend:
-          serviceName: {{ template "traefik.fullname" . }}-dashboard
-          servicePort: 80
-        path: /api/version
-      - backend:
-          serviceName: {{ template "traefik.fullname" . }}-dashboard
-          servicePort: 80
-        path: /health
+        path: {{ .Values.dashboard.path }}
 {{- end }}

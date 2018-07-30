@@ -178,6 +178,7 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  path: /ing
   service:
     # annotations:
     #   key: value
