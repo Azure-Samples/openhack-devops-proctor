@@ -69,8 +69,8 @@ done
 
 echo "tiller upgrade complete."
 
-echo "Updating information of available charts locally from chart repositories"
-helm repo update
+# echo "Updating information of available charts locally from chart repositories"
+# helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
 cat "${0%/*}/traefik-values.yaml" \
@@ -88,14 +88,12 @@ while true; do
         echo $time "seconds waiting"
 done
 
-# Adding sleep 45 as per https://github.com/kubernetes/charts/commit/977d130375c88dd1b0a23977522db8d748fd49d3#diff-3e80d6cfbb2cf233c8f914f6fde79ec5
-echo -e "\nSleeping for 45 seconds to ensure Traefik is ready\n"
-sleep 45
-
-
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml"
+APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
+echo "Apiserver is: " $APISERVER
+
+helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
 echo "Waiting for public IP:"
 time=0
