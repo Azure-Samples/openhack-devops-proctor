@@ -14,7 +14,7 @@ declare const echarts: any;
     </div>
     <div class="info">
       <div class="value">{{teamPoint}} points</div>
-      <div class="details"><span>uptime</span> {{teamUptime}} min</div>
+      <div class="details"><span>downtime</span> {{teamUptime}} min</div>
     </div>
   </nb-card-body>
 </nb-card>
