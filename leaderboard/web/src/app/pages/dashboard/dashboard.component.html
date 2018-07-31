@@ -27,32 +27,6 @@
             </div>
           </nb-card-body>
         </nb-card>
-        <ngx-solar [chartValue]="t.uppercent" [teamName]="t.name" [uptime]="t.uptime" [point]="t.point"></ngx-solar>
-        <nb-card>
-          <nb-card-header>{{t.name}} Status</nb-card-header>
-          <nb-card-body>
-          <div class="container-btn">
-              <div class = "row">
-                  <div class = "col">
-                    <h5>Downtime</h5>
-                  </div>
-                </div>
-            <div class = "row">
-              <div class = "col">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{t.uptime}}</div>
-                </div>
-              </div>
-            </div>
-            <div class = "row">
-                <div class = "col" align="right">
-                    <p></p>
-                    <h4>{{t.point}} points</h4>
-                </div>
-            </div>
-            </div>
-          </nb-card-body>
-        </nb-card>
       </div>
     </ng-container>
   </div>
