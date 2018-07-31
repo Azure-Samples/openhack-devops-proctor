@@ -24,7 +24,7 @@ ingress:
       - path: /api/sentinel
         serviceName: sentinel-api-svc
         servicePort: 80
-      - path: /api/leaderboard
+      - path: /api/leaderboard/teams
         serviceName: sentinel-api-svc
         servicePort: 80
       - path: /api/healthcheck/sentinel

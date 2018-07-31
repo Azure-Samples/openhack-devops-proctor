@@ -69,11 +69,11 @@ done
 
 echo "tiller upgrade complete."
 
-# echo "Updating information of available charts locally from chart repositories"
-# helm repo update
+#echo "Updating information of available charts locally from chart repositories"
+#helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
-cat "${0%/*}/traefik-values.yaml" \
+cat "../provision-team/traefik-values.yaml" \
     | sed "s/akstraefikreplaceme/akstraefik$teamName/g" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
@@ -93,19 +93,19 @@ echo -e "\n\nInstalling Traefik Ingress controller ..."
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
-helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
+helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
 echo "Waiting for public IP:"
 time=0
 while true; do
-        INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        INGRESS_IP=$(kubectl get svc proctor-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [[ "${INGRESS_IP}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then break; fi
         sleep 10
         time=$(($time+10))
         echo $time "seconds waiting"
 done
 
-INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+INGRESS_IP=$(kubectl get svc proctor-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 DNS_HOSTNAME=akstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com
 echo -e "\n\nExternal DNS hostname is https://"$DNS_HOSTNAME "which maps to IP " $INGRESS_IP
