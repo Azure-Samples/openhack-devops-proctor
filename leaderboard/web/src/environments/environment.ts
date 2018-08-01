@@ -10,7 +10,7 @@
 
 export const environment = {
   production: false,
-  backendUrl: 'http://devopsoh2subproc1fun/api/leaderboard/teams',
+  backendUrl: 'http://localhost:3000',
 };
 
 
