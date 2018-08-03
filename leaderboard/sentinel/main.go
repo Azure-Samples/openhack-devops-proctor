@@ -27,7 +27,7 @@ type logmsg struct {
 	Type        string
 	CreatedDate time.Time
 	StatusCode  int
-	EndpointUri string
+	EndpointURI string
 }
 
 func main() {
@@ -58,7 +58,7 @@ func main() {
 			Type:        cfg.ServiceType,
 			CreatedDate: currentTimeRound,
 			StatusCode:  statusCode,
-			EndpointUri: cfg.Endpoint,
+			EndpointURI: cfg.Endpoint,
 		}
 
 		// Endpoint is dead

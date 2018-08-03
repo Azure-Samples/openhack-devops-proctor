@@ -29,7 +29,8 @@ namespace IntegrationTests
                     logging.AddConsole();
                     logging.AddDebug();
                 })
-                .UseStartup<IntegrationTests.Startup>();
+                .UseStartup<IntegrationTests.Startup>()
+                .UseUrls("http://localhost:8090");;
 
             return host;
         }
