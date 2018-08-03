@@ -2,7 +2,7 @@
 
 The leaderboard's high-level purpose is to calculate and display the downtime for every team's APIs.
 
-Under the leaderboard subdirectory, you can find these directories which correspond to the components required to achieve the leaderboard goal.  Go to the root of these folders to see a readme with deeper information on each component.
+Under the leaderboard subdirectory, you can find these directories which correspond to the components required to achieve the leaderboard goal.
 
 ## api
 
