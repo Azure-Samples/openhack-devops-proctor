@@ -26,11 +26,34 @@ CREATE TABLE leaderboard.dbo.Teams (
         Id nvarchar(128) NOT NULL,
         TeamName nvarchar(50) NOT NULL,
         DowntimeSeconds int NOT NULL,
+        IsScoringEnabled bit DEFAULT ((0)) NOT NULL,
         Points int NOT NULL
 )
 
 GO
 
 CREATE UNIQUE INDEX Teams_TeamName_IDX ON leaderboard.dbo.Teams (TeamName)
+
+GO
+
+CREATE TABLE leaderboard.dbo.ChallengeDefinitions (
+	Id int NOT NULL IDENTITY(1,1),
+	Name nvarchar(100) NOT NULL,
+	MaxPoints int NOT NULL,
+	Description nvarchar(512),
+        ScoreEnabled bit DEFAULT ((0)) NOT NULL
+)
+
+GO
+
+CREATE TABLE leaderboard.dbo.Challenges (
+	Id int NOT NULL IDENTITY(1,1),
+	TeamId int NOT NULL,
+	ChallengeDefinitionId int NOT NULL,
+	StartDateTime datetimeNOT NULL,
+	EndDateTime datetime,
+	Score int,
+
+)
 
 GO
