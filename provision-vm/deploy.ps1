@@ -6,7 +6,6 @@ Param(
 
 $num = $Number #"116"
 $location = $Location #"eastus"
-$adminPassword = $AdminPassword #'AzureP@ssw0rd!'
 $AdminUser = 'azureuser'
 $environmentHeader = "procoh"
 $proctorVMName = $environmentHeader + "vm" + $num
