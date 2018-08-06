@@ -76,4 +76,4 @@ az group deployment create \
     --name "${resourceGroupName}deployment" \
     --resource-group $resourceGroupName \
     --template-file azuredeploy.json \
-    --parameters adminUsername=$AdminUser dnsNameForPublicIP=$proctorDNSName sshKeyData=$publickey
+    --parameters adminUsername=$AdminUser dnsNameForPublicIP=$proctorDNSName sshKeyData="$publickey"
