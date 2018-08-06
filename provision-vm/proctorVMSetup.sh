@@ -1,4 +1,4 @@
-echo "############### Installing Azure CLI v2.0.41 ###############"
+echo "############### Installing Azure CLI v2.0.43 ###############"
 AZ_REPO=$(lsb_release -cs)
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
      sudo tee /etc/apt/sources.list.d/azure-cli.list
@@ -12,7 +12,7 @@ sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.9/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -71,7 +71,7 @@ sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 
 # Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
-sudo apt-get install -y azure-cli=2.0.41-1~xenial
+sudo apt-get install -y azure-cli=2.0.43-1~xenial
 
 echo azure-cli hold | sudo dpkg --set-selection
 
