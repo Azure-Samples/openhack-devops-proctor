@@ -26,9 +26,6 @@ namespace Sentinel
     public class Startup
     {
 
-        private const string SecretKey = "iNivDmHLpUA223sqsfhqGbMRdRj1PVkH"; // todo: get this from somewhere secure
-        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -57,6 +54,8 @@ namespace Sentinel
 
             services.AddDbContext<LeaderboardContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            var _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SentinelConfiguration.GetSecretKey(Configuration)));
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
             // jwt wire up
