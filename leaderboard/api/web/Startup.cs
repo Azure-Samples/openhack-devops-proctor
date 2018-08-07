@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Newtonsoft.Json;
@@ -24,11 +20,6 @@ using Sentinel.Data;
 using Sentinel.Helpers;
 using Sentinel.Models;
 using Sentinel.Utility;
-
-// using System.Net;
-// using AngularASPNETCore2WebApiAuth.Extensions;
-// using Microsoft.AspNetCore.Diagnostics;
-// using Microsoft.AspNetCore.Http;
 
 namespace Sentinel
 {
@@ -67,6 +58,7 @@ namespace Sentinel
             services.AddDbContext<LeaderboardContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            services.AddSingleton<IJwtFactory, JwtFactory>();
             // jwt wire up
             // Get options from app settings
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
@@ -143,6 +135,27 @@ namespace Sentinel
                 app.UseHsts();
             }
 
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(
+                        async context =>
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+                                var error = context.Features.Get<IExceptionHandlerFeature>();
+                                if (error != null)
+                                {
+                                    context.Response.AddApplicationError(error.Error.Message);
+                                    await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
+                                }
+                            });
+                });
+
+            app.UseAuthentication();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
