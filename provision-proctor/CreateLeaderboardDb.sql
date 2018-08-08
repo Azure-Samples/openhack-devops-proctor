@@ -32,12 +32,17 @@ CREATE TABLE leaderboard.dbo.Teams (
 
 GO
 
+ALTER TABLE leaderboard.dbo.Teams ADD CONSTRAINT Teams_PK PRIMARY KEY (Id)
+
+GO
+
+
 CREATE UNIQUE INDEX Teams_TeamName_IDX ON leaderboard.dbo.Teams (TeamName)
 
 GO
 
 CREATE TABLE leaderboard.dbo.ChallengeDefinitions (
-	Id int NOT NULL IDENTITY(1,1),
+        Id nvarchar(128) NOT NULL,
 	Name nvarchar(100) NOT NULL,
 	MaxPoints int NOT NULL,
 	Description nvarchar(512),
@@ -46,14 +51,33 @@ CREATE TABLE leaderboard.dbo.ChallengeDefinitions (
 
 GO
 
+ALTER TABLE leaderboard.dbo.ChallengeDefinitions ADD CONSTRAINT ChallengeDefinitions_PK PRIMARY KEY (Name,Id)
+
+GO
+
+
 CREATE TABLE leaderboard.dbo.Challenges (
-	Id int NOT NULL IDENTITY(1,1),
-	TeamId int NOT NULL,
-	ChallengeDefinitionId int NOT NULL,
-	StartDateTime datetimeNOT NULL,
+        Id nvarchar(128) NOT NULL,
+	TeamId nvarchar(128) NOT NULL,
+	ChallengeDefinitionId nvarchar(128) NOT NULL,
+	StartDateTime datetime NOT NULL,
 	EndDateTime datetime,
 	Score int,
 
 )
 
 GO
+
+ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT Challenges_PK PRIMARY KEY (Id,TeamId,ChallengeDefinitionId)
+
+GO
+
+CREATE INDEX Challenges_StartEndDateTime_IDX ON leaderboard.dbo.Challenges (StartDateTime,EndDateTime)
+
+GO
+
+ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT FK_Challenges_Team FOREIGN KEY (TeamId) REFERENCES leaderboard.dbo.Teams (TeamId)
+
+GO
+
+ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT FK_Challenges_ChallengeDefinition FOREIGN KEY (ChallengeDefinitionId) REFERENCES leaderboard.dbo.Teams (Id)
