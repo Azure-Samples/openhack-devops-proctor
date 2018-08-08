@@ -21,8 +21,19 @@ namespace Sentinel.Controllers
         }
 
         // Routes
-        // GET /sentinel/logs/{teamId} - Get logs for team
-        // POST /sentinel/logs/{teamId} - Create new log for team
+
+        // * GET /api/leaderboard/teams/ - get teams
+        // * GET /api/leaderboard/teams/{teamName} - get team record
+        // * POST /api/leaderboard/teams/ - create a team
+        // * PATCH /api/leaderboard/teams/{teamName} - update a team
+
+        // * GET /api/leaderboard/challenges/ - get challenges for all teams
+        // * GET /api/leaderboard/challenges/{teamName} - get challenges for a team
+        // * POST /api/leaderboard/challenges/ - create a challenge for a team
+        // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
+
+        // * GET /api/sentinel/logs/{teamId} - gets all logs for a team
+        // * POST /api/sentinel/logs/{teamId} - posts logs for a team
 
         // Leaderboard routes in Leaderboard controller
 
@@ -41,6 +52,19 @@ namespace Sentinel.Controllers
         }
 
         [HttpPost("teams", Name = "CreateTeam")]
+        public IActionResult CreateTeam([FromBody] Team tm)
+        {
+            Team t = new Team();
+            t.TeamName = tm.TeamName;
+            t.DownTimeSeconds = 0;
+            t.Points = 0;
+
+            _context.Add(t);
+            _context.SaveChanges();
+            return Ok(t);
+        }
+
+        [("teams", Name = "UpdateTeam")]
         public IActionResult CreateTeam([FromBody] Team tm)
         {
             Team t = new Team();

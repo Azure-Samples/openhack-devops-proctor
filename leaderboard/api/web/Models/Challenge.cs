@@ -7,15 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sentinel.Models
 {
-    public class Team
+    public class Challenge
     {
-        public string Id {get;set;}
-        public string TeamName { get; set; }
-        public int DownTimeSeconds { get; set; }
-        public int Points { get; set; }
-        public bool IsScoringEnabled { get; set; }
+        public string Id { get; set;}
+        public string TeamId { get; set; }
+        public string ChallengeDefinitionId { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
+        public int Score { get; set; }
 
-        public Team()
+        public Challenge()
         {
             Id = Guid.NewGuid().ToString();
         }
