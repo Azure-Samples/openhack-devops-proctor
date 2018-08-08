@@ -48,6 +48,11 @@ spec:
               secretKeyRef:
                 name: sql
                 key: sql_dbname
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: jwt
+                key: secret_key
           - name: WEB_SERVER_BASE_URI
             value: 'http://0.0.0.0'
           - name: WEB_PORT

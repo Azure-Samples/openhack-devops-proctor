@@ -101,6 +101,10 @@ echo -e "\nSuccessfully pushed image: "$TAG
 
 popd
 
+echo -e "\nAdding JWT Signing Key Secret\n\n"
+randomString=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
+kubectl create secret generic jwt --type=string --from-literal=secret_key=$randomString
+
 installPath="../leaderboard/api/helm"
 echo -e "\nhelm install from: " $installPath "\n\n"
 
