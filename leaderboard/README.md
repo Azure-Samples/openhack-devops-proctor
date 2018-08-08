@@ -23,6 +23,24 @@ An dotnet Core 2.1 API which connects to a SQL azure database backend.  This is 
 * GET /api/sentinel/logs/{teamId} - gets all logs for a team
 * POST /api/sentinel/logs/{teamId} - posts logs for a team
 
+* POST /api/accounts - Creates a new user which will allow email/password login.  Body for post:
+
+    ```json
+    {
+    "email": "me@outlook.com",
+    "password": "myComplexPassw0rd!",
+    "firstName": "John",
+    "lastName": "Smith",
+    "location": "Seattle, WA"
+    }
+    ```
+
+* POST /api/auth/login - email username and password login request which returns JWT.  Valid body for post:
+
+    ```json
+    {"userName": "me@outlook.com", "password": "myComplexPassw0rd!"}
+    ```
+
 ## sentinel
 
 Sentinel is the tool for watching the team health endpoints written in golang.  It contains a helm chart in the `helm` sub-directory.
