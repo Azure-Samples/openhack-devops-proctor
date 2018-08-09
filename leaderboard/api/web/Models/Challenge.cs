@@ -9,9 +9,9 @@ namespace Sentinel.Models
 {
     public class Challenge
     {
-        public string Id { get; set;}
-        public string TeamId { get; set; }
-        public string ChallengeDefinitionId { get; set; }
+        public Guid Id { get; set;}
+        public Guid TeamId { get; set; }
+        public Guid ChallengeDefinitionId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int Score { get; set; }

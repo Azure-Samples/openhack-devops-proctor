@@ -9,7 +9,7 @@ namespace Sentinel.Models
 {
     public class ChallengeDefinition
     {
-        public string Id {get;set;}
+        public Guid Id {get;set;}
         public string Name { get; set; }
         public int MaxPoints { get; set; }
         public string Description { get; set; }
@@ -17,7 +17,7 @@ namespace Sentinel.Models
 
         public ChallengeDefinition()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid();
         }
     }
 }

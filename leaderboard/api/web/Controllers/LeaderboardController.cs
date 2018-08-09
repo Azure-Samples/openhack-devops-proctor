@@ -59,7 +59,7 @@ namespace Sentinel.Controllers
         [HttpPost("teams", Name = "CreateTeam")]
         public IActionResult CreateTeam([FromBody] Team tm)
         {
-            tm.Id = Guid.NewGuid().ToString();
+            tm.Id = Guid.NewGuid();
 
             _context.Teams.Add(tm);
             _context.SaveChanges();
@@ -70,17 +70,17 @@ namespace Sentinel.Controllers
         [HttpPatch("teams/{teamName}", Name = "UpdateTeam")]
         public IActionResult UpdateTeam([FromBody] Team tm)
         {
-            Team t = _context.Teams.Find(tm.Id);
-            if (t == null){
+            Team tmp = _context.Teams.Find(tm.Id);
+            if (tmp == null){
                 return NotFound();
             }
 
-            t.DownTimeSeconds = tm.DownTimeSeconds;
-            t.IsScoringEnabled = tm.IsScoringEnabled;
-            t.Points = tm.Points;
-            t.TeamName = tm.TeamName;
+            tmp.DownTimeSeconds = tm.DownTimeSeconds;
+            tmp.IsScoringEnabled = tm.IsScoringEnabled;
+            tmp.Points = tm.Points;
+            tmp.TeamName = tm.TeamName;
 
-            _context.Teams.Update(t);
+            _context.Teams.Update(tmp);
             _context.SaveChanges();
 
             return NoContent();
@@ -90,7 +90,7 @@ namespace Sentinel.Controllers
         [HttpDelete("teams/{teamName}", Name = = "DeleteTeam")]
         public IActionResult DeleteTeam(string teamName)
         {
-            
+
             Team t;
             try
             {
@@ -134,7 +134,7 @@ namespace Sentinel.Controllers
         [HttpPost("challenges", Name = "CreateChallenge")]
         public IActionResult CreateChallenge([FromBody] Challenge c)
         {
-            c.Id = Guid.NewGuid().ToString();
+            c.Id = Guid.NewGuid();
 
             _context.Challenges.Add(c);
             _context.SaveChanges();
@@ -153,11 +153,12 @@ namespace Sentinel.Controllers
                 return NotFound();
             }
 
+            tmp.TeamId = c.TeamId;
             tmp.ChallengeDefinitionId = c.ChallengeDefinitionId;
             tmp.EndDateTime = c.EndDateTime;
             tmp.Score = c.Score;
             tmp.StartDateTime = c.StartDateTime;
-            tmp.TeamId = c.TeamId;
+
 
             _context.Challenges.Update(tmp);
             _context.SaveChanges();
