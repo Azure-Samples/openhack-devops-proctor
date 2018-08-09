@@ -96,7 +96,7 @@ namespace Sentinel.Controllers
             {
                 t = _context.Teams.Where<Team>(Team => Team.TeamName == teamName).Single<Team>();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return NoContent();
             }

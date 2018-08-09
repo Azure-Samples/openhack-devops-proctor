@@ -16,13 +16,13 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/l
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
-echo "############### Installing Dotnet SDK v2.1.4 ###############"
+echo "############### Installing Dotnet SDK v2.1 ###############"
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 
 sudo apt-get update
-sudo apt-get install -y dotnet-sdk-2.1.4
+sudo apt-get install -y dotnet-sdk-2.1
 
 echo "############### Installing Jq ###############"
 sudo apt-get install -y jq
