@@ -17,7 +17,7 @@ namespace Sentinel.Models
 
     public class LogMessage
     {
-        public string Id {get;set;}
+        public String Id {get;set;}
         public string TeamName { get; set; }
         public string EndpointUri { get; set; }
         public DateTime CreatedDate { get; set; }

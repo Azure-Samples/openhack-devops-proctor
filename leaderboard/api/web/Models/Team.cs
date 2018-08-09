@@ -9,7 +9,7 @@ namespace Sentinel.Models
 {
     public class Team
     {
-        public string Id {get;set;}
+        public String Id {get;set;}
         public string TeamName { get; set; }
         public int DownTimeSeconds { get; set; }
         public int Points { get; set; }

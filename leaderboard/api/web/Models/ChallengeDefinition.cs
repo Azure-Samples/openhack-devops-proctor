@@ -9,11 +9,11 @@ namespace Sentinel.Models
 {
     public class ChallengeDefinition
     {
-        public string Id {get;set;}
+        public String Id {get;set;}
         public string Name { get; set; }
         public int MaxPoints { get; set; }
         public string Description { get; set; }
-        public string ScoreEnabled {get;set}
+        public string ScoreEnabled {get;set;}
 
         public ChallengeDefinition()
         {
