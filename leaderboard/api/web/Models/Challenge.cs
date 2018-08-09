@@ -18,7 +18,7 @@ namespace Sentinel.Models
 
         public Challenge()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid();
         }
     }
 }

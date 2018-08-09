@@ -13,6 +13,6 @@ namespace Sentinel.Data
 
         public DbSet<Team> Teams { get; set; }
         public DbSet<Challenge> Challenges { get; set; }
-        public DbSet<ChallengeDefinitions> ChallengeDefinitions { get; set; }
+        public DbSet<ChallengeDefinition> ChallengeDefinitions { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace Sentinel.Controllers
         }
 
         // * DELETE /api/leaderboard/teams/{teamName} - Delete a team
-        [HttpDelete("teams/{teamName}", Name = = "DeleteTeam")]
+        [HttpDelete("teams/{teamName}", Name = "DeleteTeam")]
         public IActionResult DeleteTeam(string teamName)
         {
 
