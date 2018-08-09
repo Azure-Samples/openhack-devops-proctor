@@ -59,7 +59,7 @@ namespace Sentinel.Controllers
         [HttpPost("teams", Name = "CreateTeam")]
         public IActionResult CreateTeam([FromBody] Team tm)
         {
-            tm.Id = Guid.NewGuid();
+            tm.Id = Guid.NewGuid().ToString();
 
             _context.Teams.Add(tm);
             _context.SaveChanges();
@@ -134,7 +134,7 @@ namespace Sentinel.Controllers
         [HttpPost("challenges", Name = "CreateChallenge")]
         public IActionResult CreateChallenge([FromBody] Challenge c)
         {
-            c.Id = Guid.NewGuid();
+            c.Id = Guid.NewGuid().ToString();
 
             _context.Challenges.Add(c);
             _context.SaveChanges();

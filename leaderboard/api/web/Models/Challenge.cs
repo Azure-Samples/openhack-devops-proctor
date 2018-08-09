@@ -9,16 +9,16 @@ namespace Sentinel.Models
 {
     public class Challenge
     {
-        public Guid Id { get; set;}
-        public Guid TeamId { get; set; }
-        public Guid ChallengeDefinitionId { get; set; }
+        public String Id { get; set;}
+        public String TeamId { get; set; }
+        public String ChallengeDefinitionId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int Score { get; set; }
 
         public Challenge()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString();
         }
     }
 }

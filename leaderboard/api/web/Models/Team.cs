@@ -9,7 +9,7 @@ namespace Sentinel.Models
 {
     public class Team
     {
-        public Guid Id {get;set;}
+        public String Id {get;set;}
         public string TeamName { get; set; }
         public int DownTimeSeconds { get; set; }
         public int Points { get; set; }
@@ -17,7 +17,7 @@ namespace Sentinel.Models
 
         public Team()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString();
         }
     }
 }

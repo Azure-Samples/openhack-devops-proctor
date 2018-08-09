@@ -17,7 +17,7 @@ namespace Sentinel.Models
 
     public class LogMessage
     {
-        public Guid Id {get;set;}
+        public String Id {get;set;}
         public string TeamName { get; set; }
         public string EndpointUri { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -26,7 +26,7 @@ namespace Sentinel.Models
 
         public LogMessage()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString();
         }
     }
 }
