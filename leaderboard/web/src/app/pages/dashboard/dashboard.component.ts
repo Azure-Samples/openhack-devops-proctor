@@ -13,16 +13,14 @@ interface TeamResponse {
 
 interface Team {
   name: string;
-  uptime: number;
-  uppercent: number;
+  downTimeSeconds: number;
   point: number;
 }
 const TOTAL_TIME = 68400;
 function convertTeam(teamResponse: TeamResponse): Team {
    return {
     'name': teamResponse.teamName,
-    'uptime': (TOTAL_TIME - teamResponse.downTimeSeconds),
-    'uppercent': ((TOTAL_TIME - teamResponse.downTimeSeconds) / TOTAL_TIME) * 100,
+    'downTimeSeconds': teamResponse.downTimeSeconds,
     'point': teamResponse.points,
   }
 }
