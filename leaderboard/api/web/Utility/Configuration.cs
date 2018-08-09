@@ -21,6 +21,13 @@ namespace Sentinel.Utility
             return connectionString;
         }
 
+        public static string GetSecretKey(IConfiguration configuration)
+        {
+            var SECRET_KEY = configuration.GetValue(typeof(string),"SECRET_KEY","changeMe2SecureValue");
+
+            return SECRET_KEY.ToString();
+
+        }
         public static string GetUri(IConfiguration configuration)
         {
             var WEB_PORT = configuration.GetValue(typeof(string),"WEB_PORT","8080");
