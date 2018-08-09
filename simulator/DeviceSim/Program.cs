@@ -1,37 +1,24 @@
 ﻿using DeviceSim.Controllers;
 using DeviceSim.Helpers;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.Devices.Client;
-using Newtonsoft.Json;
-using System.IO;
-
-using System.Configuration;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using System.Timers;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeviceSim
 {
-    class Program
+    internal class Program
     {
-
         #region Variables
 
         private static DBConnectionInfo dBConnectionInfo;
         private static int WaitTime;
         private static string TeamName;
         private static bool UseApi = false;
-      
-       
-        #endregion
 
-        static void Main(string[] args)
+        #endregion Variables
+
+        private static void Main(string[] args)
         {
             InitializeApp();
 
@@ -51,12 +38,10 @@ namespace DeviceSim
                     Console.WriteLine(ex.Message);
                 }
             }
-                      
         }
 
         private static async Task CreateTripAsync()
         {
-            
             try
             {
                 Console.WriteLine($"Starting Trip Creation : {DateTime.Now}. ");
@@ -65,11 +50,8 @@ namespace DeviceSim
             }
             catch (Exception ex)
             {
-
                 throw;
             }
-            
-               
         }
 
         private static void InitializeApp()
@@ -81,18 +63,15 @@ namespace DeviceSim
             //Environmental Variables - Pass to Container
 
             //Database Connection Information
-            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("team1sqlxs76.database.windows.net");
-            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("team1saxs76");
-            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("team1pwd-xs76");
+            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("davete02ted2sql.database.windows.net");
+            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("davete02ted2sa");
+            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("5N6nk3La2pwd");
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-
         }
-
- 
 
         private static async Task CreateTrip()
         {
@@ -104,14 +83,8 @@ namespace DeviceSim
             }
             catch (Exception)
             {
-
                 throw;
             }
-           
         }
-
-
-
-
     }
 }
