@@ -13,7 +13,7 @@ namespace Sentinel.Models
         public string Name { get; set; }
         public int MaxPoints { get; set; }
         public string Description { get; set; }
-        public string ScoreEnabled {get;set}
+        public string ScoreEnabled {get;set;}
 
         public ChallengeDefinition()
         {
