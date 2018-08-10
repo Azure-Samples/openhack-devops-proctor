@@ -13,6 +13,9 @@
               <div class = "col">
               <button class="btn btn-success btn-demo">USER</button>
             </div>
+            <div class = "col">
+              <button class="btn btn-danger btn-demo">USER-Java</button>
+            </div>
               <div class = "col">
               <button class="btn btn-danger btn-demo">TRIP</button>
             </div>
@@ -23,6 +26,10 @@
                 <p></p>
                     <h4>{{t.point}} points</h4>
                 </div>
+                <div class = "col">
+                  <p></p>
+                      <h4>{{ t.downTimeSeconds / 60 | number:'1.1-1' }} min down</h4>
+                  </div>
             </div>
             </div>
           </nb-card-body>

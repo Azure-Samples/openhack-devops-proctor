@@ -6,7 +6,7 @@ let teams = [
     {
         "id": "15e5a4c5-cdc7-4d32-8b49-3259271cba40",
         "teamName": "team1",
-        "downTimeSeconds": 10,
+        "downTimeSeconds": 1800,
         "points": 300
     },
     {
