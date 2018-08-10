@@ -41,10 +41,12 @@ echo -e "DNS Url:" $dnsUrl"\n"
 poi_URL=$dnsUrl"/api/healthcheck/poi"
 user_URL=$dnsUrl"/api/healthcheck/user"
 trips_URL=$dnsUrl"/api/healthcheck/trips"
+user_profile_URL=$dnsUrl"/api/healthcheck/user-profile"
 
 echo -e "Checking POI:\t"$poi_URL
 echo -e "Checking USER:\t"$user_URL
 echo -e "Checking TRIPS:\t"$trips_URL"\n"
+echo -e "Checking USER PROFILE:\t"$user_profile_URL"\n"
 
 i=0
 echo "Allowing traefik to bring services up"
@@ -79,6 +81,14 @@ else
     echo "trips [ ]"
 fi
 
-if [[ "$status_code_poi" == "200" ]] && [[ "$status_code_user" == "200" ]] && [[ "$status_code_trips" == "200" ]]; then
+status_code_user_profile=`curl -sL -w "%{http_code}\\n" "$user_profile_URL" -o /dev/null`
+
+if [[ "$status_code_user_profile" == "200" ]]; then
+    echo "user-profile [X]"
+else
+    echo "user-profile [ ]"
+fi
+
+if [[ "$status_code_poi" == "200" ]] && [[ "$status_code_user" == "200" ]] && [[ "$status_code_trips" == "200" ]] && [[ "$status_code_user_profile" == "200" ]]; then
     echo "All checks passed"
 fi
