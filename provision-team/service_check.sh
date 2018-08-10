@@ -41,7 +41,7 @@ echo -e "DNS Url:" $dnsUrl"\n"
 poi_URL=$dnsUrl"/api/healthcheck/poi"
 user_URL=$dnsUrl"/api/healthcheck/user"
 trips_URL=$dnsUrl"/api/healthcheck/trips"
-user_profile_URL=$dnsUrl"/api/healthcheck/user-java"
+user_profile_URL=$dnsUrl"/api/healthcheck/user-profile"
 
 echo -e "Checking POI:\t"$poi_URL
 echo -e "Checking USER:\t"$user_URL
