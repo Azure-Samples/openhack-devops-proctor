@@ -10,9 +10,9 @@ The required pre-requisites for installing a team environment are installed as p
 
 ## Usage
 
-    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> ><teamName><teamNumber>.out`
+    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> ><teamName><teamNumber>.out &`
 
-**NOTE: You must login to the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.**
+**NOTE: You must login against the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.**
 
 ### Parameters
 
@@ -23,26 +23,26 @@ The required pre-requisites for installing a team environment are installed as p
 
 An example command to provision with a random team number:
 
-`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh >devopoh-random.out`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh >devopoh-random.out &`
 
 An example command to provision with a specific team number:
 
-`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 1 >devopsoh1.out`
+`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 1 >devopsoh1.out &`
 
 **Important** - The specific team number format should be used when provisioning an event with sequential numbers starting at 1 in order for the sentinels in the proctor environment to work properly. For example:
 
 ```bash
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 1 >devopsohseawa1.out
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 2 >devopsohseawa2.out
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 3 >devopsohseawa3.out
+nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 1 >devopsohseawa1.out &
+nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 2 >devopsohseawa2.out &
+nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 3 >devopsohseawa3.out &
 ```
 
-### After Script Execution
+The `nohup` command prevents the long running script (`setup.sh`) from being aborted when you exit the shell or logout.
+The `&` indicates to run the script in the background to not block your current session.
 
-The `nohup` executes the script in the background even if the terminal disconnects. The output of what is currently running can be found by replacing `devopsoh1.out` with the value you specified and then executing the following from the same path where you ran the setup script:
+The standard out of the script is written to the file indicated after the sign `>`.
+Use the `tail` command to from the same path where you ran the setup script to monitor in real time what is written to the file:
 
 ```bash
 tail -f devopsoh1.out
 ```
-
-**Important** - Do not \<Ctrl\>+C break out of the window where you initiated the `nohup` setup script or the script will terminate.  Closing out the terminal window is acceptable and the script will continue to run assuming wherever the script host machine is run continues to have internet access.
