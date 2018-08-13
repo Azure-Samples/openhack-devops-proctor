@@ -46,7 +46,6 @@
         "skuversion": "latest",
         "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
-        "extensionName": "DockerExtension",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
@@ -147,6 +146,7 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
+                    "customData": "[base64('#cloud-config\npackage_upgrade: true\napt:\n  apt_preserve_sources_list: true\n  sources:\n    curtin-dev-ppa.list:\n      source: \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable\"\n      keyid: 0EBFCD88\npackages:\n  - docker-ce \nruncmd:\n  - systemctl restart docker\n')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": true,
                         "ssh": {
@@ -167,11 +167,6 @@
                         "version": "[variables('skuversion')]"
                     },
                     "osDisk": {
-                        "name": "osdisk1",
-                        "vhd": {
-                            "uri": "[concat('http://',variables('StorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
                         "createOption": "FromImage"
                     }
                 },
@@ -186,27 +181,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', variables('extensionName'))]",
-            "apiVersion": "2017-12-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "DockerExtension",
-                "typeHandlerVersion": "1.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {}
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/initialscript')]",
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                  "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('extensionName'))]"
+                  "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
 
             ],
             "properties": {
