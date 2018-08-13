@@ -9,32 +9,32 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
+
+
 namespace DeviceSim.Controllers
 {
-    public class TripController
+    public class EFTripController : BaseTripController
     {
         #region Variables
 
 
-            private mydrivingDBContext ctx;
+           
             private Trips CurrentTrip;
-            private List<TripPointSource> tripInfo;
-            private List<Poisource> tripPOIsource;
-            
-            
-        
-            
+        //private mydrivingDBContext ctx;
+        //private List<TripPointSource> tripInfo;
+        //private List<Poisource> tripPOIsource;
+
+
+
+
         #endregion
 
         #region Constructor
 
         //Create Trips from Data in the Database
-        public TripController(DBConnectionInfo dBConnectionInfo)
+        public EFTripController(DBConnectionInfo dBConnectionInfo):base(dBConnectionInfo)
         {
-            ctx = new mydrivingDBContext(dBConnectionInfo);
-            //Select Random Trip 
-            GetSampleTrip();
-            //Default Constructor
+            
         }
         #endregion
 
@@ -65,7 +65,7 @@ namespace DeviceSim.Controllers
             UpdateUserProfile();
 
             //Add trips to DB Instance
-            await ctx.Trips.AddAsync(CurrentTrip);
+            await Ctx.Trips.AddAsync(CurrentTrip);
             
             
         }
@@ -74,8 +74,8 @@ namespace DeviceSim.Controllers
 
             try
             {
-                await ctx.SaveChangesAsync();
-                ctx.Dispose();
+                await Ctx.SaveChangesAsync();
+                Ctx.Dispose();
                 return true;
             }
             catch (Exception)
@@ -89,28 +89,28 @@ namespace DeviceSim.Controllers
         #endregion
 
         #region Private Methods
-        private void GetSampleTrip()
-        {   
-            Random r = new Random();
-            //Get Sample Trip Names
-            List<string> tripNames = ctx.TripPointSource.Select(p => p.Name).Distinct().ToList();
-            //Choose Random Trip
-            var tName = tripNames.ElementAt(r.Next(0, tripNames.Count));
+        //private void GetSampleTrip()
+        //{   
+        //    Random r = new Random();
+        //    //Get Sample Trip Names
+        //    List<string> tripNames = ctx.TripPointSource.Select(p => p.Name).Distinct().ToList();
+        //    //Choose Random Trip
+        //    var tName = tripNames.ElementAt(r.Next(0, tripNames.Count));
 
-            //Get Source TripPoints for Random Trip
-            tripInfo = ctx.TripPointSource.Where(p => p.Name == tName).ToList();
-            //Get Source POIs for Random Trip
-            tripPOIsource = ctx.Poisource.Where(p => p.TripId == (tripInfo.FirstOrDefault().Name)).ToList();
-            //Console.WriteLine($"Sample Trip Selected: {tName}");
+        //    //Get Source TripPoints for Random Trip
+        //    tripInfo = ctx.TripPointSource.Where(p => p.Name == tName).ToList();
+        //    //Get Source POIs for Random Trip
+        //    tripPOIsource = ctx.Poisource.Where(p => p.TripId == (tripInfo.FirstOrDefault().Name)).ToList();
+        //    //Console.WriteLine($"Sample Trip Selected: {tName}");
            
-        }
+        //}
 
         private void CreateTripPois()
         {
-            List<Pois> poiList = ctx.Pois.Where(p => p.TripId == CurrentTrip.Id).ToList<Pois>();
+            List<Pois> poiList = Ctx.Pois.Where(p => p.TripId == CurrentTrip.Id).ToList<Pois>();
            
             //Generate POIs from Source
-            foreach (var sPOI in tripPOIsource)
+            foreach (var sPOI in TripPOIsource)
             {
                 poiList.Add(new Pois
                 {
@@ -124,7 +124,7 @@ namespace DeviceSim.Controllers
             }
 
             //Add POI's to Database Context
-            ctx.Pois.AddRangeAsync(poiList);
+            Ctx.Pois.AddRangeAsync(poiList);
 
             CurrentTrip.HardStops = poiList.Where(p => p.Poitype == 2).Count();
             CurrentTrip.HardAccelerations = poiList.Where(p => p.Poitype == 1).Count();
@@ -134,7 +134,7 @@ namespace DeviceSim.Controllers
         {
             try
             {
-                UserProfiles up = ctx.UserProfiles
+                UserProfiles up = Ctx.UserProfiles
                                 .Where(user => user.UserId == CurrentTrip.UserId)
                                 .SingleOrDefault();
 
@@ -154,10 +154,11 @@ namespace DeviceSim.Controllers
 
         private void CreateTripPoints()
         {
+            
             try
             {
                
-                foreach (var tps in tripInfo)
+                foreach (var tps in TripPointSourceInfo)
                 {
                     TripPoints _tripPoint = new TripPoints()
                     {

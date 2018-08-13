@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace DeviceSim
 {
     internal class Program
@@ -12,9 +13,10 @@ namespace DeviceSim
         #region Variables
 
         private static DBConnectionInfo dBConnectionInfo;
-        private static int WaitTime;
-        private static string TeamName;
-        private static bool UseApi = false;
+        public static int WaitTime { get; private set; }       
+        public static string TeamName { get; private set; }
+        public static bool UseApi { get; private set; }
+        public static string ApiEndPoint { get; private set; } 
 
         #endregion Variables
 
@@ -67,19 +69,25 @@ namespace DeviceSim
             dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("davete02ted2sa");
             dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("5N6nk3La2pwd");
             dBConnectionInfo.DBCatalog = "mydrivingDB";
+            //Api Connection Information
+            UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
+            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikdavete02ted2.westus2.cloudapp.azure.com/");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
-            UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
+                        
         }
 
         private static async Task CreateTrip()
         {
             try
             {
-                TripController CurrentTrip = new TripController(dBConnectionInfo);
-                await CurrentTrip.CreateTrip();
-                await CurrentTrip.SaveChangesAsync();
+                if (!UseApi)
+                {
+                    EFTripController CurrentTrip = new EFTripController(dBConnectionInfo);
+                    await CurrentTrip.CreateTrip();
+                    await CurrentTrip.SaveChangesAsync();
+                }
             }
             catch (Exception)
             {
