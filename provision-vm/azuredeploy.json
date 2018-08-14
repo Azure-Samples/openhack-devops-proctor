@@ -146,7 +146,6 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "customData": "[base64('#cloud-config\npackage_upgrade: true\napt:\n  apt_preserve_sources_list: true\n  sources:\n    curtin-dev-ppa.list:\n      source: \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable\"\n      keyid: 0EBFCD88\npackages:\n  - docker-ce \nruncmd:\n  - systemctl restart docker\n')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": true,
                         "ssh": {
@@ -195,7 +194,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/fix/manageddisk/provision-vm/proctorVMSetup.sh"
                     ],
                     "commandToExecute": "sh proctorVMSetup.sh"
                 }
