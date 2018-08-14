@@ -25,24 +25,22 @@ chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
 echo "############### Installing Packages ###############" 
-"  - apt-transport-https
-  - jq
-  - git
-  - zip
-  - azure-cli=2.0.31-1~xenial
-  - mssql-tools
-  - unixodbc-dev
-  - dotnet-sdk-2.1.4
-  - powershell 
-  - docker-ce "
+#  - apt-transport-https
+#  - jq
+#  - git
+#  - zip
+#  - azure-cli=2.0.31-1~xenial
+#  - mssql-tools
+#  - unixodbc-dev
+#  - dotnet-sdk-2.1.4
+#  - powershell 
+#  - docker-ce
 
 sudo apt-get update 
 sudo apt-get install -y apt-transport-https
 sudo apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
 sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 sudo apt-get install -y powershell docker-ce
-
-
 
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
@@ -62,18 +60,17 @@ echo "############### Install Powershell Core and AzureRM modules ##############
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
 # Install PowerShell
 
-# Start PowerShell and install AzureRm modules
-# https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
-
 #Change trust policy on powershell gallery to Trusted for unattended install
 sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
-
 #Install AzureRM Modules
 sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
 sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
 sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 echo azure-cli hold | sudo dpkg --set-selection
+
+#Add user to docker usergroup
+sudo usermod -aG docker azureuser
 
 sudo apt-get upgrade -y
 
