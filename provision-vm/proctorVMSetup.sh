@@ -54,7 +54,7 @@ sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.s
 echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
 
 #pick up changes to bash profile
-source /home/azureuser/.bashrc
+#source /home/azureuser/.bashrc
 
 echo "############### Install Powershell Core and AzureRM modules ###############"
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
