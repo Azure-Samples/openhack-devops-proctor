@@ -72,10 +72,43 @@ if [ -f "~/.azure/aksServicePrincipal.json" ]; then
     echo "renamed existing local AKS Service Principal to ~/.azure/aksServicePrincipal_"$NOW".json"
 fi
 
+teamName=${resourceGroupName:0:-2}
+
+echo "Creating ServicePrincipal for AKS Cluster.."
+export SP_JSON=`az ad sp create-for-rbac --role="Contributor"`
+export SP_NAME=`echo $SP_JSON | jq -r '.name'`
+export SP_PASS=`echo $SP_JSON | jq -r '.password'`
+export SP_ID=`echo $SP_JSON | jq -r '.appId'`
+echo "Service Principal Name: " $SP_NAME
+echo "Service Principal Password: " $SP_PASS
+echo "Service Principal Id: " $SP_ID
+kvstore set ${teamName} SPName ${SP_NAME}
+kvstore set ${teamName} SPPass ${SP_PASS}
+kvstore set ${teamName} SPID ${SP_ID}
+
+echo "Retrieving Registry ID..."
+
+ACR_ID="$(az acr show -n ${teamName}acr -g $resourceGroupName --query "id" --output tsv)"
+
+echo "Registry Id:"$ACR_ID
+
+kvstore set ${teamName} ACR_URI $ACR_ID
+
+echo "Granting Service Princpal " $SP_NAME " access to ACR " $teamName"acr" "..."
+(
+    set -x
+    az role assignment create --assignee $SP_ID --role Reader --scope $ACR_ID
+)
+
+if [ $? == 0 ];
+then
+    echo "Access Granted..."
+fi
+
 echo "Creating AKS Cluster..."
 (
     set -x
-    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --enable-rbac --node-count 3 --generate-ssh-keys -k 1.10.5
+    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.10.6 --service-principal $SP_ID --client-secret $SP_PASS
 )
 
 if [ $? == 0 ];
