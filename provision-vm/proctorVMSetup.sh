@@ -52,7 +52,7 @@ sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.s
 echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
 
 #pick up changes to bash profile
-source /home/azureuser/.bashrc
+# source /home/azureuser/.bashrc
 
 # echo "############### Install Powershell Core and AzureRM modules ###############"
 # # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
@@ -61,13 +61,13 @@ source /home/azureuser/.bashrc
 # # Start PowerShell and install AzureRm modules
 # # https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
 
-# #Change trust policy on powershell gallery to Trusted for unattended install
-sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
+# # #Change trust policy on powershell gallery to Trusted for unattended install
+# sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
 
-# Install AzureRM Modules
-sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
+# # Install AzureRM Modules
+# sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
+# sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
+# sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 
 # Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
