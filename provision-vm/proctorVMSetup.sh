@@ -33,7 +33,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 # echo "############### Installing zip ###############"
 # sudo apt-get install -y zip
 
-whoami > ~/output.txt
+# whoami > ~/output.txt
 
 # echo "############### Installing SQL cmd line tools ###############"
 # curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
@@ -62,12 +62,12 @@ source /home/azureuser/.bashrc
 # # https://docs.microsoft.com/en-us/powershell/azure/install-azurermps-maclinux?view=azurermps-6.0.0
 
 # #Change trust policy on powershell gallery to Trusted for unattended install
-# sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
+sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
 
-# #Install AzureRM Modules
-# sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-# sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-# sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
+# Install AzureRM Modules
+sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
+sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
+sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 
 # Installing this at the end because for some reason it doesn't take effect when immediately after the AZ setup
