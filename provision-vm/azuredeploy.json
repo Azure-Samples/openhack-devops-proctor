@@ -2,11 +2,36 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "AzureUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Azure account."
+            }
+        },
+        "AzurePassword": {
+            "type": "string",
+            "metadata": {
+                "description": "Password for the Azure account."
+            }
+        },
+        "teamName": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Name for deployment."
+            }
+        },
+        "teamNumber": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Number for deployment."
+            }
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
                 "description": "Username for the Virtual Machine."
-            }
+            },
+            "defaultValue": "azureuser"
         },
         "dnsNameForPublicIP": {
             "type": "string",
@@ -46,7 +71,6 @@
         "skuversion": "latest",
         "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
-        "extensionName": "DockerExtension",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
@@ -167,11 +191,6 @@
                         "version": "[variables('skuversion')]"
                     },
                     "osDisk": {
-                        "name": "osdisk1",
-                        "vhd": {
-                            "uri": "[concat('http://',variables('StorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
                         "createOption": "FromImage"
                     }
                 },
@@ -186,27 +205,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', variables('extensionName'))]",
-            "apiVersion": "2017-12-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "DockerExtension",
-                "typeHandlerVersion": "1.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {}
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/initialscript')]",
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                  "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('extensionName'))]"
+                  "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
 
             ],
             "properties": {
@@ -216,9 +219,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/fix/manageddisk/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "sh proctorVMSetup.sh"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('AzureUserName'), ' ', parameters('AzurePassword'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
                 }
             }
         }
