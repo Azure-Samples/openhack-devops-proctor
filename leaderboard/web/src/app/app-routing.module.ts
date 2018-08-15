@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import {
   NbAuthComponent,
   NbLoginComponent,
-  NbLogoutComponent
+  NbLogoutComponent,
 } from '@nebular/auth';
 
 const routes: Routes = [

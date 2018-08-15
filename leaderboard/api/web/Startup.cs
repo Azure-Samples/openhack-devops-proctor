@@ -44,6 +44,8 @@ namespace Sentinel
                 Options.SerializerSettings.Formatting = Formatting.Indented;
             });
 
+            services.AddCors();
+
             var connectionString = SentinelConfiguration.GetConnectionString(this.Configuration);
 
             services.AddDbContext<AppUserContext>(options =>
@@ -133,6 +135,8 @@ namespace Sentinel
             {
                 app.UseHsts();
             }
+
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200"));
 
             app.UseExceptionHandler(
                 builder =>

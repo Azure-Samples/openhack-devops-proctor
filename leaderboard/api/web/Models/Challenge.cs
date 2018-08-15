@@ -11,6 +11,7 @@ namespace Sentinel.Models
     {
         public String Id { get; set;}
         public String TeamId { get; set; }
+
         public String ChallengeDefinitionId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
