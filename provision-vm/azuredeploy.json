@@ -222,7 +222,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('AzureUserName'), ' ', variables('singleQuote'), parameters('AzurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
                 }
             }
         }
