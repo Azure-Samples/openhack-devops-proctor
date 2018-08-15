@@ -1,3 +1,11 @@
+# Set Azure Credentials
+USERNAME=$1
+PASSWORD=$2
+SUBID=$3
+LOCATION=$4
+TEAMNAME=$5
+TEAMNUMBER=$6
+
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
 curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
@@ -71,6 +79,24 @@ echo azure-cli hold | sudo dpkg --set-selection
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
-
 sudo apt-get upgrade -y
 
+#Set environement variables
+export PATH=$PATH:/opt/mssql-tools/bin
+export KVSTORE_DIR=/home/azureuser/team_env/kvstore
+
+cd /home/azureuser/openhack-devops-proctor/provision-team
+
+echo "############### Azure credentials ###############"
+echo "UserName: $USERNAME"
+echo "Password: $PASSWORD"
+echo "Subscription ID: $SUBID"
+echo "Location: $LOCATION"
+echo "Team Name: $TEAMNAME"
+echo "Team number: $TEAMNUMBER"
+
+# Running the provisioning of the team environment
+az login -u $USERNAME -p $PASSWORD
+
+# Launching the team provisioning in background
+sudo nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -e $TEAMNUMBER >devopsohseawa$TEAMNUMBER.out &
