@@ -2,11 +2,36 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "AzureUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Azure account."
+            }
+        },
+        "AzurePassword": {
+            "type": "string",
+            "metadata": {
+                "description": "Password for the Azure account."
+            }
+        },
+        "teamName": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Name for deployment."
+            }
+        },
+        "teamNumber": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Number for deployment."
+            }
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
                 "description": "Username for the Virtual Machine."
-            }
+            },
+            "defaultValue": "azureuser"
         },
         "dnsNameForPublicIP": {
             "type": "string",
@@ -194,9 +219,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/fix/manageddisk/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "sh proctorVMSetup.sh"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('AzureUserName'), ' ', parameters('AzurePassword'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
                 }
             }
         }
