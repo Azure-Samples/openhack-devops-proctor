@@ -24,6 +24,7 @@ namespace Sentinel.Controllers
 
         // Leaderboard Controller
         // * GET /api/leaderboard/teams - get teams
+        // * GET /api/leaderboard/teams/id/{teamId} = get a team by ID
         // * GET /api/leaderboard/teams/{teamName} - get team by teamName
         // * POST /api/leaderboard/teams/ - create a team
         // * PATCH /api/leaderboard/teams/{teamName} - update a team
@@ -33,6 +34,8 @@ namespace Sentinel.Controllers
         // * GET /api/leaderboard/challenges/{teamName} - get challenges for a team
         // * POST /api/leaderboard/challenges/ - create a challenge for a team
         // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
+
+        // * GET /api/leaderboard/challengedefinitions/id/{challengeId}
 
         // Sentinel Controller
         // * GET /api/sentinel/logs/{teamId} - gets all logs for a team
