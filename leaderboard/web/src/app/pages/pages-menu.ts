@@ -8,6 +8,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
+    title: 'Teams',
+    icon: 'nb-person',
+    link: '/pages/teams',
+    home: false,
+  },
+  {
     icon: 'nb-locked',
     title: 'Login',
     link: '/auth/login',
