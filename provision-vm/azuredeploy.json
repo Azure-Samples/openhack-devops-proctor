@@ -2,13 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "AzureUserName": {
+        "azureUserName": {
             "type": "string",
             "metadata": {
                 "description": "Username for the Azure account."
             }
         },
-        "AzurePassword": {
+        "azurePassword": {
             "type": "string",
             "metadata": {
                 "description": "Password for the Azure account."
@@ -76,6 +76,7 @@
         "subnetPrefix": "10.0.0.0/24",
         "storageAccountType": "Premium_LRS",
         "StorageAccountName": "[concat('procvm',uniquestring(resourceGroup().id))]",
+        "singleQuote": "'",
         "publicIPAddressName": "proctorVMPublicIP",
         "publicIPAddressType": "Dynamic",
         "vmStorageAccountContainerName": "vhds",
@@ -221,7 +222,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('AzureUserName'), ' ', parameters('AzurePassword'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('AzureUserName'), ' ', variables('singleQuote'), parameters('AzurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
                 }
             }
         }
