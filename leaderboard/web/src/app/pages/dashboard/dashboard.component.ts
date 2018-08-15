@@ -16,7 +16,7 @@ interface Team {
   downTimeSeconds: number;
   point: number;
 }
-const TOTAL_TIME = 68400;
+// const TOTAL_TIME = 68400;
 function convertTeam(teamResponse: TeamResponse): Team {
    return {
     'name': teamResponse.teamName,
