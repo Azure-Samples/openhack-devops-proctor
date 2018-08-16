@@ -8,7 +8,7 @@ describe('TeamsDeleteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeamsDeleteComponent ]
+      declarations: [ TeamsDeleteComponent ],
     })
     .compileComponents();
   }));
