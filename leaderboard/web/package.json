@@ -61,6 +61,8 @@
     "@angular/language-service": "~6.1.2",
     "@compodoc/compodoc": "1.0.1",
     "@types/node": "^8.10.24",
+    "@types/angular": "~1.6.50",
+    "@types/jasmine": "^2.8.8",
     "codelyzer": "4.3.0",
     "husky": "0.14.3",
     "stylelint": "7.13.0",

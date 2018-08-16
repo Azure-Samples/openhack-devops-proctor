@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'teams-delete',
+  selector: 'ngx-teams-delete',
   templateUrl: './teams-delete.component.html',
-  styleUrls: ['./teams-delete.component.scss']
+  styleUrls: ['./teams-delete.component.scss'],
 })
 export class TeamsDeleteComponent implements OnInit {
 

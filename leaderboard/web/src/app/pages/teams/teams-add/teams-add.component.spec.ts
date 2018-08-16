@@ -8,7 +8,7 @@ describe('TeamsAddComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeamsAddComponent ]
+      declarations: [ TeamsAddComponent ],
     })
     .compileComponents();
   }));
