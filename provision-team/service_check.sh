@@ -41,12 +41,12 @@ echo -e "DNS Url:" $dnsUrl"\n"
 poi_URL=$dnsUrl"/api/healthcheck/poi"
 user_URL=$dnsUrl"/api/healthcheck/user"
 trips_URL=$dnsUrl"/api/healthcheck/trips"
-user_profile_URL=$dnsUrl"/api/healthcheck/user-profile"
+user_java_URL=$dnsUrl"/api/healthcheck/user-java"
 
 echo -e "Checking POI:\t"$poi_URL
 echo -e "Checking USER:\t"$user_URL
-echo -e "Checking TRIPS:\t"$trips_URL"\n"
-echo -e "Checking USER PROFILE:\t"$user_profile_URL"\n"
+echo -e "Checking TRIPS:\t"$trips_URL
+echo -e "Checking USER JAVA:\t"$user_java_URL"\n"
 
 i=0
 echo "Allowing traefik to bring services up"
@@ -81,14 +81,14 @@ else
     echo "trips [ ]"
 fi
 
-status_code_user_profile=`curl -sL -w "%{http_code}\\n" "$user_profile_URL" -o /dev/null`
+status_code_user_java=`curl -sL -w "%{http_code}\\n" "$user_java_URL" -o /dev/null`
 
-if [[ "$status_code_user_profile" == "200" ]]; then
-    echo "user-profile [X]"
+if [[ "$status_code_user_java" == "200" ]]; then
+    echo "user-java [X]"
 else
-    echo "user-profile [ ]"
+    echo "user-java [ ]"
 fi
 
-if [[ "$status_code_poi" == "200" ]] && [[ "$status_code_user" == "200" ]] && [[ "$status_code_trips" == "200" ]] && [[ "$status_code_user_profile" == "200" ]]; then
+if [[ "$status_code_poi" == "200" ]] && [[ "$status_code_user" == "200" ]] && [[ "$status_code_trips" == "200" ]] && [[ "$status_code_user_java" == "200" ]]; then
     echo "All checks passed"
 fi
