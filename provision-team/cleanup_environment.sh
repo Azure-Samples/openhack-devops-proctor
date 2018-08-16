@@ -22,15 +22,16 @@ fi
 
 # 1- Rename $HOME/.azure/aksServicePrincipal.json to $HOME/.azure/aksServicePrincipal-team-number.json
 if [ -f $HOME/.azure/aksServicePrincipal.json ]; then
-    mv $HOME/.azure/aksServicePrincipal.json $HOME/team_env/$teamName/aksServicePrincipal-$teamName.json
-    echo "The aksServicePrincipal.json file has been move to team_env/$teamName/aksServicePrincipal-$teamName.json"
+    aksSPlocation="$HOME/team_env/$teamName/aksServicePrincipal-$teamName.json"
+    mv $HOME/.azure/aksServicePrincipal.json $aksSPlocation
+    kvstore set $teamName aksSPlocation $aksSPlocation
+    echo "The aksServicePrincipal.json file has been moved to $aksSPlocation"
 fi
 
 # 2- Copy the kubeconfig file
 if [ -f $HOME/.kube/config ]; then
-    mv $HOME/.kube/config $HOME/team_env/$teamName/kubeconfig-$teamName
-    echo "Copied the kubeconfig file to $HOME/team_env/$teamName/kubeconfig-$teamName"
+    kubeconfiglocation="$HOME/team_env/$teamName/kubeconfig-$teamName"
+    mv $HOME/.kube/config $kubeconfiglocation
+    kvstore set $teamName kubeconfig $kubeconfiglocation
+    echo "Copied the kubeconfig file to $kubeconfiglocation"
 fi
-
-# 3- Delete the working directory
-# rm -rf ./test_fetch_build
