@@ -10,6 +10,8 @@ declare resourceGroupLocation=""
 declare teamName=""
 declare teamNumber=""
 declare azcliVerifiedVersion="2.0.43"
+declare azureUserName=""
+declare azurePassword=""
 
 # Initialize parameters specified from command line
 while getopts ":i:l:n:e:u:p" arg; do
@@ -27,7 +29,7 @@ while getopts ":i:l:n:e:u:p" arg; do
             teamNumber=${OPTARG}
         ;;
         u)
-            azureUserNAme=${OPTARG}
+            azureUserName=${OPTARG}
         ;;
         p)
             azurePassword=${OPTARG}
@@ -153,7 +155,7 @@ az account show 1> /dev/null
 
 if [ $? != 0 ];
 then
-    az login -u $azureUserNAme -p $azurePassword
+    az login -u $azureUserName -p $azurePassword
     exit 0
 fi
 
