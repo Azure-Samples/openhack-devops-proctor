@@ -12,7 +12,7 @@ declare teamNumber=""
 declare azcliVerifiedVersion="2.0.43"
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:" arg; do
+while getopts ":i:l:n:e:u:p" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -25,6 +25,12 @@ while getopts ":i:l:n:e:" arg; do
         ;;
         e)
             teamNumber=${OPTARG}
+        ;;
+        u)
+            azureUserNAme=${OPTARG}
+        ;;
+        p)
+            azurePassword=${OPTARG}
         ;;
     esac
 done
@@ -147,7 +153,7 @@ az account show 1> /dev/null
 
 if [ $? != 0 ];
 then
-    az login
+    az login -u $azureUserNAme -p $azurePassword
     exit 0
 fi
 

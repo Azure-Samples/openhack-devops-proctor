@@ -14,30 +14,12 @@
                 "description": "Password for the Azure account."
             }
         },
-        "teamName": {
-            "type": "string",
-            "metadata": {
-                "description": "Team Name for deployment."
-            }
-        },
-        "teamNumber": {
-            "type": "string",
-            "metadata": {
-                "description": "Team Number for deployment."
-            }
-        },
         "adminUsername": {
             "type": "string",
             "metadata": {
                 "description": "Username for the Virtual Machine."
             },
             "defaultValue": "azureuser"
-        },
-        "dnsNameForPublicIP": {
-            "type": "string",
-            "metadata": {
-                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
-            }
         },
         "vmSize": {
             "type": "string",
@@ -48,6 +30,7 @@
         },
         "sshKeyData": {
             "type": "string",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCggG9tI4+rtMouQh+/rrsbPydED69Pffh0uGXrd+Lw+7L1QLblF1Wqkbs3d6YPk5hQM0kM/wPz7e4BYzy3dQCOp7PudI5Pfkwogj9OTF366Vw99JTcoloWSPNHtk1ju9id1J8rAXPKs6yJ9p0JOHkkVo30IP8tfzUdzCsSkDfXojj55w93ZErJQoY3STPXq15l8629Xovk37FNTgy34DitSHzFdoaRlXIs7n4ZL7rlzbBDJao36LwI4GWgTaZXlyLOFAOQtEUtVqF3+3bf2Gj9fHBUiDo8ZG2fyhpdqDKlCTHCL8IkCIey5svvLBW/VLuwTPXNuGd5JDauSGxezNfp oguzp@Oguzs-MBP.guest.corp.microsoft.com",
             "metadata": {
               "description": "SSH rsa public key file as a string."
             }
@@ -66,10 +49,10 @@
         }
     },
     "variables": {
+        "teamName": "OpenHack",
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
         "skuversion": "latest",
-        "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
@@ -79,7 +62,6 @@
         "singleQuote": "'",
         "publicIPAddressName": "proctorVMPublicIP",
         "publicIPAddressType": "Dynamic",
-        "vmStorageAccountContainerName": "vhds",
         "vmName": "proctorVM",
         "virtualNetworkName": "proctorVMVNET",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
@@ -103,10 +85,7 @@
             "name": "[variables('publicIPAddressName')]",
             "location": "[resourceGroup().location]",
             "properties": {
-                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
-                "dnsSettings": {
-                    "domainNameLabel": "[parameters('dnsNameForPublicIP')]"
-                }
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
             }
         },
         {
@@ -222,15 +201,9 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'))]"
                 }
             }
         }
-    ],
-    "outputs": {
-        "sshConnectString": {
-          "type": "string",
-          "value": "[concat(parameters('adminUsername'), '@', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
-        }
-    }
+    ]
 }

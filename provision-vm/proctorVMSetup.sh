@@ -99,4 +99,4 @@ echo "Team number: $TEAMNUMBER"
 az login -u $USERNAME -p $PASSWORD
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -e $TEAMNUMBER >devopsohseawa$TEAMNUMBER.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u $USERNAME -p $PASSWORD >devopsohseawa.out &
