@@ -9,4 +9,4 @@ services:
 teams:
   name: testdcaro
   endpointUrl: http://akstraefikteam02.eastus.cloudapp.azure.com
-  apiUrl: https://changeme.azurewebsites.net # Azure Functions API where the health events get logged through
+  apiUrl: https://akstraefikproctor01.eastus.cloudapp.azure.com # API where the health failure events get logged

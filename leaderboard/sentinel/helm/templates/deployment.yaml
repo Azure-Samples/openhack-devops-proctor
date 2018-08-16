@@ -67,3 +67,21 @@ spec:
           value: "{{ $.Values.services.pollingInterval }}"
         - name: SENTINEL_RETRY_DURATION
           value: "{{ $.Values.services.retryDuration }}"
+      - name: {{ $.Values.teams.name }}-user-java
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        env:
+        - name: SENTINEL_TEAM_ID
+          value: {{ $.Values.teams.name }}
+        - name: SENTINEL_SERVICE_TYPE
+          value: "4"
+        - name: SENTINEL_ENDPOINT
+          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/user-java"
+        - name: SENTINEL_PORT
+          value: "{{ $.Values.services.port }}"
+        - name: SENTINEL_API_URL
+          value: "{{ $.Values.teams.apiUrl }}"
+        - name: SENTINEL_POLLING_INTERVAL
+          value: "{{ $.Values.services.pollingInterval }}"
+        - name: SENTINEL_RETRY_DURATION
+          value: "{{ $.Values.services.retryDuration }}"
