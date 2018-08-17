@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApiClient.DataObjects
+namespace Simulator.DataObjects
 {
     public interface IBaseDataObject
     {

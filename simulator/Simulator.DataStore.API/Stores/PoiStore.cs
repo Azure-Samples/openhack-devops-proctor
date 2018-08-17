@@ -1,13 +1,19 @@
-﻿namespace ApiClient.Controllers
+﻿namespace Simulator.DataStore.Stores
 {
-    using ApiClient.DataObjects;
-    using ApiClient.DataStore.Abstractions;
+    using Simulator.DataObjects;
+    using Simulator.DataStore.Abstractions;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    internal class PoiStore : BaseStore, IBaseStore<Poi>
+    public class PoiStore : BaseStore, IBaseStore<Poi>
     {
+
+        public PoiStore(string EndPoint)
+        {
+            base.InitializeStore(EndPoint);
+        }
+
         public async Task<Poi> GetItemAsync(string id)
         {
             Poi poi = null;
@@ -46,6 +52,7 @@
 
         public async Task<bool> UpdateItemAsync(Poi item)
         {
+
             HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/poi/{item.Id}", item);
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)

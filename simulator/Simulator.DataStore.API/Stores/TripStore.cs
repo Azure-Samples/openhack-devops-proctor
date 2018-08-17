@@ -1,7 +1,7 @@
-﻿namespace ApiClient.Controllers
+﻿namespace Simulator.DataStore.Stores
 {
-    using ApiClient.DataObjects;
-    using ApiClient.DataStore.Abstractions;
+    using Simulator.DataObjects;
+    using Simulator.DataStore.Abstractions;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;

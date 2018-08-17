@@ -1,7 +1,7 @@
-﻿namespace ApiClient.Controllers
-{
-    using ApiClient.DataObjects;
-    using ApiClient.DataStore.Abstractions;
+﻿namespace Simulator.DataStore.Stores
+{ 
+    using Simulator.DataObjects;
+    using Simulator.DataStore.Abstractions;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -9,6 +9,11 @@
 
     public class TripPointStore : BaseStore, IBaseStore<TripPoint>
     {
+
+        public TripPointStore(string EndPoint)
+        {
+            base.InitializeStore(EndPoint);
+        }
         public async Task<TripPoint> GetItemAsync(string id)
         {
             //Deviating implemetnation because of complxity of the nested API

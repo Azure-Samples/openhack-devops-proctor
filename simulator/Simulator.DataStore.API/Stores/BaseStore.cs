@@ -1,4 +1,4 @@
-﻿namespace ApiClient.Controllers
+﻿namespace Simulator.DataStore.Stores
 {
     using System;
     using System.Net.Http;
@@ -14,7 +14,7 @@
         public Task InitializeStore(string EndPoint)
         {
             Client = new HttpClient();
-            Client.BaseAddress = new Uri("EndPoint");
+            Client.BaseAddress = new Uri(EndPoint);
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

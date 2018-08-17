@@ -1,5 +1,5 @@
 ﻿
-namespace ApiClient.DataObjects
+namespace Simulator.DataObjects
 {
     //public partial class TripPoint
     //{
@@ -58,40 +58,40 @@ namespace ApiClient.DataObjects
             public double Longitude { get; set; }
 
             [JsonProperty("Speed")]
-            public long Speed { get; set; }
+            public double Speed { get; set; }
 
             [JsonProperty("RecordedTimeStamp")]
             public DateTime RecordedTimeStamp { get; set; }
 
             [JsonProperty("Sequence")]
-            public long Sequence { get; set; }
+            public int Sequence { get; set; }
 
             [JsonProperty("RPM")]
-            public long Rpm { get; set; }
+            public double Rpm { get; set; }
 
             [JsonProperty("ShortTermFuelBank")]
-            public long ShortTermFuelBank { get; set; }
+            public double ShortTermFuelBank { get; set; }
 
             [JsonProperty("LongTermFuelBank")]
-            public long LongTermFuelBank { get; set; }
+            public double LongTermFuelBank { get; set; }
 
             [JsonProperty("ThrottlePosition")]
-            public long ThrottlePosition { get; set; }
+            public double ThrottlePosition { get; set; }
 
             [JsonProperty("RelativeThrottlePosition")]
-            public long RelativeThrottlePosition { get; set; }
+            public double RelativeThrottlePosition { get; set; }
 
             [JsonProperty("Runtime")]
-            public long Runtime { get; set; }
+            public double Runtime { get; set; }
 
             [JsonProperty("DistanceWithMalfunctionLight")]
-            public long DistanceWithMalfunctionLight { get; set; }
+            public double DistanceWithMalfunctionLight { get; set; }
 
             [JsonProperty("EngineLoad")]
-            public long EngineLoad { get; set; }
+            public double EngineLoad { get; set; }
 
             [JsonProperty("EngineFuelRate")]
-            public long EngineFuelRate { get; set; }
+            public double EngineFuelRate { get; set; }
 
             [JsonProperty("VIN")]
             public Vin Vin { get; set; }

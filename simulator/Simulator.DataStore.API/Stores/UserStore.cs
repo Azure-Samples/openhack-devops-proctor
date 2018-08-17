@@ -1,13 +1,18 @@
-﻿namespace ApiClient.Controllers
+﻿namespace Simulator.DataStore.Stores
 {
-    using ApiClient.DataObjects;
-    using ApiClient.DataStore.Abstractions;
+    using Simulator.DataObjects;
+    using Simulator.DataStore.Abstractions;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
 
     public class UserStore : BaseStore, IBaseStore<User>
     {
+        public UserStore(string EndPoint)
+        {
+            base.InitializeStore(EndPoint);
+
+        }
         public async Task<User> GetItemAsync(string id)
         {
             User user = null;
@@ -34,7 +39,7 @@
 
         public async Task<User> CreateItemAsync(User item)
         {
-            HttpResponseMessage response = await Client.PostAsJsonAsync<User>("api/user", item);
+            HttpResponseMessage response = await Client.PostAsJsonAsync<User>("api/user-java", item);
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
             {
@@ -46,7 +51,7 @@
 
         public async Task<bool> UpdateItemAsync(User item)
         {
-            HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/user/{item.Id}", item);
+            HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/user-java/{item.UserId}", item);
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
                 response.Content.Headers.ContentType.MediaType = "application/json";
@@ -55,7 +60,7 @@
 
         public async Task<bool> DeleteItemAsync(User item)
         {
-            HttpResponseMessage response = await Client.DeleteAsync($"api/user/{item.Id}");
+            HttpResponseMessage response = await Client.DeleteAsync($"api/user-java/{item.UserId}");
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
                 response.Content.Headers.ContentType.MediaType = "application/json";

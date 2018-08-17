@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ApiClient.DataStore.Abstractions
+namespace Simulator.DataStore.Abstractions
 {
     public interface IBaseStore<T>
     {

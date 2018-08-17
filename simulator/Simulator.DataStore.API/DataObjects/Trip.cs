@@ -1,5 +1,5 @@
 ﻿
-namespace ApiClient.DataObjects
+namespace Simulator.DataObjects
 {
       
         using System;

@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 
-
 namespace DeviceSim.Controllers
 {
     public class EFTripController : BaseTripController
@@ -19,7 +18,8 @@ namespace DeviceSim.Controllers
 
 
            
-            private Trips CurrentTrip;
+        private Trips CurrentTrip;
+       
         //private mydrivingDBContext ctx;
         //private List<TripPointSource> tripInfo;
         //private List<Poisource> tripPOIsource;
@@ -46,7 +46,7 @@ namespace DeviceSim.Controllers
             CurrentTrip = new Trips()
             {
                 RecordedTimeStamp = DateTime.UtcNow,
-                Name = $"Trip {DateTime.Now}",
+                Name = $"SSSTrip {DateTime.Now}",
                 Id = Guid.NewGuid().ToString(),
                 UserId = "Hacker 1"
             };

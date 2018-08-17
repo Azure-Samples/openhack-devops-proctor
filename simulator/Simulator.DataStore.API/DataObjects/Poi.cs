@@ -1,4 +1,4 @@
-﻿namespace ApiClient.DataObjects
+﻿namespace Simulator.DataObjects
 {
    
    
@@ -23,6 +23,7 @@
             [JsonProperty("poiType")]
             public long PoiType { get; set; }
 
+        
             [JsonProperty("timestamp")]
             public DateTime Timestamp { get; set; }
 

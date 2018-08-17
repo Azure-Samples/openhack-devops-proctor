@@ -23,6 +23,7 @@ namespace DeviceSim
         private static void Main(string[] args)
         {
             InitializeApp();
+            UseApi = true;
 
             Console.WriteLine($"***** {TeamName}-Driving Simulator *****");
             Console.WriteLine($"Currently Using API Routes : {UseApi.ToString()}");
@@ -65,13 +66,13 @@ namespace DeviceSim
             //Environmental Variables - Pass to Container
 
             //Database Connection Information
-            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("davete02ted2sql.database.windows.net");
-            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("davete02ted2sa");
-            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("5N6nk3La2pwd");
+            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("devopsoh42sql.database.windows.net");
+            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("devopsoh42sa");
+            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("tS99m6Tw0pwd");
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Api Connection Information
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikdavete02ted2.westus2.cloudapp.azure.com/");
+            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikota1961.westus2.cloudapp.azure.com");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
@@ -87,6 +88,12 @@ namespace DeviceSim
                     EFTripController CurrentTrip = new EFTripController(dBConnectionInfo);
                     await CurrentTrip.CreateTrip();
                     await CurrentTrip.SaveChangesAsync();
+                }
+                else
+                {
+                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo,ApiEndPoint);
+                    await CurrentTrip.CreateTrip();
+
                 }
             }
             catch (Exception)
