@@ -23,29 +23,6 @@
             return Task.CompletedTask;
         }
 
-        //public Task<T> GetItemAsync(string id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<List<T>> GetItemsAsync()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<T> CreateItemAsync(T item)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<bool> UpdateItemAsync(T item)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Task<bool> DeleteItemAsync(T item)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
     }
 }

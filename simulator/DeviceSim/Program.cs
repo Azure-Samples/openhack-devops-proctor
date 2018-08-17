@@ -51,7 +51,7 @@ namespace DeviceSim
                 await CreateTrip();
                 Console.WriteLine($"Trip Completed at : {DateTime.Now}. ");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -98,7 +98,7 @@ namespace DeviceSim
             }
             catch (Exception)
             {
-                throw;
+                throw;//do Nothing just continue throwing
             }
         }
     }
