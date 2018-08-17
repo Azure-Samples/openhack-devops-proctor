@@ -54,19 +54,19 @@ if [ ! $? == 0 ]; then
 fi
 
 # Check if az is installed and that we can install it
-type -p az
-if [[ ! $? == 0 ]]; then
-    # is az is not present we need to install it
-    echo "The script need the az command line to be installed\n"
-    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
-    exit 1
-else
-    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
-    if [ $currentCliVersion != $azcliVersion ]; then
-       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
-       exit 1
-    fi
-fi
+#type -p az
+#if [[ ! $? == 0 ]]; then
+#    # is az is not present we need to install it
+#    echo "The script need the az command line to be installed\n"
+#    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
+#    exit 1
+#else
+#    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
+#    if [ $currentCliVersion != $azcliVersion ]; then
+#       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
+#       exit 1
+#    fi
+#fi
 
 #Prompt for parameters is some required parameters are missing
 if [[ -z "$subscriptionId" ]]; then
