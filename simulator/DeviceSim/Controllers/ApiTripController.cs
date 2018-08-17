@@ -58,11 +58,11 @@ namespace DeviceSim.Controllers
 
            CurrentTrip = await tripStore.CreateItemAsync(CurrentTrip);
 
-           //await CreateTripPoints();
+           await CreateTripPoints();
 
-           //await CreatePois();
+           await CreatePois();
 
-           //await UpdateTrip();
+           await UpdateTrip();
 
            await UpdateUserProfile();
 
@@ -224,7 +224,7 @@ namespace DeviceSim.Controllers
 
             //Update USer
 
-            CurrentUser.TotalTrips = 9999;
+            CurrentUser.TotalTrips++;
             CurrentUser.TotalDistance += CurrentTrip.Distance;
             CurrentUser.HardStops += CurrentTrip.HardStops;
             CurrentUser.HardAccelerations += CurrentTrip.HardAccelerations;
