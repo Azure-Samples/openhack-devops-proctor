@@ -2,11 +2,29 @@
 @import '~bootstrap/scss/mixins/breakpoints';
 @import '~@nebular/theme/styles/global/bootstrap/breakpoints';
 
+@import '~@nebular/theme/styles/global/bootstrap/buttons';
+
 @include nb-install-component() {
   .solar-card nb-card-header {
     border: none;
     padding-bottom: 0;
   }
+
+  nb-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .dropdown {
+      flex-basis: 30%;
+      min-width: 220px;
+    }
+  }
+
+  nb-card-body {
+    padding-bottom: 0;
+  }
+
 
   @include media-breakpoint-down(sm) {
     ngx-traffic {

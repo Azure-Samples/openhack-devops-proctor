@@ -47,9 +47,17 @@ if [[ -z "$teamName" ]]; then
     read teamName
 fi
 
+echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
+
+kubectl create serviceaccount --namespace kube-system tillersa
+
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
+
+kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade --wait
+helm init --upgrade --service-account tillersa --wait
 
 tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
 
@@ -61,8 +69,8 @@ done
 
 echo "tiller upgrade complete."
 
-echo "Updating information of available charts locally from chart repositories"
-helm repo update
+# echo "Updating information of available charts locally from chart repositories"
+# helm repo update
 
 echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
 cat "${0%/*}/traefik-values.yaml" \
@@ -82,7 +90,10 @@ done
 
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
-helm install stable/traefik --name team-ingress --version 1.27.0 -f $relativeSaveLocation"/traefik$teamName.yaml"
+APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
+echo "Apiserver is: " $APISERVER
+
+helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
 echo "Waiting for public IP:"
 time=0

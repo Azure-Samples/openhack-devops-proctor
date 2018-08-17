@@ -10,6 +10,7 @@
 
 export const environment = {
   production: false,
-  backendUrl: "https://removeohprep20.azurewebsites.net/api/GetTeamsStatus"
+  backendUrl: 'http://localhost:3000/api/leaderboard/teams',
 };
+
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
@@ -14,19 +15,19 @@ import (
 type config struct {
 	Endpoint      string `env:"SENTINEL_ENDPOINT,required"`
 	PORT          int    `env:"SENTINEL_PORT" envDefault:"80"`
-	TeamID        string `env:"SENTINEL_TEAM_ID,required"`
-	ServiceID     string `env:"SENTINEL_SERVICE_ID,required"`
+	TeamName      string `env:"SENTINEL_TEAM_NAME,required"`
+	ServiceType   string `env:"SENTINEL_SERVICE_TYPE,required"`
 	APIURL        string `env:"SENTINEL_API_URL,required"`
 	Interval      int    `env:"SENTINEL_POLLING_INTERVAL" envDefault:"1"`
 	RetryDuration int    `env:"SENTINEL_RETRY_DURATION" envDefault:"1000"`
 }
 
-type log struct {
-	TeamID     string
-	ServiceID  string
-	Date       time.Time
-	StatusCode int
-	Status     bool
+type logmsg struct {
+	TeamName    string
+	Type        string
+	CreatedDate time.Time
+	StatusCode  int
+	EndpointURI string
 }
 
 func main() {
@@ -41,49 +42,41 @@ func main() {
 		return
 	}
 
-	lastStatus := false
 	ticker := time.NewTicker(time.Duration(cfg.Interval) * time.Second)
 	for t := range ticker.C {
 		fmt.Println("Tick ...", t)
 		statusCode, err := healthCheck(&cfg)
 		if err != nil {
-			panic(err)
+			fmt.Printf("HealthCheck Error: Do you have a proper target endpoint?: %v \n", err)
+			statusCode = 0 // If they don't have a proper response, the statusCode becomes 0.
 		}
 		fmt.Println(fmt.Sprintf("Server: %s Status: %d", cfg.Endpoint, statusCode))
-		log := &log{
-			TeamID:     cfg.TeamID,
-			ServiceID:  cfg.ServiceID,
-			Date:       time.Now(),
-			StatusCode: statusCode,
+		currentTime := time.Now()
+		currentTimeRound := currentTime.Round(time.Duration(time.Second))
+		logmsg := &logmsg{
+			TeamName:    cfg.TeamName,
+			Type:        cfg.ServiceType,
+			CreatedDate: currentTimeRound,
+			StatusCode:  statusCode,
+			EndpointURI: cfg.Endpoint,
 		}
 
 		// Endpoint is dead
 		if statusCode != 200 {
-			log.Status = false
-			res, err := report(&cfg, log)
+			res, err := report(&cfg, logmsg)
 			if err != nil {
-				printAPIErrorMessage(&cfg, err, res, log)
+				printAPIErrorMessage(&cfg, err, res, logmsg)
 			}
 			fmt.Println("Dead! wait for recovery for 1000 ms")
 			time.Sleep(time.Duration(cfg.RetryDuration) * time.Millisecond)
-			lastStatus = false
-		} else {
-			if !lastStatus {
-				log.Status = true
-				res, err := report(&cfg, log)
-				if err != nil {
-					printAPIErrorMessage(&cfg, err, res, log)
-				}
-			}
-			lastStatus = true
 		}
 	}
 
 	fmt.Println("Hello")
 }
 
-func printAPIErrorMessage(cfg *config, err error, res *http.Response, log *log) {
-	logJSON, err := json.Marshal(*log)
+func printAPIErrorMessage(cfg *config, err error, res *http.Response, logmsg *logmsg) {
+	logJSON, err := json.Marshal(*logmsg)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Log marshal error: %s", err.Error()))
 		return
@@ -106,12 +99,18 @@ func getBody(resp *http.Response) (string, error) {
 	return "", nil
 }
 
-func report(cfg *config, log *log) (*http.Response, error) {
-	reportJSON, err := json.Marshal(*log)
+func report(cfg *config, logmsg *logmsg) (*http.Response, error) {
+	reportJSON, err := json.Marshal(*logmsg)
 	if err != nil {
 		return nil, err
 	}
+
 	res, err := http.Post((*cfg).APIURL, "application/json", bytes.NewReader(reportJSON))
+	if res.StatusCode != 200 {
+		log.Printf("Unable to post to functions API")
+		log.Printf(string(reportJSON))
+		log.Printf(res.Status)
+	}
 	return res, err
 }
 

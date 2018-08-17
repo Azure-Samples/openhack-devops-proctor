@@ -30,9 +30,5 @@
   unused-packages = true
 
 [[constraint]]
-  branch = "v2"
-  name = "gopkg.in/mgo.v2"
-
-[[constraint]]
   name = "github.com/caarlos0/env"
   version = "3.2.0"

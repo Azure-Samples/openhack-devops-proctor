@@ -2,17 +2,36 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "StorageAccountName": {
+        "azureUserName": {
             "type": "string",
             "metadata": {
-                "description": "Unique DNS Name for the Storage Account where the Virtual Machine's disks will be placed."
+                "description": "Username for the Azure account."
+            }
+        },
+        "azurePassword": {
+            "type": "string",
+            "metadata": {
+                "description": "Password for the Azure account."
+            }
+        },
+        "teamName": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Name for deployment."
+            }
+        },
+        "teamNumber": {
+            "type": "string",
+            "metadata": {
+                "description": "Team Number for deployment."
             }
         },
         "adminUsername": {
             "type": "string",
             "metadata": {
                 "description": "Username for the Virtual Machine."
-            }
+            },
+            "defaultValue": "azureuser"
         },
         "dnsNameForPublicIP": {
             "type": "string",
@@ -37,10 +56,9 @@
             "type": "string",
             "defaultValue": "16.04-DAILY-LTS",
             "metadata": {
-                "description": "The Ubuntu version for deploying the Docker containers. This will pick a fully patched image of this given Ubuntu version. Allowed values: 14.04.4-LTS, 15.10, 16.04.0-LTS"
+                "description": "The Ubuntu version for deploying the Docker containers. This will pick a fully patched image of this given Ubuntu version."
             },
             "allowedValues": [
-                "14.04.5-LTS",
                 "16.04-DAILY-LTS",
                 "16.04-LTS",
                 "18.04-LTS"
@@ -50,14 +68,15 @@
     "variables": {
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
-        "skuversion": "16.04.201805220",
+        "skuversion": "latest",
         "OSDiskName": "osdiskfordockersimple",
         "nicName": "proctorVMNic",
-        "extensionName": "DockerExtension",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
         "storageAccountType": "Premium_LRS",
+        "StorageAccountName": "[concat('procvm',uniquestring(resourceGroup().id))]",
+        "singleQuote": "'",
         "publicIPAddressName": "proctorVMPublicIP",
         "publicIPAddressType": "Dynamic",
         "vmStorageAccountContainerName": "vhds",
@@ -70,8 +89,8 @@
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('StorageAccountName')]",
-            "apiVersion": "2016-01-01",
+            "name": "[variables('StorageAccountName')]",
+            "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
             "kind": "Storage",
             "sku": {
@@ -79,7 +98,7 @@
             }
         },
         {
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2017-11-01",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('publicIPAddressName')]",
             "location": "[resourceGroup().location]",
@@ -91,7 +110,7 @@
             }
         },
         {
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2017-11-01",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('virtualNetworkName')]",
             "location": "[resourceGroup().location]",
@@ -112,7 +131,7 @@
             }
         },
         {
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2017-11-01",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('nicName')]",
             "location": "[resourceGroup().location]",
@@ -138,12 +157,12 @@
             }
         },
         {
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2017-12-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('StorageAccountName'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
             ],
             "properties": {
@@ -173,11 +192,6 @@
                         "version": "[variables('skuversion')]"
                     },
                     "osDisk": {
-                        "name": "osdisk1",
-                        "vhd": {
-                            "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
-                        },
-                        "caching": "ReadWrite",
                         "createOption": "FromImage"
                     }
                 },
@@ -192,27 +206,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', variables('extensionName'))]",
-            "apiVersion": "2017-03-30",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "DockerExtension",
-                "typeHandlerVersion": "1.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {}
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/initialscript')]",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                  "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('extensionName'))]"
+                  "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
 
             ],
             "properties": {
@@ -224,9 +222,15 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "sh proctorVMSetup.sh"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', parameters('teamName'), ' ', parameters('teamNumber'))]"
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "sshConnectString": {
+          "type": "string",
+          "value": "[concat(parameters('adminUsername'), '@', parameters('dnsNameForPublicIP'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        }
+    }
 }

@@ -2,7 +2,38 @@
   <div class = "row">
     <ng-container *ngFor="let t of rows.teams">
       <div class="col">
-        <ngx-solar [chartValue]="t.uppercent" [teamName]="t.name" [uptime]="t.uptime" [point]="t.point"></ngx-solar>
+        <nb-card>
+          <nb-card-header>{{t.name}} Status</nb-card-header>
+          <nb-card-body>
+          <div class="container-btn">
+            <div class = "row">
+              <div class = "col">
+                  <button class="btn btn-success btn-demo">POI </button>
+              </div>
+              <div class = "col">
+              <button class="btn btn-success btn-demo">USER</button>
+            </div>
+            <div class = "col">
+              <button class="btn btn-danger btn-demo">USER-Java</button>
+            </div>
+              <div class = "col">
+              <button class="btn btn-danger btn-demo">TRIP</button>
+            </div>
+
+            </div>
+            <div class = "row">
+                <div class = "col">
+                <p></p>
+                    <h4>{{t.point}} points</h4>
+                </div>
+                <div class = "col">
+                  <p></p>
+                      <h4>{{ t.downTimeSeconds / 60 | number:'1.1-1' }} min down</h4>
+                  </div>
+            </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
       </div>
     </ng-container>
   </div>

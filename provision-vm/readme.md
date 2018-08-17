@@ -1,5 +1,10 @@
 # Infrastructure VM deployment script
 
+## Pre-requisites
+
+Have an SSH key to use and be familiar with how to SSH using SSH key to an Ubuntu VM. If needed see these articles:
+[for mac](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys) or [for Windows](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/ssh-from-windows)
+
 ## Usage
 
 Login with your PowerShell console.
@@ -27,4 +32,17 @@ $YOUR_PUBLIC_KEY = '' # ssh-rsa AAAAB3NzaC1yc2EAAAADA... @microsoft.com
 .\deploy.ps1 -Location $YOUR_LOCATION -Number $YOUR_NUMBER -PublicKey $YOUR_PUBLIC_KEY
 ```
 
-After provisioning, login to the VM with the public IP address attached to the VM and the SSH key provided.
+After provisioning, login to the VM with the public IP address attached to the VM and the SSH key provided.  The output will be shown on the screen similar to the following:
+
+```shell
+OutputsString           :
+                          Name             Type                       Value
+                          ===============  =========================  ==========
+                          sshConnectString  String                    azureuser@procohvm336.westus2.cloudapp.azure.com
+```
+
+If the private key utilized is not in the default SSH directory, the `-i <private_key>` must be added to the ssh connect string.
+
+```shell
+ssh -i ..\id_rsa azureuser@procohvm336.westus2.cloudapp.azure.com
+```

@@ -6,5 +6,17 @@
     <div class="logo" (click)="goToHome()">Leaderboard</div>
   </div>
   <ngx-theme-switcher></ngx-theme-switcher>
+  <ngx-layout-direction-switcher></ngx-layout-direction-switcher>
 </div>
 
+<nb-actions
+  size="medium"
+  class="header-container"
+  [class.right]="position === 'normal'"
+  [class.left]="position === 'inverse'">
+  <nb-action icon="nb-gear" class="toggle-layout" (click)="toggleSettings()"></nb-action>
+  <nb-action class="control-item" disabled icon="nb-notifications"></nb-action>
+  <nb-action class="control-item">
+    <nb-search type="rotate-layout" (click)="startSearch()"></nb-search>
+  </nb-action>
+</nb-actions>

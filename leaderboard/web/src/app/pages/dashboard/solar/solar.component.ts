@@ -14,7 +14,7 @@ declare const echarts: any;
     </div>
     <div class="info">
       <div class="value">{{teamPoint}} points</div>
-      <div class="details"><span>uptime</span> {{teamUptime}} min</div>
+      <div class="details"><span>downtime</span> {{teamUptime}} min</div>
     </div>
   </nb-card-body>
 </nb-card>
@@ -22,21 +22,21 @@ declare const echarts: any;
 })
 export class SolarComponent implements AfterViewInit, OnDestroy {
 
-  private value = 0;
-  private teamUptime = 0;
-  private teamPoint = 0;
-  private teamName = "";
+  public value = 0;
+  public teamUptime = 0; // tslint:disable-line
+  public teamPoint = 0; // tslint:disable-line
+  public teamName = ""; // tslint:disable-line
 
-  @Input("uptime")
+  @Input('uptime')
   set uptime(value: number) {
     this.teamUptime = value;
   }
-  @Input("teamName")
-  set name(value: string){
+  @Input('teamName')
+  set name(value: string) {
     this.teamName = value;
   }
 
-  @Input("point")
+  @Input('point')
   set point(value: number) {
     this.teamPoint = value;
   }
@@ -58,7 +58,7 @@ export class SolarComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.themeSubscription = this.theme.getJsTheme().delay(1).subscribe(config => {
+    this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
       const solarTheme: any = config.variables.solar;
 

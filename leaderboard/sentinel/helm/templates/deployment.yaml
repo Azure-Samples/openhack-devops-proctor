@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Values.teams.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      team: {{ $.Values.teams.name }}
+  template:
+    metadata:
+      labels:
+        team: {{ $.Values.teams.name }}
+    spec:
+      containers:
+      - name: {{ $.Values.teams.name }}-user
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        env:
+        - name: SENTINEL_TEAM_ID
+          value: {{ $.Values.teams.name }}
+        - name: SENTINEL_SERVICE_TYPE
+          value: "2"
+        - name: SENTINEL_ENDPOINT
+          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/user"
+        - name: SENTINEL_PORT
+          value: "{{ $.Values.services.port }}"
+        - name: SENTINEL_API_URL
+          value: "{{ $.Values.teams.apiUrl }}"
+        - name: SENTINEL_POLLING_INTERVAL
+          value: "{{ $.Values.services.pollingInterval }}"
+        - name: SENTINEL_RETRY_DURATION
+          value: "{{ $.Values.services.retryDuration }}"
+      - name: {{ $.Values.teams.name }}-trip
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        env:
+        - name: SENTINEL_TEAM_ID
+          value: {{ $.Values.teams.name }}
+        - name: SENTINEL_SERVICE_TYPE
+          value: "3"
+        - name: SENTINEL_ENDPOINT
+          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/trips"
+        - name: SENTINEL_PORT
+          value: "{{ $.Values.services.port }}"
+        - name: SENTINEL_API_URL
+          value: "{{ $.Values.teams.apiUrl }}"
+        - name: SENTINEL_POLLING_INTERVAL
+          value: "{{ $.Values.services.pollingInterval }}"
+        - name: SENTINEL_RETRY_DURATION
+          value: "{{ $.Values.services.retryDuration }}"
+      - name: {{ $.Values.teams.name }}-poi
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        env:
+        - name: SENTINEL_TEAM_ID
+          value: {{ $.Values.teams.name }}
+        - name: SENTINEL_SERVICE_TYPE
+          value: "1"
+        - name: SENTINEL_ENDPOINT
+          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/poi"
+        - name: SENTINEL_PORT
+          value: "{{ $.Values.services.port }}"
+        - name: SENTINEL_API_URL
+          value: "{{ $.Values.teams.apiUrl }}"
+        - name: SENTINEL_POLLING_INTERVAL
+          value: "{{ $.Values.services.pollingInterval }}"
+        - name: SENTINEL_RETRY_DURATION
+          value: "{{ $.Values.services.retryDuration }}"
+      - name: {{ $.Values.teams.name }}-user-java
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        env:
+        - name: SENTINEL_TEAM_ID
+          value: {{ $.Values.teams.name }}
+        - name: SENTINEL_SERVICE_TYPE
+          value: "4"
+        - name: SENTINEL_ENDPOINT
+          value: "{{ $.Values.teams.endpointUrl }}/api/healthcheck/user-java"
+        - name: SENTINEL_PORT
+          value: "{{ $.Values.services.port }}"
+        - name: SENTINEL_API_URL
+          value: "{{ $.Values.teams.apiUrl }}"
+        - name: SENTINEL_POLLING_INTERVAL
+          value: "{{ $.Values.services.pollingInterval }}"
+        - name: SENTINEL_RETRY_DURATION
+          value: "{{ $.Values.services.retryDuration }}"
