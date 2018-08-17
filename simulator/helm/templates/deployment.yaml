@@ -43,5 +43,5 @@ spec:
             value: "{{ .Values.simulator.tripFrequency }}"
           - name: TEAM_NAME
             value: "{{ .Values.simulator.teamName }}"
-		  -	name: SIMULATOR_API_ENDPOINT
-			value: "{{ .Values.simulator.apiEndPoint }}"
+          - name: SIMULATOR_API_ENDPOINT
+            value: "{{ .Values.simulator.apiEndPoint }}"
