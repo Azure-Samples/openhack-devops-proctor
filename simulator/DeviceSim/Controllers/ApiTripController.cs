@@ -16,7 +16,6 @@ namespace DeviceSim.Controllers
 
         private Trip CurrentTrip;
         private List<TripPoint> CurrentTripPoints;
-        private List<Poi> CurrentPois;
         private TripStore tripStore;
         private TripPointStore tripPointStore;
         private PoiStore poiStore;
@@ -135,7 +134,7 @@ namespace DeviceSim.Controllers
                 
 
 
-                Console.WriteLine("TripPoint Processing Completed");
+                //Console.WriteLine("TripPoint Processing Completed");
             }
             catch (Exception ex)
             {
@@ -184,8 +183,7 @@ namespace DeviceSim.Controllers
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
-                throw new Exception($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
+                Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
             }
         }
 
@@ -212,7 +210,7 @@ namespace DeviceSim.Controllers
                 catch (Exception)
                 {
 
-                    throw new Exception($"POI Creation Failure : {DateTime.Now.ToString()}");
+                    Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
                 dateTime = DateTime.Now;
                 await poiStore.CreateItemAsync(new Poi
@@ -248,7 +246,7 @@ namespace DeviceSim.Controllers
             catch (Exception)
             {
 
-                throw new Exception($"Trip Statistics Update Failure : {DateTime.Now.ToString()}");
+                Console.WriteLine($"Trip Statistics Update Failure : {DateTime.Now.ToString()}");
             }
 
             
@@ -275,7 +273,7 @@ namespace DeviceSim.Controllers
             }
             catch (Exception)
             {
-                throw new Exception($"User Profile Update Failure : {DateTime.Now.ToString()}");
+                Console.WriteLine($"User Profile Update Failure : {DateTime.Now.ToString()}");
                
             }
             
