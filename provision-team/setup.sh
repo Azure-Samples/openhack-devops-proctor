@@ -55,7 +55,7 @@ fi
 
 # Check if az is installed and that we can install it
 type -p az
-if [ ! $? == 0 ]; then
+if [[ ! $? == 0 ]]; then
     # is az is not present we need to install it
     echo "The script need the az command line to be installed\n"
     echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
