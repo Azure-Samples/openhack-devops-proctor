@@ -67,33 +67,33 @@ fi
 #       exit 1
 #    fi
 #fi
-
-#Prompt for parameters is some required parameters are missing
-if [[ -z "$subscriptionId" ]]; then
-    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
-    echo "Enter your subscription ID:"
-    read subscriptionId
-    [[ "${subscriptionId:?}" ]]
-fi
-
-if [[ -z "$resourceGroupLocation" ]]; then
-    echo "If creating a *new* resource group, you need to set a location "
-    echo "You can lookup locations with the CLI using: az account list-locations "
-
-    echo "Enter resource group location:"
-    read resourceGroupLocation
-fi
-
-if [[ -z "$teamName" ]]; then
-    echo "Enter a team name to be used in app provisioning:"
-    read teamName
-fi
-
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
-    echo "Parameter missing..."
-    usage
-fi
-
+#
+##Prompt for parameters is some required parameters are missing
+#if [[ -z "$subscriptionId" ]]; then
+#    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
+#    echo "Enter your subscription ID:"
+#    read subscriptionId
+#    [[ "${subscriptionId:?}" ]]
+#fi
+#
+#if [[ -z "$resourceGroupLocation" ]]; then
+#    echo "If creating a *new* resource group, you need to set a location "
+#    echo "You can lookup locations with the CLI using: az account list-locations "
+#
+#    echo "Enter resource group location:"
+#    read resourceGroupLocation
+#fi
+#
+#if [[ -z "$teamName" ]]; then
+#    echo "Enter a team name to be used in app provisioning:"
+#    read teamName
+#fi
+#
+#if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
+#    echo "Parameter missing..."
+#    usage
+#fi
+#
 randomChar() {
     s=abcdefghijklmnopqrstuvxwyz0123456789
     p=$(( $RANDOM % 36))
