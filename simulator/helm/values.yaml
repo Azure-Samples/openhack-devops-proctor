@@ -9,3 +9,4 @@ image:
 simulator:
   tripFrequency: 1800
   teamName: devopsohtest
+  apiEndPoint: http://akstraefikota1961.westus2.cloudapp.azure.com
