@@ -151,13 +151,14 @@ echo "=========================================="
 
 
 #login to azure using your credentials
-az account show 1> /dev/null
+az login -u $azureUserName -p $azurePassword
+#az account show 1> /dev/null
 
-if [ $? != 0 ];
-then
-    az login -u $azureUserName -p $azurePassword
-    exit 0
-fi
+#if [ $? != 0 ];
+#then
+#    az login -u $azureUserName -p $azurePassword
+#    exit 0
+#fi
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
