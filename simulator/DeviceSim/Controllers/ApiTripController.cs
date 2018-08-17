@@ -270,6 +270,7 @@ namespace DeviceSim.Controllers
 
             try
             {
+                string json = CurrentUser.ToJson();
                 await userStore.UpdateItemAsync(CurrentUser);
             }
             catch (Exception)
