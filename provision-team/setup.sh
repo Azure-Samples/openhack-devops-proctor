@@ -153,6 +153,7 @@ echo "=========================================="
 #login to azure using your credentials
 echo "Username: $azureUserName"
 echo "Password: $azurePassword"
+echo "Command will be az login -u $azureUserName -p $azurePassword"
 az login -u $azureUserName -p $azurePassword
 #az account show 1> /dev/null
 
