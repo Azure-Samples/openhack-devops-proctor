@@ -19,6 +19,7 @@ SQL_PASSWORD="devopsohdevpwd-00" \
 SQL_SERVER="changeme.database.windows.net" \
 SQL_DBNAME="mydrivingDB" \
 TRIP_FREQUENCY="180000" \
-TEAM_NAME="devopsoh000test"
+TEAM_NAME="devopsoh000test" \
+SIMULATOR_API_ENDPOINT="http://akstraefikota1961.westus2.cloudapp.azure.com"
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "DeviceSim.dll"]
