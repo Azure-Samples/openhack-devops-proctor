@@ -48,15 +48,6 @@ echo -e "Checking USER:\t"$user_URL
 echo -e "Checking TRIPS:\t"$trips_URL
 echo -e "Checking USER JAVA:\t"$user_java_URL"\n"
 
-i=0
-echo "Allowing traefik to bring services up"
-while [ "$i" -ne 60 ]
-do
-        sleep 10
-        i=$(($i+10))
-        echo $i "seconds waiting"
-done
-
 status_code_poi=`curl -sL -w "%{http_code}\\n" "$poi_URL" -o /dev/null`
 
 if [[ "$status_code_poi" == "200" ]]; then
