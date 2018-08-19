@@ -49,7 +49,7 @@
         }
     },
     "variables": {
-        "teamName": "OpenHack",
+        "teamName": "openhack",
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
         "skuversion": "latest",

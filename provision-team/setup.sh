@@ -4,6 +4,7 @@
 IFS=$'\n\t'
 
 usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>" 1>&2; exit 1; }
+echo "$@"
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
