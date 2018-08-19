@@ -14,7 +14,7 @@ declare azureUserName=""
 declare azurePassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:u:p" arg; do
+while getopts ":i:l:n:e:u:p:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
