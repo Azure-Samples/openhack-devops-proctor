@@ -11,8 +11,8 @@
         public UserStore(string EndPoint)
         {
             base.InitializeStore(EndPoint);
-
         }
+
         public async Task<User> GetItemAsync(string id)
         {
             User user = null;

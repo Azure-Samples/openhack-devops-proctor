@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace DeviceSim.DataObjects.Models
 {
@@ -14,6 +12,7 @@ namespace DeviceSim.DataObjects.Models
         public virtual DbSet<UserProfiles> UserProfiles { get; set; }
         public virtual DbSet<Poisource> Poisource { get; set; }
         public virtual DbSet<TripPointSource> TripPointSource { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -53,7 +52,6 @@ namespace DeviceSim.DataObjects.Models
                     .HasConstraintName("FK_dbo.Devices_dbo.UserProfiles_UserProfile_Id");
             });
 
-            
             modelBuilder.Entity<IothubDatas>(entity =>
             {
                 entity.ToTable("IOTHubDatas");

@@ -1,5 +1,5 @@
 ﻿namespace Simulator.DataStore.Stores
-{ 
+{
     using Simulator.DataObjects;
     using Simulator.DataStore.Abstractions;
     using System;
@@ -9,11 +9,11 @@
 
     public class TripPointStore : BaseStore, IBaseStore<TripPoint>
     {
-
         public TripPointStore(string EndPoint)
         {
             base.InitializeStore(EndPoint);
         }
+
         public async Task<TripPoint> GetItemAsync(string id)
         {
             //Deviating implemetnation because of complxity of the nested API

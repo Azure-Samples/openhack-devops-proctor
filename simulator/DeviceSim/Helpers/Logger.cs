@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DeviceSim.Interfaces;
+﻿using DeviceSim.Interfaces;
+using System;
 
 namespace DeviceSim.Helpers
 {
@@ -12,7 +10,7 @@ namespace DeviceSim.Helpers
             throw new NotImplementedException();
         }
 
-        public void WriteMessage( LogLevel level, string message)
+        public void WriteMessage(LogLevel level, string message)
         {
             throw new NotImplementedException();
         }

@@ -1,7 +1,4 @@
-﻿
-using System.ComponentModel;
-using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Formatting;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +17,7 @@ namespace System.Net.Http
 
             return client.SendAsync(request);
         }
+
         public async static Task<HttpResponseMessage> PatchAsync(this HttpClient client, string requestUri, HttpContent content)
         {
             var method = new HttpMethod("PATCH");
@@ -68,10 +66,4 @@ namespace System.Net.Http
             return await client.SendAsync(request, cancellationToken);
         }
     }
-
-
-
-
 }
-
-

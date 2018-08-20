@@ -5,7 +5,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace DeviceSim
 {
     internal class Program
@@ -13,10 +12,10 @@ namespace DeviceSim
         #region Variables
 
         private static DBConnectionInfo dBConnectionInfo;
-        public static int WaitTime { get; private set; }       
+        public static int WaitTime { get; private set; }
         public static string TeamName { get; private set; }
         public static bool UseApi { get; private set; }
-        public static string ApiEndPoint { get; private set; } 
+        public static string ApiEndPoint { get; private set; }
 
         #endregion Variables
 
@@ -76,7 +75,6 @@ namespace DeviceSim
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
-                        
         }
 
         private static async Task CreateTrip()
@@ -91,9 +89,8 @@ namespace DeviceSim
                 }
                 else
                 {
-                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo,ApiEndPoint);
+                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo, ApiEndPoint);
                     await CurrentTrip.CreateTrip();
-
                 }
             }
             catch (Exception)

@@ -8,7 +8,6 @@
 
     public class PoiStore : BaseStore, IBaseStore<Poi>
     {
-
         public PoiStore(string EndPoint)
         {
             base.InitializeStore(EndPoint);
@@ -52,7 +51,6 @@
 
         public async Task<bool> UpdateItemAsync(Poi item)
         {
-
             HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/poi/{item.Id}", item);
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)

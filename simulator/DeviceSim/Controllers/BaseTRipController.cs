@@ -3,12 +3,7 @@ using DeviceSim.Helpers;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-
 
 namespace DeviceSim.Controllers
 {
@@ -18,12 +13,10 @@ namespace DeviceSim.Controllers
         protected internal List<TripPointSource> TripPointSourceInfo { get; set; }
         protected internal List<Poisource> TripPOIsource { get; set; }
 
-
-
         public BaseTripController(DBConnectionInfo dBConnectionInfo)
         {
             Ctx = new mydrivingDBContext(dBConnectionInfo);
-            //Select Random Trip 
+            //Select Random Trip
             GetSampleTrip();
             //Default Constructor
         }
@@ -41,9 +34,6 @@ namespace DeviceSim.Controllers
             //Get Source POIs for Random Trip
             TripPOIsource = Ctx.Poisource.Where(p => p.TripId == (TripPointSourceInfo.FirstOrDefault().Name)).ToList();
             //Console.WriteLine($"Sample Trip Selected: {tName}");
-
         }
-
-
     }
 }

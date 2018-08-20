@@ -190,8 +190,6 @@ namespace DeviceSim.Controllers
                 {
                     Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
-                
-                
             }
         }
 

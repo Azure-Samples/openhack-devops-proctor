@@ -3,12 +3,8 @@ using DeviceSim.Helpers;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-
 
 namespace DeviceSim.Controllers
 {
@@ -16,27 +12,22 @@ namespace DeviceSim.Controllers
     {
         #region Variables
 
-
-           
         private Trips CurrentTrip;
-       
+
         //private mydrivingDBContext ctx;
         //private List<TripPointSource> tripInfo;
         //private List<Poisource> tripPOIsource;
 
-
-
-
-        #endregion
+        #endregion Variables
 
         #region Constructor
 
         //Create Trips from Data in the Database
-        public EFTripController(DBConnectionInfo dBConnectionInfo):base(dBConnectionInfo)
+        public EFTripController(DBConnectionInfo dBConnectionInfo) : base(dBConnectionInfo)
         {
-            
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Public Methods
 
@@ -59,19 +50,17 @@ namespace DeviceSim.Controllers
             //TODO : DO BingMaps Call to determine distance
             CurrentTrip.Distance = 5.95;
 
-            //Get Trip POIs and Update Trip Summary Information 
+            //Get Trip POIs and Update Trip Summary Information
             CreateTripPois();
             //Update Driver Profile with Trip Data
             UpdateUserProfile();
 
             //Add trips to DB Instance
             await Ctx.Trips.AddAsync(CurrentTrip);
-            
-            
         }
+
         public async Task<bool> SaveChangesAsync()
         {
-
             try
             {
                 await Ctx.SaveChangesAsync();
@@ -82,15 +71,14 @@ namespace DeviceSim.Controllers
             {
                 return false;
             }
-
         }
 
-
-        #endregion
+        #endregion Public Methods
 
         #region Private Methods
+
         //private void GetSampleTrip()
-        //{   
+        //{
         //    Random r = new Random();
         //    //Get Sample Trip Names
         //    List<string> tripNames = ctx.TripPointSource.Select(p => p.Name).Distinct().ToList();
@@ -102,13 +90,13 @@ namespace DeviceSim.Controllers
         //    //Get Source POIs for Random Trip
         //    tripPOIsource = ctx.Poisource.Where(p => p.TripId == (tripInfo.FirstOrDefault().Name)).ToList();
         //    //Console.WriteLine($"Sample Trip Selected: {tName}");
-           
+
         //}
 
         private void CreateTripPois()
         {
             List<Pois> poiList = Ctx.Pois.Where(p => p.TripId == CurrentTrip.Id).ToList<Pois>();
-           
+
             //Generate POIs from Source
             foreach (var sPOI in TripPOIsource)
             {
@@ -138,7 +126,6 @@ namespace DeviceSim.Controllers
                                 .Where(user => user.UserId == CurrentTrip.UserId)
                                 .SingleOrDefault();
 
-
                 up.TotalTrips++;
                 up.TotalDistance += CurrentTrip.Distance;
                 up.HardStops += CurrentTrip.HardStops;
@@ -146,18 +133,14 @@ namespace DeviceSim.Controllers
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine($"Unable to Update User Profile. Ensure that the  Trip UserProfile Matches with records in the database for Hacker 1, for more information see: {ex.Message}.");
-
             }
         }
 
         private void CreateTripPoints()
         {
-            
             try
             {
-               
                 foreach (var tps in TripPointSourceInfo)
                 {
                     TripPoints _tripPoint = new TripPoints()
@@ -179,12 +162,9 @@ namespace DeviceSim.Controllers
                         EngineLoad = Convert.ToDouble(tps.Engineload),
                         MassFlowRate = Convert.ToDouble(tps.Mafflowrate),
                         EngineFuelRate = Convert.ToDouble(tps.Enginefuelrate)
-
                     };
                     CurrentTrip.TripPoints.Add(_tripPoint);
                 }
-
-
 
                 //Update Time Stamps to current date and times before sending to IOT Hub
                 UpdateTripPointTimeStamps(CurrentTrip);
@@ -195,7 +175,7 @@ namespace DeviceSim.Controllers
             }
         }
 
-        private  void UpdateTripPointTimeStamps(Trips trip)
+        private void UpdateTripPointTimeStamps(Trips trip)
         {
             try
             {
@@ -208,7 +188,7 @@ namespace DeviceSim.Controllers
                 //Create a Variable to Track the Time Range as it Changes
                 System.DateTime runningTime = CurrentTrip.RecordedTimeStamp;
 
-                //Calculate the Difference in time between Each Sequence Item 
+                //Calculate the Difference in time between Each Sequence Item
                 for (int currentTripPoint = (CurrentTrip.TripPoints.Count - 1); currentTripPoint > -1; currentTripPoint--)
                 {
                     if (currentTripPoint > 0)
@@ -216,9 +196,7 @@ namespace DeviceSim.Controllers
                         tDiff = CurrentTrip.TripPoints.ElementAt(currentTripPoint).RecordedTimeStamp
                               - CurrentTrip.TripPoints.ElementAt(currentTripPoint - 1).RecordedTimeStamp;
                         timeToAdd.Add(new timeInfo() { evtSeq = CurrentTrip.TripPoints.ElementAt(currentTripPoint).Sequence, tSpan = tDiff });
-
                     }
-
                 }
 
                 //Sort List in order to Add time to Trip Points
@@ -239,10 +217,9 @@ namespace DeviceSim.Controllers
                 Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
             }
         }
-        #endregion
 
+        #endregion Private Methods
     }
-
 
     public struct timeInfo
     {

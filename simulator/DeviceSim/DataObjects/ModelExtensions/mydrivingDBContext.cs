@@ -1,7 +1,5 @@
-﻿using System;
+﻿using DeviceSim.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using DeviceSim.Helpers;
 
 namespace DeviceSim.DataObjects.Models
 {
