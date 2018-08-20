@@ -1,10 +1,11 @@
 # Set Azure Credentials
-USERNAME=$1
-PASSWORD=$2
+AZUREUSERNAME=$1
+AZUREPASSWORD=$2
 SUBID=$3
 LOCATION=$4
 TEAMNAME=$5
 TEAMNUMBER=$6
+GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
@@ -54,7 +55,7 @@ touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
-sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo git clone -b arm-cleanup https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
@@ -88,15 +89,15 @@ export KVSTORE_DIR=/home/azureuser/team_env/kvstore
 cd /home/azureuser/openhack-devops-proctor/provision-team
 
 echo "############### Azure credentials ###############"
-echo "UserName: $USERNAME"
-echo "Password: $PASSWORD"
+echo "UserName: $AZUREUSERNAME"
+echo "Password: $AZUREPASSWORD"
 echo "Subscription ID: $SUBID"
 echo "Location: $LOCATION"
 echo "Team Name: $TEAMNAME"
 echo "Team number: $TEAMNUMBER"
 
 # Running the provisioning of the team environment
-az login -u $USERNAME -p $PASSWORD
+az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -e $TEAMNUMBER >devopsohseawa$TEAMNUMBER.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD">teamdeploy.out &
