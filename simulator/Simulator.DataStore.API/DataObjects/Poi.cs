@@ -9,7 +9,7 @@
         using Newtonsoft.Json;
         using Newtonsoft.Json.Converters;
 
-        public partial class Poi : BaseDataObject
+        public partial class Poi //: BaseDataObject
         {
             [JsonProperty("tripId")]
             public Guid TripId { get; set; }

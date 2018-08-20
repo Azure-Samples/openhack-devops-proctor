@@ -43,7 +43,7 @@ namespace Simulator.DataObjects
         using Newtonsoft.Json;
         using Newtonsoft.Json.Converters;
 
-        public partial class TripPoint: BaseDataObject
+        public partial class TripPoint//: BaseDataObject
     {
             [JsonProperty("Id")]
             public string Id { get; set; }

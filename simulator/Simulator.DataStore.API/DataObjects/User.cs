@@ -9,7 +9,7 @@ namespace Simulator.DataObjects
         using Newtonsoft.Json;
         using Newtonsoft.Json.Converters;
 
-        public partial class User : BaseDataObject
+        public partial class User //: BaseDataObject
     {
             [JsonProperty("id")]
             public Guid Id { get; set; }
