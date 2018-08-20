@@ -1,10 +1,9 @@
-﻿using DeviceSim.Controllers;
+using DeviceSim.Controllers;
 using DeviceSim.Helpers;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
 
 namespace DeviceSim
 {
@@ -13,10 +12,10 @@ namespace DeviceSim
         #region Variables
 
         private static DBConnectionInfo dBConnectionInfo;
-        public static int WaitTime { get; private set; }       
+        public static int WaitTime { get; private set; }
         public static string TeamName { get; private set; }
         public static bool UseApi { get; private set; }
-        public static string ApiEndPoint { get; private set; } 
+        public static string ApiEndPoint { get; private set; }
 
         #endregion Variables
 
@@ -66,17 +65,16 @@ namespace DeviceSim
             //Environmental Variables - Pass to Container
 
             //Database Connection Information
-            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("devopsoh42sql.database.windows.net");
-            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("devopsoh42sa");
-            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("tS99m6Tw0pwd");
+            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("ota1962sql.database.windows.net");
+            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("ota1962sa");
+            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("lS1ex5C35pwd");
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Api Connection Information
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikota1961.westus2.cloudapp.azure.com");
+            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikota1962.westus2.cloudapp.azure.com");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
-                        
         }
 
         private static async Task CreateTrip()
@@ -91,9 +89,8 @@ namespace DeviceSim
                 }
                 else
                 {
-                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo,ApiEndPoint);
+                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo, ApiEndPoint);
                     await CurrentTrip.CreateTrip();
-
                 }
             }
             catch (Exception)
