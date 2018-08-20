@@ -1,47 +1,38 @@
-# Infrastructure VM deployment script
+# Infrastructure provisioning VM
+
+
 
 ## Pre-requisites
 
-Have an SSH key to use and be familiar with how to SSH using SSH key to an Ubuntu VM. If needed see these articles:
-[for mac](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys) or [for Windows](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/ssh-from-windows)
+Have the Azure CLI installed and the username and password used to logon to the azure subscription.
 
 ## Usage
 
-Login with your PowerShell console.
-
-For a Windows machine it will be:
-
-```shell
-Login-AzureRmAccount
+1. Login to the azure subscription 
+``` 
+az login --username='<AzureUserName>' --password='<AzurePassword>'
 ```
 
-For Ubuntu it will be:
-
-```shell
-sudo pwsh
-Connect-AzureRmAccount
+2. Create new resource group 
+```
+az group create --name="<ResourceGroupName>" --location="<Location>"
 ```
 
-Change `YOUR_NUMBER`, `YOUR_PUBLIC_KEY`, and `YOUR_LOCATION` below.
-Run this from the root of the `provision-vm` folder.
-
-```shell
-$YOUR_LOCATION = 'eastus'
-$YOUR_NUMBER = '' # 3940
-$YOUR_PUBLIC_KEY = '' # ssh-rsa AAAAB3NzaC1yc2EAAAADA... @microsoft.com
-.\deploy.ps1 -Location $YOUR_LOCATION -Number $YOUR_NUMBER -PublicKey $YOUR_PUBLIC_KEY
+3. Run the deployment in that resourcegroup
+```
+az group deployment create --resource-group="<ResourceGroupName>" --template-file ./azuredeploy.json --parameters azureUserName='<AzureUserName>' azurePassword='<AzurePassword>'
 ```
 
-After provisioning, login to the VM with the public IP address attached to the VM and the SSH key provided.  The output will be shown on the screen similar to the following:
+Change `AzureUserName`, `AzureUserName`, `ResourceGroupName`, and `Location` with your values.
+This ARM template will run the ```../provision-vm/proctorVMSetup.sh``` script and launch ```../provision-team/setup.sh``` as a background task. 
 
-```shell
-OutputsString           :
-                          Name             Type                       Value
-                          ===============  =========================  ==========
-                          sshConnectString  String                    azureuser@procohvm336.westus2.cloudapp.azure.com
-```
+The logs of the ```setup.sh``` script are located in ```/home/azureuser/openhack-devops-procotor/provision-team/teamdeploy.out``` 
 
-If the private key utilized is not in the default SSH directory, the `-i <private_key>` must be added to the ssh connect string.
+**Note:** The ARM Template has been designed for one deployment in a given subscription. Other scenarios are at your own risk.
+
+The full deployment takes about 30 min to complete. If the deployment of the ARM template has completed, it does not mean that the team setup script has completed.
+
+Use the private key provided in the OpenHack manual to logon to the team provisioning VM using the `-i <private_key>` parameter.
 
 ```shell
 ssh -i ..\id_rsa azureuser@procohvm336.westus2.cloudapp.azure.com
