@@ -6,7 +6,7 @@ FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 COPY . .
 RUN dotnet restore -nowarn:msb3202,nu1503
-WORKDIR /src/DeviceSim.EF.SQL
+WORKDIR /src/DeviceSim
 RUN dotnet build -c Release -o /app
 #Build .net solution
 FROM build AS publish

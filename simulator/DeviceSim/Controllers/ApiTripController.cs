@@ -1,4 +1,4 @@
-﻿using DeviceSim.Helpers;
+using DeviceSim.Helpers;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
 using System;
@@ -190,8 +190,6 @@ namespace DeviceSim.Controllers
                 {
                     Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
-                
-                
             }
         }
 
