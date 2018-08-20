@@ -190,17 +190,8 @@ namespace DeviceSim.Controllers
                 {
                     Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
-                dateTime = DateTime.Now;
-                await poiStore.CreateItemAsync(new Poi
-                {
-                    TripId = new Guid(CurrentTrip.Id),
-                    Latitude = poi.Latitude,
-                    Longitude = poi.Longitude,
-                    PoiType = poi.Poitype,
-                    Deleted = false,
-                    Id = Guid.NewGuid(),
-                    Timestamp = dateTime.AddTicks(-1 * dateTime.Ticks % 10000)
-                });
+                
+                
             }
         }
 
