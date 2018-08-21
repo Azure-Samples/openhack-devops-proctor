@@ -8,6 +8,7 @@ CREATE TABLE leaderboard.dbo.LogMessages (
         TeamName nvarchar(50) NOT NULL,
         EndpointUri nvarchar(512) NOT NULL,
         CreatedDate datetime NOT NULL,
+		TimeSlice int NOT NULL,
         [Type] int NOT NULL,
         StatusCode int NOT NULL
 )

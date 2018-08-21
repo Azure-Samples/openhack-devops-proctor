@@ -298,7 +298,7 @@ IF RAND() > 0.5
 	    BEGIN
 	    INSERT INTO leaderboard.dbo.LogMessages
 	    (Id, TeamName, EndpointUri, CreatedDate, [Type], StatusCode)
-	    VALUES(NEWID(), 'team2', 'http://test/user', GETDATE()+@I+@CS, 2, 500);
+	    VALUES(NEWID(), 'team2', 'http://test/poi', GETDATE()+@I+@CS, 2, 500);
 	    END
     END
 SET @Start = @Start+1;
