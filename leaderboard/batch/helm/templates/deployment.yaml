@@ -25,10 +25,10 @@ spec:
         - name: AzureWebJobsStorage
           valueFrom:
             secretKeyRef:
-              name: storage
-              key: connection_string
+              name: functions
+              key: storage_connection_string
         - name: SqlConnectionString
           valueFrom:
             secretKeyRef:
-              name: sql
-              key: connection_string
+              name: functions
+              key: sql_connection_string
