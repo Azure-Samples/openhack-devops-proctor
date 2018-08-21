@@ -6,19 +6,19 @@ let teams = [
     {
         "id": "15e5a4c5-cdc7-4d32-8b49-3259271cba40",
         "teamName": "team1",
-        "downTimeSeconds": 1800,
+        "DownTimeMinutes": 30,
         "points": 300
     },
     {
         "id": "15e5a4c5-cdc7-4d32-8b49-3259271cba40",
         "teamName": "team2",
-        "downTimeSeconds": 0,
+        "DownTimeMinutes": 0,
         "points": 400
     },
     {
         "id": "15e5a4c5-cdc7-4d32-8b49-3259271cba40",
         "teamName": "team3",
-        "downTimeSeconds": 100,
+        "DownTimeMinutes": 100,
         "points": 10
     },
 ]
