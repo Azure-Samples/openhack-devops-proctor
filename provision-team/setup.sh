@@ -4,15 +4,18 @@
 IFS=$'\n\t'
 
 usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>" 1>&2; exit 1; }
+echo "$@"
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare teamName=""
 declare teamNumber=""
 declare azcliVerifiedVersion="2.0.43"
+declare azureUserName=""
+declare azurePassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:" arg; do
+while getopts ":i:l:n:e:u:p:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -25,6 +28,12 @@ while getopts ":i:l:n:e:" arg; do
         ;;
         e)
             teamNumber=${OPTARG}
+        ;;
+        u)
+            azureUserName=${OPTARG}
+        ;;
+        p)
+            azurePassword=${OPTARG}
         ;;
     esac
 done
@@ -46,46 +55,46 @@ if [ ! $? == 0 ]; then
 fi
 
 # Check if az is installed and that we can install it
-type -p az
-if [ ! $? == 0 ]; then
-    # is az is not present we need to install it
-    echo "The script need the az command line to be installed\n"
-    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
-    exit 1
-else
-    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
-    if [ $currentCliVersion != $azcliVersion ]; then
-       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
-       exit 1
-    fi
-fi
-
-#Prompt for parameters is some required parameters are missing
-if [[ -z "$subscriptionId" ]]; then
-    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
-    echo "Enter your subscription ID:"
-    read subscriptionId
-    [[ "${subscriptionId:?}" ]]
-fi
-
-if [[ -z "$resourceGroupLocation" ]]; then
-    echo "If creating a *new* resource group, you need to set a location "
-    echo "You can lookup locations with the CLI using: az account list-locations "
-
-    echo "Enter resource group location:"
-    read resourceGroupLocation
-fi
-
-if [[ -z "$teamName" ]]; then
-    echo "Enter a team name to be used in app provisioning:"
-    read teamName
-fi
-
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
-    echo "Parameter missing..."
-    usage
-fi
-
+#type -p az
+#if [[ ! $? == 0 ]]; then
+#    # is az is not present we need to install it
+#    echo "The script need the az command line to be installed\n"
+#    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
+#    exit 1
+#else
+#    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
+#    if [ $currentCliVersion != $azcliVersion ]; then
+#       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
+#       exit 1
+#    fi
+#fi
+#
+##Prompt for parameters is some required parameters are missing
+#if [[ -z "$subscriptionId" ]]; then
+#    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
+#    echo "Enter your subscription ID:"
+#    read subscriptionId
+#    [[ "${subscriptionId:?}" ]]
+#fi
+#
+#if [[ -z "$resourceGroupLocation" ]]; then
+#    echo "If creating a *new* resource group, you need to set a location "
+#    echo "You can lookup locations with the CLI using: az account list-locations "
+#
+#    echo "Enter resource group location:"
+#    read resourceGroupLocation
+#fi
+#
+#if [[ -z "$teamName" ]]; then
+#    echo "Enter a team name to be used in app provisioning:"
+#    read teamName
+#fi
+#
+#if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
+#    echo "Parameter missing..."
+#    usage
+#fi
+#
 randomChar() {
     s=abcdefghijklmnopqrstuvxwyz0123456789
     p=$(( $RANDOM % 36))
@@ -143,13 +152,17 @@ echo "=========================================="
 
 
 #login to azure using your credentials
-az account show 1> /dev/null
+echo "Username: $azureUserName"
+echo "Password: $azurePassword"
+echo "Command will be az login -u $azureUserName -p $azurePassword"
+az login --username=$azureUserName --password=$azurePassword
+#az account show 1> /dev/null
 
-if [ $? != 0 ];
-then
-    az login
-    exit 0
-fi
+#if [ $? != 0 ];
+#then
+#    az login -u $azureUserName -p $azurePassword
+#    exit 0
+#fi
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
