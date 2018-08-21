@@ -18,5 +18,5 @@ Identify a specific subscription to deploy the monitoing environment before your
 5. From the directory `/home/azureuser/openhack-devops-proctor/provision-procotor  ` Run the deployment script [./setup.sh](./setup.sh) on the provisioning VM using the following command line: 
 
 ```
-nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> > <proctorName><proctorNumber>.out &
+nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName>  -a <azureUserName> -p <azureUserPassword>" > <proctorName><proctorNumber>.out &
 ```
