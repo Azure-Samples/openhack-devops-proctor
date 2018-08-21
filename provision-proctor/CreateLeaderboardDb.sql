@@ -7,19 +7,19 @@ CREATE TABLE leaderboard.dbo.LogMessages (
         Id nvarchar(128) NOT NULL,
         TeamName nvarchar(50) NOT NULL,
         EndpointUri nvarchar(512) NOT NULL,
-        CreatedDate datetime NOT NULL,
-		TimeSlice int NOT NULL,
+        CreatedDate datetime2 NOT NULL,
+		TimeSlice datetime2 NOT NULL,
         [Type] int NOT NULL,
         StatusCode int NOT NULL
 )
 
 GO
 
-ALTER TABLE leaderboard.dbo.LogMessages ADD CONSTRAINT LogMessages_PK PRIMARY KEY (TeamName,EndpointUri,CreatedDate,[Type])
+ALTER TABLE leaderboard.dbo.LogMessages ADD CONSTRAINT LogMessages_PK PRIMARY KEY (TeamName, EndpointUri, CreatedDate, [Type])
 
 GO
 
-CREATE INDEX LogMessages_StatusCode_IDX ON leaderboard.dbo.LogMessages (StatusCode)
+CREATE INDEX LogMessages_TimeSlice_IDX ON leaderboard.dbo.LogMessages (TimeSlice)
 
 GO
 
@@ -64,8 +64,8 @@ CREATE TABLE leaderboard.dbo.Challenges (
         Id nvarchar(128) NOT NULL,
 	TeamId nvarchar(128) NOT NULL,
 	ChallengeDefinitionId nvarchar(128) NOT NULL,
-	StartDateTime datetime NOT NULL,
-	EndDateTime datetime,
+	StartDateTime datetime2 NOT NULL,
+	EndDateTime datetime2,
 	Score int,
 
 )
