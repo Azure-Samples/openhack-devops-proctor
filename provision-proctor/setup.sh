@@ -10,6 +10,8 @@ declare resourceGroupLocation=""
 declare proctorName=""
 declare proctorNumber=""
 declare teamName=""
+declare azureUserName=""
+declare azurePassword=""
 
 # Initialize parameters specified from command line
 while getopts ":i:l:m:u:n:e:" arg; do
@@ -28,6 +30,12 @@ while getopts ":i:l:m:u:n:e:" arg; do
         ;;
         n)
             teamName=${OPTARG}
+        ;;
+        u)
+            azureUserName=${OPTARG}
+        ;;
+        p)
+            azurePassword=${OPTARG}
         ;;
     esac
 done
@@ -139,12 +147,10 @@ echo "sqlDBName                 = "${sqlDBName}
 echo "=========================================="
 
 #login to azure using your credentials
-az account show 1> /dev/null
-
-if [ $? != 0 ];
-then
-    az login
-fi
+echo "Username: $azureUserName"
+echo "Password: $azurePassword"
+echo "Command will be az login --username=$azureUserName --password=$azurePassword"
+az login --username=$azureUserName --password=$azurePassword
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
