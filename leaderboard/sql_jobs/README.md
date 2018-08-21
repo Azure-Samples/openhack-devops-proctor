@@ -15,7 +15,8 @@ If using TestData.sql to generate your dataset, it is important to run the entir
             SELECT T.TEAMNAME AS [TEAMNAME],
                 T.ID AS [TEAMID],
                 CD.[NAME] AS [CHALLENGENAME],
-                CD.ID AS [CHALLENGEID],
+                CD.[ID] AS [CHALLENGEDEFINITIONID],
+                C.ID AS [CHALLENGEID],
                 COUNT(DISTINCT L.TIMESLICE) AS DOWNTIMEMINUTES
             FROM CHALLENGES AS C WITH (NOLOCK)
             INNER JOIN TEAMS AS T WITH (NOLOCK)
@@ -28,13 +29,20 @@ If using TestData.sql to generate your dataset, it is important to run the entir
                 AND L.CREATEDDATE <= C.ENDDATETIME
                 AND C.ISCOMPLETED=1
                 AND CD.SCOREENABLED = 1
-            GROUP BY T.TEAMNAME, T.ID, CD.NAME, CD.ID
+            GROUP BY T.TEAMNAME, T.ID, CD.NAME, CD.[ID], C.ID
         ) DTCALC
         GROUP BY DTCALC.TEAMNAME, DTCALC.TEAMID) DTSUM
     WHERE TEAMS.ID = DTSUM.TEAMID
 ```
 
 ### Calculate Challenge Score
+
+```SQL
+
+```
+
+### Calculate Team Score
+
 
 ## Helpful Queries
 
