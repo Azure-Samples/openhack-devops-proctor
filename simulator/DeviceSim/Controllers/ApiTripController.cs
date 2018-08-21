@@ -1,47 +1,38 @@
-﻿using DeviceSim.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using DeviceSim.Helpers;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeviceSim.Controllers
 {
-    public class ApiTripController:BaseTripController
+    public class ApiTripController : BaseTripController
     {
-
-
         private Trip CurrentTrip;
         private List<TripPoint> CurrentTripPoints;
-        private List<Poi> CurrentPois;
         private TripStore tripStore;
         private TripPointStore tripPointStore;
         private PoiStore poiStore;
         private UserStore userStore;
-        private string endPoint; 
+        private string endPoint;
         private DateTime dateTime;
 
-
-        public ApiTripController(DBConnectionInfo dBConnectionInfo ,string apiEndPoint): base(dBConnectionInfo)
+        public ApiTripController(DBConnectionInfo dBConnectionInfo, string apiEndPoint) : base(dBConnectionInfo)
         {
-            endPoint =  apiEndPoint;
+            endPoint = apiEndPoint;
             tripStore = new TripStore(endPoint);
             tripPointStore = new TripPointStore(endPoint);
             poiStore = new PoiStore(endPoint);
             userStore = new UserStore(endPoint);
         }
 
-        
         public async Task CreateTrip()
         {
-           
-           
-           dateTime = DateTime.UtcNow;
+            dateTime = DateTime.UtcNow;
 
-           CurrentTrip = new Trip
+            CurrentTrip = new Trip
             {
                 Id = Guid.NewGuid().ToString(),
                 UserId = "Hacker 1",
@@ -53,10 +44,9 @@ namespace DeviceSim.Controllers
                 Rating = 90,
                 //Version = new byte[] { 201 },
                 Created = dateTime.AddTicks(-1 * dateTime.Ticks % 10000).AddMinutes(15)
-
             };
 
-           CurrentTrip = await tripStore.CreateItemAsync(CurrentTrip);
+            CurrentTrip = await tripStore.CreateItemAsync(CurrentTrip);
 
             await CreateTripPoints();
 
@@ -65,14 +55,12 @@ namespace DeviceSim.Controllers
             await UpdateTrip();
 
             await UpdateUserProfile();
-
         }
 
         public async Task CreateTripPoints()
         {
             try
             {
-                
                 CurrentTripPoints = new List<TripPoint>();
                 DateTime dateTime = DateTime.UtcNow;
                 Vin v = new Vin() { String = string.Empty, Valid = false };
@@ -80,7 +68,7 @@ namespace DeviceSim.Controllers
                 foreach (var tps in TripPointSourceInfo)
                 {
                     TripPoint _tripPoint = new TripPoint()
-                    {                        
+                    {
                         Id = Guid.NewGuid().ToString(),
                         TripId = new Guid(CurrentTrip.Id),
                         Latitude = Convert.ToDouble(tps.Lat),
@@ -101,7 +89,6 @@ namespace DeviceSim.Controllers
                         Vin = v,
                         CreatedAt = dateTime.AddTicks(-1 * dateTime.Ticks % 10000),
                         UpdatedAt = dateTime.AddTicks(-1 * dateTime.Ticks % 10000)
-
                     };
                     CurrentTripPoints.Add(_tripPoint);
                 }
@@ -116,14 +103,11 @@ namespace DeviceSim.Controllers
                     }
                     catch (Exception)
                     {
-
                         throw new Exception($"Could not update Trip Time Stamps from Samples at {DateTime.Now.ToString()}.");
                     }
-                    
+
                     //Console.WriteLine($"Processing Sequence No: {tripPoint.Sequence} on Thread : {Thread.CurrentThread.ManagedThreadId}");
                 }
-
-
 
                 //Parallel.ForEach(CurrentTripPoints, tripPoint =>
                 //{
@@ -132,10 +116,7 @@ namespace DeviceSim.Controllers
 
                 //});
 
-                
-
-
-                Console.WriteLine("TripPoint Processing Completed");
+                //Console.WriteLine("TripPoint Processing Completed");
             }
             catch (Exception ex)
             {
@@ -156,7 +137,7 @@ namespace DeviceSim.Controllers
                 //Create a Variable to Track the Time Range as it Changes
                 System.DateTime runningTime = CurrentTrip.RecordedTimeStamp;
 
-                //Calculate the Difference in time between Each Sequence Item 
+                //Calculate the Difference in time between Each Sequence Item
                 for (int currentTripPoint = (CurrentTripPoints.Count - 1); currentTripPoint > -1; currentTripPoint--)
                 {
                     if (currentTripPoint > 0)
@@ -164,9 +145,7 @@ namespace DeviceSim.Controllers
                         tDiff = CurrentTripPoints.ElementAt(currentTripPoint).RecordedTimeStamp
                               - CurrentTripPoints.ElementAt(currentTripPoint - 1).RecordedTimeStamp;
                         timeToAdd.Add(new timeInfo() { evtSeq = CurrentTripPoints.ElementAt(currentTripPoint).Sequence, tSpan = tDiff });
-
                     }
-
                 }
 
                 //Sort List in order to Add time to Trip Points
@@ -184,16 +163,14 @@ namespace DeviceSim.Controllers
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
-                throw new Exception($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
+                Console.WriteLine($"Could not update Trip Time Stamps from Samples. for more info see:{ex.Message}.");
             }
         }
 
         public async Task CreatePois()
         {
-            
             //CurrentPois = new List<Poi>();
-            foreach (var poi  in TripPOIsource)
+            foreach (var poi in TripPOIsource)
             {
                 try
                 {
@@ -211,34 +188,17 @@ namespace DeviceSim.Controllers
                 }
                 catch (Exception)
                 {
-
-                    throw new Exception($"POI Creation Failure : {DateTime.Now.ToString()}");
+                    Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
-                dateTime = DateTime.Now;
-                await poiStore.CreateItemAsync(new Poi
-                {
-                    TripId = new Guid(CurrentTrip.Id),
-                    Latitude = poi.Latitude,
-                    Longitude = poi.Longitude,
-                    PoiType = poi.Poitype,
-                    Deleted = false,
-                    Id = Guid.NewGuid(),
-                    Timestamp = dateTime.AddTicks(-1 * dateTime.Ticks % 10000)
-                });
-
-                         
             }
-
-           
         }
-
 
         private async Task UpdateTrip()
         {
             //Get Current Trip and Update it After TripPoints Creation
             CurrentTrip.Distance = 5.95;
             CurrentTrip.IsComplete = true;
-            CurrentTrip.EndTimeStamp = 
+            CurrentTrip.EndTimeStamp =
             CurrentTripPoints.Last<TripPoint>().RecordedTimeStamp.AddTicks(-1 * CurrentTripPoints.Last<TripPoint>().RecordedTimeStamp.Ticks % 10000);
 
             try
@@ -247,12 +207,8 @@ namespace DeviceSim.Controllers
             }
             catch (Exception)
             {
-
-                throw new Exception($"Trip Statistics Update Failure : {DateTime.Now.ToString()}");
+                Console.WriteLine($"Trip Statistics Update Failure : {DateTime.Now.ToString()}");
             }
-
-            
-
         }
 
         private async Task UpdateUserProfile()
@@ -270,24 +226,13 @@ namespace DeviceSim.Controllers
 
             try
             {
+                string json = CurrentUser.ToJson();
                 await userStore.UpdateItemAsync(CurrentUser);
             }
             catch (Exception)
             {
-                throw new Exception($"User Profile Update Failure : {DateTime.Now.ToString()}");
-               
+                Console.WriteLine($"User Profile Update Failure : {DateTime.Now.ToString()}");
             }
-            
-
-
-
         }
-
-
     }
-
-
-
-
 }
-

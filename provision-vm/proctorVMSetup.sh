@@ -1,8 +1,9 @@
+
 # ********************************************************************
 # * Script run by the Custom Script Extension on the provisioning VM *
 # ********************************************************************
-
 # Set Azure Credentials by reading the command line arguments
+
 AZUREUSERNAME=$1
 AZUREPASSWORD=$2
 SUBID=$3
