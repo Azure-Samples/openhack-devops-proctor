@@ -1,0 +1,8 @@
+host:
+  functionAppName: leaderboardbatch
+image:
+  repository: leaderboardbatch
+  tag: latest
+  pullPolicy: Always
+
+
