@@ -78,7 +78,7 @@ namespace Sentinel.Controllers
                 return NotFound();
             }
 
-            tmp.DownTimeSeconds = tm.DownTimeSeconds;
+            tmp.DownTimeMinutes = tm.DownTimeMinutes;
             tmp.IsScoringEnabled = tm.IsScoringEnabled;
             tmp.Points = tm.Points;
             tmp.TeamName = tm.TeamName;
@@ -158,9 +158,11 @@ namespace Sentinel.Controllers
 
             tmp.TeamId = c.TeamId;
             tmp.ChallengeDefinitionId = c.ChallengeDefinitionId;
+            tmp.IsCompleted = c.IsCompleted;
             tmp.EndDateTime = c.EndDateTime;
             tmp.Score = c.Score;
             tmp.StartDateTime = c.StartDateTime;
+
 
 
             _context.Challenges.Update(tmp);

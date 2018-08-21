@@ -44,9 +44,17 @@ namespace Sentinel.Controllers
         [HttpPost(Name = "CreateLogMessageForTeam")]
         public IActionResult CreateLogMessageForTeam([FromBody] LogMessage msg)
         {
+
+            msg.TimeSlice = CalcTimeSlice(msg.CreatedDate);
             _context.Add<LogMessage>(msg);
             _context.SaveChanges();
             return Ok(msg);
+        }
+
+        private DateTime CalcTimeSlice(DateTime createdDate)
+        {
+            long ticks = TimeSpan.TicksPerSecond;
+            return new DateTime(createdDate.Ticks - (createdDate.Ticks % ticks), createdDate.Kind);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Sentinel.Models
         public String ChallengeDefinitionId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
+        public boolean IsCompleted {get; set;}
         public int Score { get; set; }
 
         public Challenge()
