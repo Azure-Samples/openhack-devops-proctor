@@ -21,6 +21,7 @@ namespace Sentinel.Models
         public string TeamName { get; set; }
         public string EndpointUri { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime TimeSlice { get; set; }
         public EndpointType Type { get; set; }
         public int StatusCode { get; set; }
 

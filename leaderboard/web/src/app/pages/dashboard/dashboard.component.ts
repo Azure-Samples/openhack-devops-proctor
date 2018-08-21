@@ -7,20 +7,20 @@ import 'rxjs/add/operator/map';
 
 interface TeamResponse {
   teamName: string;
-  downTimeSeconds: number;
+  DownTimeMinutes: number;
   points: number;
 }
 
 interface Team {
   name: string;
-  downTimeSeconds: number;
+  DownTimeMinutes: number;
   point: number;
 }
 // const TOTAL_TIME = 68400;
 function convertTeam(teamResponse: TeamResponse): Team {
    return {
     'name': teamResponse.teamName,
-    'downTimeSeconds': teamResponse.downTimeSeconds,
+    'DownTimeMinutes': teamResponse.DownTimeMinutes,
     'point': teamResponse.points,
   }
 }

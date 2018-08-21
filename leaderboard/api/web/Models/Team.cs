@@ -11,7 +11,7 @@ namespace Sentinel.Models
     {
         public String Id {get;set;}
         public string TeamName { get; set; }
-        public int DownTimeSeconds { get; set; }
+        public int DownTimeMinutes { get; set; }
         public int Points { get; set; }
         public bool IsScoringEnabled { get; set; }
 
