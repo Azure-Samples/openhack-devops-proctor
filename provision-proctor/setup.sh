@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName>" 1>&2; exit 1; }
+usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -a <azureUserName> -p <azureUserPassword>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
@@ -14,7 +14,7 @@ declare azureUserName=""
 declare azurePassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:m:u:n:e:" arg; do
+while getopts ":i:l:m:u:n:a:p:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -31,7 +31,7 @@ while getopts ":i:l:m:u:n:e:" arg; do
         n)
             teamName=${OPTARG}
         ;;
-        u)
+        a)
             azureUserName=${OPTARG}
         ;;
         p)
