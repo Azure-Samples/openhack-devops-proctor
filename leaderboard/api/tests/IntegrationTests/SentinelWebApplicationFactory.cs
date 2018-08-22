@@ -30,7 +30,7 @@ namespace IntegrationTests
                     logging.AddDebug();
                 })
                 .UseStartup<IntegrationTests.Startup>()
-                .UseUrls("http://localhost:8090");;
+                .UseUrls("http://localhost:8080");
 
             return host;
         }
