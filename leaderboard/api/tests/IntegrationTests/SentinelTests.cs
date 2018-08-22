@@ -19,11 +19,16 @@ namespace IntegrationTests
         }
 
         [Theory]
-        [InlineData("/api/sentinel/team01")]
+        [InlineData("/api/sentinel/team1")]
         public async Task GetLogMessagesAndReturnSuccess(string url)
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = _factory.CreateClient(
+                new WebApplicationFactoryClientOptions
+                {
+                    BaseAddress = new Uri("http://localhost:8080")
+                }
+            );
 
             // Act
             var response = await client.GetAsync(url);
