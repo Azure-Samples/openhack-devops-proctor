@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sentinel.Models
 {
@@ -14,8 +15,8 @@ namespace Sentinel.Models
 
         public String ChallengeDefinitionId { get; set; }
         public DateTime StartDateTime { get; set; }
-        public DateTime EndDateTime { get; set; }
-        public boolean IsCompleted {get; set;}
+        public DateTime? EndDateTime { get; set; }
+        public bool IsCompleted {get; set;}
         public int Score { get; set; }
 
         public Challenge()
