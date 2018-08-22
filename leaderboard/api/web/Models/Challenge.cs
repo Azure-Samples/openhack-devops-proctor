@@ -17,7 +17,7 @@ namespace Sentinel.Models
         public DateTime StartDateTime { get; set; }
         public DateTime? EndDateTime { get; set; }
         public bool IsCompleted {get; set;}
-        public int? Score { get; set; }
+        public int Score { get; set; }
 
         public Challenge()
         {
