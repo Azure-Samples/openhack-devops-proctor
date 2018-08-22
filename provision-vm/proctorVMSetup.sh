@@ -60,7 +60,7 @@ touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
-sudo git clone -b arm-cleanup https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo git clone -b master https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
