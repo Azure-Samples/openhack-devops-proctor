@@ -7,19 +7,19 @@ using System.Data.SqlClient;
 
 namespace Batch
 {
-    public static class Batch
+    public static class SqlJobFlow
     {
         private static SqlConnection connection;
         private static string queryString = "some batch execution sql";
 
-        static Batch()
+        static SqlJobFlow()
         {
             var connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
             connection = new SqlConnection(connectionString);
             connection.Open();
         }
 
-        [FunctionName("Function1")]
+        [FunctionName("SqlJobFlow")]
         public static void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log)
         {
 
