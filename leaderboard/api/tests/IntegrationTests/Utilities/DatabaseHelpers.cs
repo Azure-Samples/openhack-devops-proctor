@@ -22,43 +22,49 @@ namespace IntegrationTests.Utilities {
 
             return new List<LogMessage>() {
                 new LogMessage {
-                    TeamName = "team01",
-                    CreatedDate = Round(dt),
+                    TeamName = "team1",
+                    CreatedDate = dt,
+                    TimeSlice = Round(dt),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = 500,
                     Type = EndpointType.POI
                 },
                 new LogMessage {
-                    TeamName = "team01",
-                    CreatedDate = Round(dt.AddSeconds(5)),
+                    TeamName = "team1",
+                    CreatedDate = dt.AddSeconds(5),
+                    TimeSlice = Round(dt.AddSeconds(5)),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = 403,
                     Type = EndpointType.POI
                 },
                 new LogMessage {
-                    TeamName = "team01",
-                    CreatedDate = Round(dt.AddSeconds(5)),
+                    TeamName = "team1",
+                    CreatedDate = dt.AddSeconds(5),
+                    TimeSlice = Round(dt.AddSeconds(5)),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = 404,
                     Type = EndpointType.TRIPS
                 },
                 new LogMessage {
-                    TeamName = "team02",
-                    CreatedDate = Round(dt.AddSeconds(3)),
+                    TeamName = "team2",
+                    CreatedDate = dt.AddSeconds(3),
+                    TimeSlice = Round(dt.AddSeconds(3)),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = -1,
                     Type = EndpointType.USER
                 },
                 new LogMessage {
-                    TeamName = "team03",
-                    CreatedDate = Round(dt.AddSeconds(20)),
+                    TeamName = "team3",
+                    CreatedDate = dt.AddSeconds(20),
+                    TimeSlice = Round(dt.AddSeconds(20)),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = -1,
                     Type = EndpointType.POI
                 },
                 new LogMessage {
-                    TeamName = "team03",
-                    CreatedDate = Round(dt.AddSeconds(25)),
+                    TeamName = "team3",
+                    CreatedDate = dt.AddSeconds(25),
+                    TimeSlice = Round(dt.AddSeconds(25)),
                     EndpointUri = "http://iontegrationtests1",
                     StatusCode = -1,
                     Type = EndpointType.TRIPS
