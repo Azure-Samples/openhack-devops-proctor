@@ -7,14 +7,15 @@ IFS=$'\n\t'
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 #script requires latest version of .netcore to be installed ()
 
-usage() { echo "Usage: build_deploy_simulator.sh -n <team name> -t <image tag> -q <trip frequency>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_simulator.sh -n <team name> -t <image tag> -q <trip frequency> -d <dns host Url>" 1>&2; exit 1; }
 
 declare teamName=""
 declare imageTag="latest"
 declare tripFrequency="1800"
+declare dnsUrl=""
 
 # Initialize parameters specified from command line
-while getopts ":n:t:q:" arg; do
+while getopts ":n:t:q:d:" arg; do
     case "${arg}" in
         n)
             teamName=${OPTARG}
@@ -24,6 +25,9 @@ while getopts ":n:t:q:" arg; do
         ;;
         q)
             tripFrequency=${OPTARG}
+        ;;
+		 d)
+            dnsUrl=${OPTARG}
         ;;
     esac
 done
@@ -45,6 +49,13 @@ if [ -z "$teamName" ]; then
     usage
 fi
 
+if [[ -z "$dnsUrl" ]]; then
+    echo "Public DNS address where the API will be hosted behind."
+    echo "Enter public DNS name."
+    read dnsUrl
+    [[ "${dnsUrl:?}" ]]
+fi
+
 declare resourceGroupName="${teamName}rg"
 declare registryName="${teamName}acr"
 
@@ -54,6 +65,7 @@ echo $tripFrequency
 echo $teamName
 echo $registryName
 echo $imageTag
+echo $dnsUrl
 
 #get the acr repository id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
@@ -79,7 +91,10 @@ docker push $TAG
 
 echo -e "\nSuccessfully pushed image: "$TAG
 
+BASE_URI='http://'$dnsUrl
+echo "Base URI: $BASE_URI"
+
 echo "deploying simulator chart"
-helm install ./helm --name simulator --set repository.image=$IMAGE,repository.tag=$imageTag,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName --namespace=simulator
+helm install ./helm --name simulator --set repository.image=$IMAGE,repository.tag=$imageTag,simulator.tripFrequency=$tripFrequency,simulator.teamName=$teamName,simulator.apiEndPoint=$BASE_URI --namespace=simulator
 
 popd
