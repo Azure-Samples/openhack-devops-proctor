@@ -35,6 +35,10 @@ namespace Sentinel.Controllers
         // * POST /api/leaderboard/challenges/ - create a challenge for a team
         // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
 
+        // * GET /api/leaderboard/servicehealth/ - get health for all teams services
+        // * GET /api/leaderboard/servicehealth/{teamName} - get health for a team
+
+
         // * GET /api/leaderboard/challengedefinitions/id/{challengeId}
 
         // Sentinel Controller
