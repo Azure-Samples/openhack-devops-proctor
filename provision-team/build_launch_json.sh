@@ -56,11 +56,11 @@ if [[ -z "$teamName" ]]; then
     echo "Enter a team name"
     read teamName
 fi
-touch $HOME/team_env/$teamName/launch.json
-touch $HOME/team_env/$teamName/tasks.json
-cp ./templates/launch.json.template $HOME/team_env/$teamName/launch.json
-cp ./templates/tasks.json.template $HOME/team_env/$teamName/tasks.json
+touch /home/azureuser/team_env/$teamName/launch.json
+touch /home/azureuser/team_env/$teamName/tasks.json
+cp ./templates/launch.json.template /home/azureuser/team_env/$teamName/launch.json
+cp ./templates/tasks.json.template /home/azureuser/team_env/$teamName/tasks.json
 
-sed -i -e 's/{SQL_PASSWORD}/'$SQL_PASSWORD'/g' $HOME/team_env/$teamName/launch.json
-sed -i -e 's/{SQL_SERVER}/'$SQL_SERVER'/g' $HOME/team_env/$teamName/launch.json
-sed -i -e 's/{SQL_USER}/'$SQL_USER'/g' $HOME/team_env/$teamName/launch.json
+sed -i -e 's/{SQL_PASSWORD}/'$SQL_PASSWORD'/g' /home/azureuser/team_env/$teamName/launch.json
+sed -i -e 's/{SQL_SERVER}/'$SQL_SERVER'/g' /home/azureuser/team_env/$teamName/launch.json
+sed -i -e 's/{SQL_USER}/'$SQL_USER'/g' /home/azureuser/team_env/$teamName/launch.json
