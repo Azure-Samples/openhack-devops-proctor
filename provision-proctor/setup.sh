@@ -246,5 +246,8 @@ bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
 echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
 bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
 
-echo "11-Clean the working environment"
+echo "11-Build and deploy leaderboard batch to AKS (bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber"
+bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber
+
+echo "12-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
