@@ -11,13 +11,19 @@ namespace Batch
     public static class SqlJobFlow
     {
         private static SqlConnection connection;
-        private static string queryString = "some batch execution sql";
 
         static SqlJobFlow()
         {
-            var connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
-            connection = new SqlConnection(connectionString);
-            connection.Open();
+            try
+            {
+                var connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+            } catch (SqlException e)
+            {
+                Console.Error.WriteLine("Error! while establishing connection with SQL database. Please check the sqlConnectionString or the firewall setting on your SQL Server.");
+                throw e;
+            }
         }
 
         [FunctionName("SqlJobFlow")]
@@ -29,15 +35,15 @@ namespace Batch
             sw.Start();
             int rowAffected = ExecuteQuery(GetCalculateTeamDowntimeSQL(), connection);
             sw.Stop();
-            log.LogInformation($"CalculateTeamDownTime: {rowAffected} rows {sw.ElapsedMilliseconds}");
+            log.LogInformation($"CalculateTeamDownTime: {rowAffected} rows in {sw.ElapsedMilliseconds.ToString()} ms.");
             sw.Restart();
             rowAffected = ExecuteQuery(GetCalculateChallangeScoreSQL(), connection);
             sw.Stop();
-            log.LogInformation($"CalculateChallangeScoreSQL: {rowAffected} rows {sw.ElapsedMilliseconds}");
+            log.LogInformation($"CalculateChallangeScoreSQL: {rowAffected} rows in {sw.ElapsedMilliseconds.ToString()} ms.");
             sw.Restart();
             rowAffected = ExecuteQuery(GetCalculateTeamScoreSQL(), connection);
             sw.Stop();
-            log.LogInformation($"CalculateTeamScoreSQL: {rowAffected} rows {sw.ElapsedMilliseconds}");
+            log.LogInformation($"CalculateTeamScoreSQL: {rowAffected} rows in {sw.ElapsedMilliseconds.ToString()} ms.");
 
         }
 
