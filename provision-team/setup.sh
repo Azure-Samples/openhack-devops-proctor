@@ -3,7 +3,7 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -u <azureUserName> -p <azurePassword>" 1>&2; exit 1; }
 echo "$@"
 
 declare subscriptionId=""

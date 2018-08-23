@@ -24,7 +24,11 @@ shift $((OPTIND-1))
 
 
 # Copy the team kvstore file to a known name
-sudo cp /home/azureuser/team_env/kvstore/${teamId} /home/root/team_env/kvstore/ohteamvalues
+if [ ! -d "/home/azureuser/team_env/kvstore/ohteamvalues" ]; then
+    mkdir -p /home/azureuser/team_env/kvstore/ohteamvalues
+fi
 
-# Add nginx to the script 
+sudo cp /home/azureuser/team_env/kvstore/${teamId} /home/azureuser/team_env/kvstore/ohteamvalues
+
+# Add nginx to the script
 sudo docker run -v /home/azureuser/openhack-devops-proctor/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/team_env/kvstore/:/usr/share/nginx/html -p 80:80 -d nginx
