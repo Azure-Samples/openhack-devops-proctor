@@ -7,18 +7,17 @@ IFS=$'\n\t'
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 #script requires latest version of .netcore to be installed ()
 
-usage() { echo "Usage: build_deploy_leaderboard_batch.sh -r <resourceGroupName> -l <location> -t <image tag> -d <dns host Url> -g <registry name> -m <proctorName> -u <proctorNumber>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_leaderboard_batch.sh -r <resourceGroupName> -l <location> -t <image tag> -g <registry name> -m <proctorName> -u <proctorNumber>" 1>&2; exit 1; }
 
 
 declare resourceGroupName=""
 declare imageTag=""
-declare dnsUrl=""
 declare registryName=""
 declare proctorName=""
 declare proctorNumber=""
 
 # Initialize parameters specified from command line
-while getopts ":r:l:t:d:g:m:u" arg; do
+while getopts ":r:l:t:g:m:u" arg; do
     case "${arg}" in
         r)
             resourceGroupName=${OPTARG}
@@ -28,9 +27,6 @@ while getopts ":r:l:t:d:g:m:u" arg; do
         ;;
         t)
             imageTag=${OPTARG}
-        ;;
-        d)
-            dnsUrl=${OPTARG}
         ;;
         g)
             registryName=${OPTARG}
@@ -67,22 +63,14 @@ if [[ -z "$imageTag" ]]; then
     [[ "${imageTag:?}" ]]
 fi
 
-if [[ -z "$dnsUrl" ]]; then
-    echo "Public DNS address where the API will be hosted behind."
-    echo "Enter public DNS name."
-    read dnsUrl
-    [[ "${dnsUrl:?}" ]]
-fi
-
-if [ -z "$resourceGroupName" ] || [ -z "$location"] || [ -z "$imageTag" ] || [ -z "$dnsUrl" ]; then
-    echo "Either one of resourceGroupName, location, imageTag, or dnsUrl is empty"
+if [ -z "$resourceGroupName" ] || [ -z "$location"] || [ -z "$imageTag" ] ; then
+    echo "Either one of resourceGroupName, location, or imageTag is empty"
     usage
 fi
 
 #DEBUG
 echo "Resource Group:" $resourceGroupName
 echo "Image:" $imageTag
-echo "DNS Url:" $dnsUrl
 
 #get the acr repository id to tag image with.
 ACR_ID=`az acr list -g $resourceGroupName --query "[].{acrLoginServer:loginServer}" --output json | jq .[].acrLoginServer | sed 's/\"//g'`
@@ -145,6 +133,4 @@ kubectl create secret generic functions --type=string --from-literal=storage_con
 installPath="../leaderboard/batch/helm"
 echo -e "\nhelm install from: " $installPath "\n\n"
 
-BASE_URI='http://'$dnsUrl
-
-helm install $installPath --name leaderboardbatch --set repository.image=$TAG
+helm install $installPath --name leaderboardbatch --set image.repository=$TAG
