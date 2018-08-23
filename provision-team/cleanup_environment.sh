@@ -20,18 +20,18 @@ if [ -z "$teamName" ] ; then
     usage
 fi
 
-# 1- Rename $HOME/.azure/aksServicePrincipal.json to $HOME/.azure/aksServicePrincipal-team-number.json
-if [ -f $HOME/.azure/aksServicePrincipal.json ]; then
-    aksSPlocation="$HOME/team_env/$teamName/aksServicePrincipal-$teamName.json"
-    mv $HOME/.azure/aksServicePrincipal.json $aksSPlocation
+# 1- Rename /home/azureuser/.azure/aksServicePrincipal.json to /home/azureuser/.azure/aksServicePrincipal-team-number.json
+if [ -f /home/azureuser/.azure/aksServicePrincipal.json ]; then
+    aksSPlocation="/home/azureuser/team_env/$teamName/aksServicePrincipal-$teamName.json"
+    cp /home/azureuser/.azure/aksServicePrincipal.json $aksSPlocation
     kvstore set $teamName aksSPlocation $aksSPlocation
     echo "The aksServicePrincipal.json file has been moved to $aksSPlocation"
 fi
 
 # 2- Copy the kubeconfig file
-if [ -f $HOME/.kube/config ]; then
-    kubeconfiglocation="$HOME/team_env/$teamName/kubeconfig-$teamName"
-    mv $HOME/.kube/config $kubeconfiglocation
+if [ -f /home/azureuser/.kube/config ]; then
+    kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
+    cp /home/azureuser/.kube/config $kubeconfiglocation
     kvstore set $teamName kubeconfig $kubeconfiglocation
     echo "Copied the kubeconfig file to $kubeconfiglocation"
 fi

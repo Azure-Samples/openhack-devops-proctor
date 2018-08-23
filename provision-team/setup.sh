@@ -188,18 +188,18 @@ else
 fi
 
 # Verify that the teamConfig dir exist
-if [ ! -d "$HOME/team_env" ]; then
-   mkdir $HOME/team_env
+if [ ! -d "/home/azureuser/team_env" ]; then
+   mkdir /home/azureuser/team_env
 fi
 
 # Verify that kvstore dir exist
-if [ ! -d "$HOME/team_env/kvstore" ]; then
-   mkdir $HOME/team_env/kvstore
+if [ ! -d "/home/azureuser/team_env/kvstore" ]; then
+   mkdir /home/azureuser/team_env/kvstore
 fi
 
 # Verify that the team dir exist
-if [ ! -d "$HOME/team_env/${teamName}${teamNumber}" ]; then
-   mkdir $HOME/team_env/${teamName}${teamNumber}
+if [ ! -d "/home/azureuser/team_env/${teamName}${teamNumber}" ]; then
+   mkdir /home/azureuser/team_env/${teamName}${teamNumber}
 fi
 
 kvstore set ${teamName}${teamNumber} subscriptionId ${subscriptionId}
@@ -213,7 +213,7 @@ kvstore set ${teamName}${teamNumber} sqlServerName ${sqlServerName}
 kvstore set ${teamName}${teamNumber} sqlServerUserName ${sqlServerUsername}
 kvstore set ${teamName}${teamNumber} sqlServerPassword ${sqlServerPassword}
 kvstore set ${teamName}${teamNumber} sqlDbName ${sqlDBName}
-kvstore set ${teamName}${teamNumber} teamFiles $HOME/team_env/${teamName}${teamNumber}
+kvstore set ${teamName}${teamNumber} teamFiles /home/azureuser/team_env/${teamName}${teamNumber}
 kvstore set ${teamName}${teamNumber} jenkinsVMPassword ${jenkinsVMPassword}
 kvstore set ${teamName}${teamNumber} jenkinsURL ${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 
@@ -269,3 +269,6 @@ bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
 echo "16-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
+
+echo "16-Expose the team settings on a website"
+bash ./run_nginx.sh -n ${teamName}${teamNumber} 
