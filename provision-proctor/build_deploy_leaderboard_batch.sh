@@ -140,8 +140,7 @@ sqlConnectionString="Server=tcp:$sqlServerName.database.windows.net,1433;Initial
 
 # Create a secrets for Storage Account and SQL database conection string
 
-kubectl create secret generic functions --type=string --from-literal=storage_connection_string=$storageConnectionString
-kubectl create secret generic functions --type=string --from-literal=sql_connection_string=$sqlConnectionString
+kubectl create secret generic functions --type=string --from-literal=storage_connection_string="$storageConnectionString" --from-literal=sql_connection_string="$sqlConnectionString"
 
 installPath="../leaderboard/batch/helm"
 echo -e "\nhelm install from: " $installPath "\n\n"
