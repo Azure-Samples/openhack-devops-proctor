@@ -24,6 +24,10 @@ shift $((OPTIND-1))
 
 
 # Copy the team kvstore file to a known name
+if [ ! -d "/home/root/team_env/kvstore/ohteamvalues" ]; then
+    mkdir -p /home/root/team_env/kvstore/ohteamvalues
+fi
+
 sudo cp /home/azureuser/team_env/kvstore/${teamId} /home/root/team_env/kvstore/ohteamvalues
 
 # Add nginx to the script 
