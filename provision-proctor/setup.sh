@@ -3,16 +3,18 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName>" 1>&2; exit 1; }
+usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -c <proctorNumber> -n <teamName> -u <azureUserName> -p <azurePassword>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
 declare proctorName=""
 declare proctorNumber=""
 declare teamName=""
+declare azureUserName=""
+declare azurePassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:m:u:n:e:" arg; do
+while getopts ":i:l:m:c:n:u:p:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -23,11 +25,17 @@ while getopts ":i:l:m:u:n:e:" arg; do
         m)
             proctorName=${OPTARG}
         ;;
-        u)
+        c)
             proctorNumber=${OPTARG}
         ;;
         n)
             teamName=${OPTARG}
+        ;;
+        u)
+            azureUserName=${OPTARG}
+        ;;
+        p)
+            azurePassword=${OPTARG}
         ;;
     esac
 done
@@ -139,12 +147,10 @@ echo "sqlDBName                 = "${sqlDBName}
 echo "=========================================="
 
 #login to azure using your credentials
-az account show 1> /dev/null
-
-if [ $? != 0 ];
-then
-    az login
-fi
+echo "Username: $azureUserName"
+echo "Password: $azurePassword"
+echo "Command will be az login --username=$azureUserName --password=$azurePassword"
+az login --username=$azureUserName --password=$azurePassword
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
@@ -209,16 +215,13 @@ bash ../provision-team/provision_acr.sh -i $subscriptionId -g $resourceGroupProc
 echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation)"
 bash ../provision-team/provision_aks.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -l $resourceGroupLocation
 
-echo "3-Set AKS/ACR permissions  (bash ./provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation)"
-bash ../provision-team/provision_aks_acr_auth.sh -i $subscriptionId -g $resourceGroupProctor -c $clusterName -r $registryName -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
-
-echo "4-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
+echo "3-Deploy ingress  (bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber})"
 bash ./deploy_ingress_dns.sh -s . -l $resourceGroupLocation -n ${proctorName}${proctorNumber}
 
-echo "5-Provision SQL  (bash ./provision_sql.sh -g $resourceGroupProctor -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
+echo "4-Provision SQL  (bash ./provision_sql.sh -g $resourceGroupProctor -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
 bash ./provision_sql.sh -g $resourceGroupProctor -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
 
-echo "6-Configure SQL  (bash ./configure_sql.sh  -g $resourceGroupProctor -u $sqlServerUsername -n ${proctorName}${proctorNumber} -k $keyVaultName -d $sqlDBName)"
+echo "5-Configure SQL  (bash ./configure_sql.sh  -g $resourceGroupProctor -u $sqlServerUsername -n ${proctorName}${proctorNumber} -k $keyVaultName -d $sqlDBName)"
 bash ./configure_sql.sh -g $resourceGroupProctor -u $sqlServerUsername -n ${proctorName}${proctorNumber} -k $keyVaultName -d $sqlDBName
 
 # Save the public DNS address to be provisioned in the helm charts for each service
@@ -228,17 +231,17 @@ apiUrl='http://'$dnsURL'/api/sentinel'
 echo -e "API URL for "${proctorName}${proctorNumber}" is:\n"$apiUrl
 kvstore set ${proctorName}${proctorNumber} apiUrl ${apiUrl}
 
-echo "7-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
+echo "6-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName)"
 bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sentinel-api' -d $dnsURL -g $registryName
 
-echo "8-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+echo "7-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-echo "9-Deploy sentinel to AKS"
+echo "8-Deploy sentinel to AKS"
 bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
 
-echo "10-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
+echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
 bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
 
-echo "11-Clean the working environment"
+echo "10-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
