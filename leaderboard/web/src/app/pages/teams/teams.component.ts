@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy,Injectable } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/map';
