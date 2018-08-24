@@ -27,4 +27,4 @@ let homepage = "<a href=http://localhost:3000/api/leaderboard/teams/>/api/leader
 
 app.get('/', (req, res) => res.send(homepage))
 app.get('/api/leaderboard/teams/', (req, res) => res.send(JSON.stringify(teams)))
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.listen(8080, () => console.log('Example app listening on port 8080!'))

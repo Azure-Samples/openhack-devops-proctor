@@ -51,7 +51,7 @@
 
         public async Task<bool> UpdateItemAsync(User item)
         {
-            HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/user-java/{item.UserId}", item);
+            HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/user-java/{item.Id}", item);
             response.EnsureSuccessStatusCode();
             if (response.IsSuccessStatusCode)
                 response.Content.Headers.ContentType.MediaType = "application/json";

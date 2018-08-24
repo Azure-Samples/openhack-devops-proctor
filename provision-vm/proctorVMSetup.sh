@@ -10,6 +10,9 @@ SUBID=$3
 LOCATION=$4
 TEAMNAME=$5
 TEAMNUMBER=$6
+RECIPIENTEMAIL=$7
+CHATCONNECTIONSTRING=$8
+CHATMESSAGEQUEUE=$9
 GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"

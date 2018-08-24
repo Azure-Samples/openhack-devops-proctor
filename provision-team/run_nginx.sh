@@ -16,19 +16,14 @@ while getopts ":n:" arg; do
 done
 shift $((OPTIND-1))
 
-# if [[ -z "$githubRepository" ]]; then
-#     echo "Enter the github url (ssh/https) from which to clone the application source:"
-#     echo "NOTE: if https, the repository needs to be public."
-#     read githubRepository
-# fi
+if [[ -z "$teamId" ]]; then
+    echo "teamId was not set properly"
+    read teamId
+fi
 
 
 # Copy the team kvstore file to a known name
-if [ ! -d "/home/azureuser/team_env/kvstore/ohteamvalues" ]; then
-    mkdir -p /home/azureuser/team_env/kvstore/ohteamvalues
-fi
-
 sudo cp /home/azureuser/team_env/kvstore/${teamId} /home/azureuser/team_env/kvstore/ohteamvalues
 
 # Add nginx to the script
-sudo docker run -v /home/azureuser/openhack-devops-proctor/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/team_env/kvstore/:/usr/share/nginx/html -p 80:80 -d nginx
+sudo docker run -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/team_env/kvstore/:/usr/share/nginx/html -p 2018:80 -d nginx

@@ -46,7 +46,7 @@ namespace DeviceSim.Controllers
             CurrentTrip = new Trips()
             {
                 RecordedTimeStamp = DateTime.UtcNow,
-                Name = $"SSSTrip {DateTime.Now}",
+                Name = $"Trip {DateTime.Now}",
                 Id = Guid.NewGuid().ToString(),
                 UserId = "Hacker 1"
             };
