@@ -11,7 +11,7 @@ declare azureUserName=""
 declare azurePassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:m:c:n:u:p:" arg; do
+while getopts ":i:l:u:p:" arg; do
     case "${arg}" in
         i)
             subscriptionId=${OPTARG}
@@ -69,17 +69,9 @@ if [[ -z "$resourceGroupLocation" ]]; then
     read resourceGroupLocation
 fi
 
-if [[ -z "$proctorName" ]]; then
-    echo "Enter a proctor name to be used to provision proctor resources:"
-    read proctorName
 fi
 
-if [[ -z "$teamName" ]]; then
-    echo "Enter the base team name used for the already provisioned team environments:"
-    read teamName
-fi
-
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$proctorName" ] || [ -z "$teamName" ]; then
+if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$azureUserName" ] || [ -z "$azurePassword" ]; then
     echo "Parameter missing..."
     usage
 fi
@@ -105,10 +97,9 @@ if [[ -z "$proctorNumber" ]]; then
     proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
 fi
 
-declare proctorName="monitoring$(randomChar;randomChar;randomChar;randomNum;)"
 declare proctorNumber="$(randomNum;randomNum;randomNum;randomNum;)"
 
-declare resourceGroupProctor="monitoring${proctorNumber}rg";
+declare resourceGroupProctor="${proctorNumber}monitoringrg";
 declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
 declare keyVaultName="${proctorName}${proctorNumber}kv"
