@@ -40,7 +40,7 @@ while getopts ":g:l:q:k:u:p:d:" arg; do
 done
 shift $((OPTIND-1))
 
-echo "$(tput setaf 3)Creating SQL Server...$(tput sgr 0)"
+echo "Creating SQL Server..."
 (
 	set -x
 	az sql server create --name $sqlServerName --resource-group $resourceGroupName \
@@ -49,10 +49,10 @@ echo "$(tput setaf 3)Creating SQL Server...$(tput sgr 0)"
 
 if [ $? == 0 ];
 then
-    echo "$(tput setaf 2)SQL Server" $sqlServerName "created successfully...$(tput sgr 0)"
+    echo "SQL Server" $sqlServerName "created successfully..."
 fi
 
-echo "$(tput setaf 3)Setting firewall rules of SQL Server...$(tput sgr 0)"
+echo "Setting firewall rules of SQL Server..."
 (
 	set -x
     az sql server firewall-rule create --resource-group $resourceGroupName \
@@ -61,11 +61,11 @@ echo "$(tput setaf 3)Setting firewall rules of SQL Server...$(tput sgr 0)"
 
 if [ $? == 0 ];
 then
-    echo "$(tput setaf 2)Firewall rules of SQL Server" $sqlServerName "created successfully...$(tput sgr 0)"
+    echo "Firewall rules of SQL Server" $sqlServerName "created successfully..."
 fi
 
 
-echo "$(tput setaf 3)Creating the database...$(tput sgr 0)"
+echo "Creating the database..."
 (
 	set -x
 	az sql db create --server $sqlServerName --resource-group $resourceGroupName --name $sqlDBName \
@@ -74,11 +74,11 @@ echo "$(tput setaf 3)Creating the database...$(tput sgr 0)"
 
 if [ $? == 0 ];
 then
-    echo "$(tput setaf 2)Database" $sqlDBName "created successfully...$(tput sgr 0)"
+    echo "Database" $sqlDBName "created successfully..."
 fi
 
 
-echo "$(tput setaf 3)Adding values to Key Vault...$(tput sgr 0)"
+echo "Adding values to Key Vault..."
 (
 	set -x
     sqlServerFQDN=$(az sql server show -g $resourceGroupName -n $sqlServerName --query "fullyQualifiedDomainName" --output tsv)

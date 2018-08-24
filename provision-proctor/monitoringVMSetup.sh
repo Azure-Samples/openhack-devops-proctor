@@ -8,11 +8,6 @@ AZUREUSERNAME=$1
 AZUREPASSWORD=$2
 SUBID=$3
 LOCATION=$4
-TEAMNAME=$5
-TEAMNUMBER=$6
-RECIPIENTEMAIL=$7
-CHATCONNECTIONSTRING=$8
-CHATMESSAGEQUEUE=$9
 GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"
@@ -37,7 +32,7 @@ sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.6/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -55,9 +50,9 @@ echo "############### Installing Packages ###############"
 
 sudo apt-get update 
 sudo apt-get install -y apt-transport-https
-sudo apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
+sudo apt-get install -y jq git zip azure-cli=2.0.43-1~xenial
 sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-sudo apt-get install -y powershell docker-ce
+sudo apt-get install -y docker-ce
 
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
@@ -72,17 +67,6 @@ echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.b
 
 #pick up changes to bash profile
 #source /home/azureuser/.bashrc
-
-echo "############### Install Powershell Core and AzureRM modules ###############"
-# https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
-# Install PowerShell
-
-#Change trust policy on powershell gallery to Trusted for unattended install
-sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
-#Install AzureRM Modules
-sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 echo azure-cli hold | sudo dpkg --set-selection
 
@@ -101,13 +85,11 @@ echo "UserName: $AZUREUSERNAME"
 echo "Password: $AZUREPASSWORD"
 echo "Subscription ID: $SUBID"
 echo "Location: $LOCATION"
-echo "Team Name: $TEAMNAME"
-echo "Team number: $TEAMNUMBER"
 
 # Running the provisioning of the team environment
 az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD">teamdeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -u "$AZUREUSERNAME" -p "$AZUREPASSWORD">monitoringeploy.out &
 
 echo "############### End of custom script ###############"

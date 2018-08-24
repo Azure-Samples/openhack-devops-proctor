@@ -45,16 +45,15 @@ namespace Sentinel.Controllers
         public IActionResult CreateLogMessageForTeam([FromBody] LogMessage msg)
         {
 
-            msg.TimeSlice = CalcTimeSlice(msg.CreatedDate);
+            msg.TimeSlice = CalcTimeSlice(msg.CreatedDate, TimeSpan.FromMinutes(1));
             _context.Add<LogMessage>(msg);
             _context.SaveChanges();
             return Ok(msg);
         }
 
-        private DateTime CalcTimeSlice(DateTime createdDate)
+        private DateTime CalcTimeSlice(DateTime dt, TimeSpan t)
         {
-            long ticks = TimeSpan.TicksPerSecond;
-            return new DateTime(createdDate.Ticks - (createdDate.Ticks % ticks), createdDate.Kind);
+            return new DateTime((dt.Ticks + t.Ticks - 1) / t.Ticks * t.Ticks, dt.Kind);
         }
     }
 }
