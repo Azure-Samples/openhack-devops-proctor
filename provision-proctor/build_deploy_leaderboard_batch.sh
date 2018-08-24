@@ -17,7 +17,7 @@ declare proctorName=""
 declare proctorNumber=""
 
 # Initialize parameters specified from command line
-while getopts ":r:l:t:g:m:u" arg; do
+while getopts ":r:l:t:g:m:u:" arg; do
     case "${arg}" in
         r)
             resourceGroupName=${OPTARG}
@@ -63,7 +63,7 @@ if [[ -z "$imageTag" ]]; then
     [[ "${imageTag:?}" ]]
 fi
 
-if [ -z "$resourceGroupName" ] || [ -z "$location"] || [ -z "$imageTag" ] ; then
+if [[ -z "$resourceGroupName" ]] || [[ -z "$location" ]] || [[ -z "$imageTag" ]] ; then
     echo "Either one of resourceGroupName, location, or imageTag is empty"
     usage
 fi
@@ -109,7 +109,7 @@ randomNum() {
 }
 
 
-storageAccountName="opdevopssa$(randomChar;randomChar;ranomChar;randomNum;)" 
+storageAccountName="opdevopssa$(randomChar;randomChar;randomChar;randomNum;)" 
 
 az storage account create --name $storageAccountName --location $location  --resource-group $resourceGroupName --sku Standard_LRS
 
