@@ -4,10 +4,14 @@
 namespace SendCredentials
 {
     using Microsoft.Azure.ServiceBus;
+    using Microsoft.Azure.ServiceBus.InteropExtensions;
     using System;
+    using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
     class Program
     {
@@ -19,6 +23,7 @@ namespace SendCredentials
         {
             string ServiceBusConnectionString;
             string QueueName;
+            string recipientEmail;
             string MessageBody;
 
             Console.WriteLine(args.Length);
@@ -27,10 +32,11 @@ namespace SendCredentials
 
                 ServiceBusConnectionString = args[0];
                 QueueName = args[1];
-                MessageBody = args[2];
+                recipientEmail = args[2];
+                MessageBody = args[3];
 
                 Console.WriteLine("Sending to queue " + QueueName);
-                MainAsync(ServiceBusConnectionString, QueueName, MessageBody).GetAwaiter().GetResult();
+                MainAsync(ServiceBusConnectionString, QueueName, recipientEmail, MessageBody).GetAwaiter().GetResult();
             }
             catch (Exception exception)
             {
@@ -38,28 +44,42 @@ namespace SendCredentials
             }
         }
 
-        static async Task MainAsync(string ServiceBusConnectionString, string QueueName, string MessageBody)
+        static async Task MainAsync(string ServiceBusConnectionString, string QueueName, string recipientEmail, string MessageBody)
         {
-            queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
-
+            Console.WriteLine($"mainAsync");
+            queueClient = new Microsoft.Azure.ServiceBus.QueueClient(ServiceBusConnectionString, QueueName);
+            Console.WriteLine($"before send ansync");
             // Send Messages
-            await SendMessagesAsync(MessageBody);
+            await SendMessagesAsync(recipientEmail, MessageBody);
 
             await queueClient.CloseAsync();
         }
 
-        static async Task SendMessagesAsync(string messageBody)
+        static async Task SendMessagesAsync(string recipientEmail, string messageBody)
         {
+            Random rnd = new Random();
             try
             {
+                Console.WriteLine($"SendMessagesAsync");
                     // Create a new message to send to the queue
-                    var message = new Message(Encoding.UTF8.GetBytes(messageBody));
+                    var message = new Dictionary<string, string>
+                    {
+                        { "ReceiverEmail", recipientEmail },
+                        { "Message", messageBody }
+                    };
 
-                    // Write the body of the message to the console
-                    Console.WriteLine($"Sending message: {messageBody}");
+                    var serializer = DataContractBinarySerializer<Dictionary<string, string>>.Instance;
+                    byte[] data;
 
-                    // Send the message to the queue
-                    await queueClient.SendAsync(message);
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        serializer.WriteObject(stream, message);
+                        data = stream.ToArray();
+                    }
+
+                   var sbmessage = new Message(data);
+                   await queueClient.SendAsync(sbmessage);
+
             }
             catch (Exception exception)
             {
