@@ -7,9 +7,6 @@ usage() { echo "Usage: nohup setup.sh -i <subscriptionId> -l <resourceGroupLocat
 
 declare subscriptionId=""
 declare resourceGroupLocation=""
-declare proctorName=""
-declare proctorNumber=""
-declare teamName=""
 declare azureUserName=""
 declare azurePassword=""
 
@@ -21,15 +18,6 @@ while getopts ":i:l:m:c:n:u:p:" arg; do
         ;;
         l)
             resourceGroupLocation=${OPTARG}
-        ;;
-        m)
-            proctorName=${OPTARG}
-        ;;
-        c)
-            proctorNumber=${OPTARG}
-        ;;
-        n)
-            teamName=${OPTARG}
         ;;
         u)
             azureUserName=${OPTARG}
