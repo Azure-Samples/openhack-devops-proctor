@@ -38,23 +38,34 @@ namespace DeviceSim.Controllers
                 UserId = "Hacker 1",
                 Name = $"API-Trip {DateTime.Now}",
                 RecordedTimeStamp = dateTime.AddTicks(-1 * dateTime.Ticks % 10000),
-                EndTimeStamp = dateTime.AddTicks(-1 * dateTime.Ticks % 10000).AddMinutes(15),
-                UpdatedAt = dateTime.AddTicks(-1 * dateTime.Ticks % 10000).AddMinutes(15),
+                EndTimeStamp = dateTime.AddTicks(-1 * dateTime.Ticks % 10000),
+                UpdatedAt = dateTime.AddTicks(-1 * dateTime.Ticks % 10000),
                 Distance = 5.95,
                 Rating = 90,
-                //Version = new byte[] { 201 },
-                Created = dateTime.AddTicks(-1 * dateTime.Ticks % 10000).AddMinutes(15)
+                Created = dateTime.AddTicks(-1 * dateTime.Ticks % 10000)
             };
 
-            CurrentTrip = await tripStore.CreateItemAsync(CurrentTrip);
+            try
+            {
+                CurrentTrip = await tripStore.CreateItemAsync(CurrentTrip);
 
-            await CreateTripPoints();
+                await CreateTripPoints();
 
-            await CreatePois();
+                await CreatePois();
 
-            await UpdateTrip();
+                await UpdateUserProfile();
 
-            await UpdateUserProfile();
+                await UpdateTrip();
+
+                return;
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Trip was not Recorded Successfully: \n Trip Name : {CurrentTrip.Name} \n Trip Guid: {CurrentTrip.Id}");
+                
+            }
+
+           
         }
 
         public async Task CreateTripPoints()
@@ -191,6 +202,9 @@ namespace DeviceSim.Controllers
                     Console.WriteLine($"POI Creation Failure : {DateTime.Now.ToString()}");
                 }
             }
+
+            CurrentTrip.HardStops = TripPOIsource.Where(p => p.Poitype == 2).Count();
+            CurrentTrip.HardAccelerations = TripPOIsource.Where(p => p.Poitype == 1).Count();
         }
 
         private async Task UpdateTrip()
@@ -200,6 +214,8 @@ namespace DeviceSim.Controllers
             CurrentTrip.IsComplete = true;
             CurrentTrip.EndTimeStamp =
             CurrentTripPoints.Last<TripPoint>().RecordedTimeStamp.AddTicks(-1 * CurrentTripPoints.Last<TripPoint>().RecordedTimeStamp.Ticks % 10000);
+            CurrentTrip.Rating = 90;
+            
 
             try
             {
@@ -213,12 +229,12 @@ namespace DeviceSim.Controllers
 
         private async Task UpdateUserProfile()
         {
+            
             //Get User
             List<User> users = userStore.GetItemsAsync().Result;
             User CurrentUser = users.Where(u => u.UserId == "Hacker 1").SingleOrDefault();
 
             //Update USer
-
             CurrentUser.TotalTrips++;
             CurrentUser.TotalDistance += CurrentTrip.Distance;
             CurrentUser.HardStops += CurrentTrip.HardStops;
