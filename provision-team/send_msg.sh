@@ -5,6 +5,10 @@ IFS=$'\n\t'
 usage() { echo "Usage: run_nginx  -n ${teamName}${teamNumber}" 1>&2; exit 1; }
 
 declare teamId=""
+declare recipientEmail=""
+declare chatConnectionString=""
+declare chatMessageQueue=""
+declare message=""
 
 # Initialize parameters specified from command line
 while getopts ":e:c:q:m:" arg; do
