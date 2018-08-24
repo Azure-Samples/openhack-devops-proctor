@@ -105,6 +105,9 @@ if [[ -z "$proctorNumber" ]]; then
     proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
 fi
 
+declare proctorName="monitoring$(randomChar;randomChar;randomChar;randomNum;)"
+declare proctorNumber="$(randomNum;randomNum;randomNum;randomNum;)"
+
 declare resourceGroupProctor="${proctorName}${proctorNumber}rg";
 declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
