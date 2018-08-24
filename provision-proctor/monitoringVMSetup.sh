@@ -32,7 +32,7 @@ sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.6/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -50,9 +50,9 @@ echo "############### Installing Packages ###############"
 
 sudo apt-get update 
 sudo apt-get install -y apt-transport-https
-sudo apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
+sudo apt-get install -y jq git zip azure-cli=2.0.43-1~xenial
 sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-sudo apt-get install -y powershell docker-ce
+sudo apt-get install -y docker-ce
 
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc

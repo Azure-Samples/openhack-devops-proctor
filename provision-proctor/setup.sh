@@ -220,11 +220,11 @@ bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sent
 echo "7-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-# echo "8-Deploy sentinel to AKS"
-# bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
-# 
-# echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
-# bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
+echo "8-Deploy sentinel to AKS"
+bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
+
+echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
+bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL
 
 echo "10-Build and deploy leaderboard batch to AKS (bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber"
 bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber
