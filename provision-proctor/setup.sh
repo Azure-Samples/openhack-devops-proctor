@@ -71,7 +71,7 @@ fi
 
 fi
 
-if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$azureUserName" ] || [ -z "$azurePassword" ]; then
+if [[ -z "$subscriptionId" ]] || [[ -z "$resourceGroupLocation" ]] || [[ -z "$azureUserName" ]] || [[ -z "$azurePassword" ]]; then
     echo "Parameter missing..."
     usage
 fi
@@ -91,11 +91,6 @@ randomCharUpper() {
     p=$(( $RANDOM % 26))
     echo -n ${s:$p:1}
 }
-
-if [[ -z "$proctorNumber" ]]; then
-    echo "Using a random proctor environment number since not specified."
-    proctorNumber="$(randomChar;randomChar;randomChar;randomNum;)"
-fi
 
 declare proctorName="monitoring$(randomChar;randomChar;randomChar;randomNum;)"
 declare proctorNumber="$(randomNum;randomNum;randomNum;randomNum;)"
@@ -117,12 +112,10 @@ echo "subscriptionId            = "${subscriptionId}
 echo "resourceGroupLocation     = "${resourceGroupLocation}
 echo "proctorName               = "${proctorName}
 echo "proctorNumber             = "${proctorNumber}
-echo "teamName                  = "${teamName}
 echo "resourceGroupProctor      = "${resourceGroupProctor}
 echo "registryName              = "${registryName}
 echo "clusterName               = "${clusterName}
 echo "keyvaultName              = "${keyVaultName}
-
 echo "sqlServerName             = "${sqlServerName}
 echo "sqlServerUsername         = "${sqlServerUsername}
 echo "sqlServerPassword         = "${sqlServerPassword}
@@ -176,12 +169,10 @@ fi
 kvstore set ${proctorName}${proctorNumber} subscriptionId ${subscriptionId}
 kvstore set ${proctorName}${proctorNumber} resourceGroupLocation ${resourceGroupLocation}
 kvstore set ${proctorName}${proctorNumber} proctorNumber ${proctorNumber}
-kvstore set ${proctorName}${proctorNumber} teamName ${teamName}
 kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
 kvstore set ${proctorName}${proctorNumber} ACR ${registryName}
 kvstore set ${proctorName}${proctorNumber} AKS ${clusterName}
 kvstore set ${proctorName}${proctorNumber} keyVaultName ${keyVaultName}
-
 kvstore set ${proctorName}${proctorNumber} sqlServerName ${sqlServerName}
 kvstore set ${proctorName}${proctorNumber} sqlServerUserName ${sqlServerUsername}
 kvstore set ${proctorName}${proctorNumber} sqlServerPassword ${sqlServerPassword}
