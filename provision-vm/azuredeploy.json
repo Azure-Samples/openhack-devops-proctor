@@ -14,6 +14,27 @@
                 "description": "Password for the Azure account."
             }
         },
+        "recipientEmail": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "recipient email addess for notification"
+            }
+        },
+        "ChatConnectionString": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The connection string to servicebus for sending the credentials at the end of the deployment"
+            }
+        },
+        "ChatMessageQueue": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The servicebus queue where the credentials will be send to"
+            }
+        },       
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -49,6 +70,11 @@
         }
     },
     "variables": {
+        "azureUserName": "[parameters('azureUserName')]",
+        "azurePassword": "[parameters('azurePassword')]",
+        "recipientEmail":"[parameters('recipientEmail')]",
+        "ChatConnectionString" :"[parameters('ChatConnectionString')]",
+        "ChatMessageQueue":"[parameters('ChatMessageQueue')]",
         "teamName": "openhack",
         "imagePublisher": "Canonical",
         "imageOffer": "UbuntuServer",
@@ -201,7 +227,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('ChatConnectionString'), ' ', variables('ChatMessageQueue'))]"
                 }
             }
         }
