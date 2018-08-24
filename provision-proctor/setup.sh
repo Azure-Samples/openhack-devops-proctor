@@ -108,7 +108,7 @@ fi
 declare proctorName="monitoring$(randomChar;randomChar;randomChar;randomNum;)"
 declare proctorNumber="$(randomNum;randomNum;randomNum;randomNum;)"
 
-declare resourceGroupProctor="${proctorName}${proctorNumber}rg";
+declare resourceGroupProctor="ohmonitoring${proctorNumber}rg";
 declare registryName="${proctorName}${proctorNumber}acr"
 declare clusterName="${proctorName}${proctorNumber}aks"
 declare keyVaultName="${proctorName}${proctorNumber}kv"
