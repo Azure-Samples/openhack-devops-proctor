@@ -1,11 +1,51 @@
-<ng-container></ng-container>
+<ng-container>
+    <div class='card'>
+        <div class='card-header'>
+          {{pageTitle}}
+        </div>
+        <div class='card-body'>
+          <div class='row'>
+            <div class='col-md-2'>Filter by:</div>
+            <div class='col-md-4'>
+              <input type='text'
+                     [(ngModel)]='listFilter' />
+            </div>
+          </div>
+          <div class='row'
+               *ngIf='listFilter'>
+            <div class='col-md-6'>
+              <h4>Filtered by team name: {{listFilter}}</h4>
+            </div>
+          </div>
+          <div class='table-responsive'>
+            <table class='table' *ngIf='teams && teams.length'>
+              <thead>
+                <tr>
+                  <th>Team Name</th>
+                  <th>Score</th>
+                  <th>Downtime (mins)</th>
+                  <th>Is Scoring Enabled</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let team of filteredTeams'>
+                  <td>
+                      {{ team.teamName }}
+                  </td>
+                  <td>{{ team.points }}</td>
+                  <td>{{ team.downTimeMinutes }}</td>
+                  <td>
+                    <input type="checkbox" [(ngModel)]="team.isScoringEnabled"/>
 
-<nb-card>
-  <nb-card-header>Nebula</nb-card-header>
-  <nb-card-body>
-    A nebula is an interstellar cloud of dust, hydrogen, helium and other ionized gases.
-    Originally, nebula was a name for any diffuse astronomical object,
-    including galaxies beyond the Milky Way.
-  </nb-card-body>
-  <nb-card-footer>By Wikipedia</nb-card-footer>
-</nb-card>
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf='errorMessage'
+           class='alert alert-danger'>
+        Error: {{ errorMessage }}
+      </div>
+</ng-container>

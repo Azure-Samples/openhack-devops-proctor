@@ -1,7 +1,7 @@
-export interface Team {
+export interface ITeam {
     id: String;
     teamName: string;
-    DownTimeMinutes: number;
+    downTimeMinutes: number;
     points: number;
-    osScoringEnabled: boolean;
+    isScoringEnabled: boolean;
 }

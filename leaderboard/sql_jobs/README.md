@@ -113,5 +113,4 @@ inner join challengedefinitions as cd WITH (NOLOCK) on c.challengedefinitionid =
 inner join logmessages as l WITH (NOLOCK) on t.[teamname] = l.teamname
 where l.createddate >= c.startdatetime and l.createddate <= c.enddatetime and c.IsCompleted=1 and cd.ScoreEnabled = 1
 group by t.teamname, cd.name
-
 ```
