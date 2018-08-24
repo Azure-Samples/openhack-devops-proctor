@@ -26,4 +26,4 @@ fi
 sudo cp /home/azureuser/team_env/kvstore/${teamId} /home/azureuser/team_env/kvstore/ohteamvalues
 
 # Add nginx to the script
-udo docker run -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/team_env/kvstore/:/usr/share/nginx/html -p 2018:80 -d nginx
+sudo docker run -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/team_env/kvstore/:/usr/share/nginx/html -p 2018:80 -d nginx
