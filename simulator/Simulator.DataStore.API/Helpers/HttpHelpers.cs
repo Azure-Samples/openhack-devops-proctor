@@ -16,6 +16,7 @@ namespace System.Net.Http
             //Ensure.Argument.NotNull(value, "value");
 
             var content = new ObjectContent<T>(value, new JsonMediaTypeFormatter());
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var request = new HttpRequestMessage(new HttpMethod("PATCH"), requestUri) { Content = content };
 
             return client.SendAsync(request);

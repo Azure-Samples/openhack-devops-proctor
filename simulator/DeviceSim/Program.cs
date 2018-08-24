@@ -65,13 +65,13 @@ namespace DeviceSim
             //Environmental Variables - Pass to Container
 
             //Database Connection Information
-            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("ota1962sql.database.windows.net");
-            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("ota1962sa");
-            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("lS1ex5C35pwd");
+            dBConnectionInfo.DBServer = funcConfiguration.GetSection("SQL_SERVER").Value ?? ("openhackhts9sql.database.windows.net");
+            dBConnectionInfo.DBUserName = funcConfiguration.GetSection("SQL_USER").Value ?? ("openhackhts9sa");
+            dBConnectionInfo.DBPassword = funcConfiguration.GetSection("SQL_PASSWORD").Value ?? ("tD96d4Uk6pwd");
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Api Connection Information
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikota1962.westus2.cloudapp.azure.com");
+            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikopenhackhts9.westus2.cloudapp.azure.com");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
