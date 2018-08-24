@@ -198,7 +198,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/deploy-monitoring-with-arm/provision-proctor/monitoringVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/monitoring-arm/provision-proctor/monitoringVMSetup.sh"
                     ],
                     "commandToExecute": "[concat('sh monitoringVMSetup.sh', ' ', parameters('azureUserName'), ' ', variables('singleQuote'), parameters('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location)]"
                 }

@@ -60,7 +60,7 @@ touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
-sudo git clone -b arm-cleanup https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo git clone -b monitoring-arm https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
@@ -69,17 +69,6 @@ echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.b
 
 #pick up changes to bash profile
 #source /home/azureuser/.bashrc
-
-echo "############### Install Powershell Core and AzureRM modules ###############"
-# https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
-# Install PowerShell
-
-#Change trust policy on powershell gallery to Trusted for unattended install
-sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
-#Install AzureRM Modules
-sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 echo azure-cli hold | sudo dpkg --set-selection
 
