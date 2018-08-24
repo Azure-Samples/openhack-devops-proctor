@@ -8,8 +8,6 @@ AZUREUSERNAME=$1
 AZUREPASSWORD=$2
 SUBID=$3
 LOCATION=$4
-TEAMNAME=$5
-TEAMNUMBER=$6
 GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"
