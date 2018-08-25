@@ -69,8 +69,6 @@ if [[ -z "$resourceGroupLocation" ]]; then
     read resourceGroupLocation
 fi
 
-fi
-
 if [[ -z "$subscriptionId" ]] || [[ -z "$resourceGroupLocation" ]] || [[ -z "$azureUserName" ]] || [[ -z "$azurePassword" ]]; then
     echo "Parameter missing..."
     usage
