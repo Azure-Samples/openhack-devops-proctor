@@ -281,7 +281,7 @@ echo "16-Expose the team settings on a website"
 bash ./run_nginx.sh -n ${teamName}${teamNumber} 
 
 echo "17-Send Message home"
-provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=provisioningvm --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress | [0]")
+provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress | [0]")
 echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
 bash ./send_msg.sh -n  -e "$recipientEmail" -c "$chatConnectionString" -q "$chatMessageQueue" -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018"
 
