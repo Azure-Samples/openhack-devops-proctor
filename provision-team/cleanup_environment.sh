@@ -20,8 +20,17 @@ if [ -z "$teamName" ] ; then
     usage
 fi
 
+# create a www directory
+if [ -d "/home/azureuser/www" ]; then
+    mkdir /home/azureuser/www
+fi 
+
+sudo zip /home/azureuser/www/teamfiles.zip /root/.kube/config /root/.azure/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
+sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
+sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
+
 # 1- Rename /home/azureuser/.azure/aksServicePrincipal.json to /home/azureuser/.azure/aksServicePrincipal-team-number.json
-if [ -f /home/azureuser/.azure/aksServicePrincipal.json ]; then
+if [ -f /home/root/.azure/aksServicePrincipal.json ]; then
     aksSPlocation="/home/azureuser/team_env/$teamName/aksServicePrincipal-$teamName.json"
     cp /home/azureuser/.azure/aksServicePrincipal.json $aksSPlocation
     kvstore set $teamName aksSPlocation $aksSPlocation
@@ -29,9 +38,10 @@ if [ -f /home/azureuser/.azure/aksServicePrincipal.json ]; then
 fi
 
 # 2- Copy the kubeconfig file
-if [ -f /home/azureuser/.kube/config ]; then
+if [ -f /home/root/.kube/config ]; then
     kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
     cp /home/azureuser/.kube/config $kubeconfiglocation
     kvstore set $teamName kubeconfig $kubeconfiglocation
     echo "Copied the kubeconfig file to $kubeconfiglocation"
 fi
+
