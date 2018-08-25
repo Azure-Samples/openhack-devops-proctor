@@ -21,7 +21,7 @@ if [ -z "$teamName" ] ; then
 fi
 
 # create a www directory
-if [[ -e "/home/azureuser/www" ]]; then
+if [[ ! -d "/home/azureuser/www" ]]; then
     mkdir -p /home/azureuser/www
 fi 
 
