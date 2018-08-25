@@ -17,7 +17,7 @@ spec:
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         env:
-        - name: SENTINEL_TEAM_ID
+        - name: SENTINEL_TEAM_NAME
           value: {{ $.Values.teams.name }}
         - name: SENTINEL_SERVICE_TYPE
           value: "2"
@@ -35,7 +35,7 @@ spec:
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         env:
-        - name: SENTINEL_TEAM_ID
+        - name: SENTINEL_TEAM_NAME
           value: {{ $.Values.teams.name }}
         - name: SENTINEL_SERVICE_TYPE
           value: "3"
@@ -53,7 +53,7 @@ spec:
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         env:
-        - name: SENTINEL_TEAM_ID
+        - name: SENTINEL_TEAM_NAME
           value: {{ $.Values.teams.name }}
         - name: SENTINEL_SERVICE_TYPE
           value: "1"
@@ -71,7 +71,7 @@ spec:
         image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         env:
-        - name: SENTINEL_TEAM_ID
+        - name: SENTINEL_TEAM_NAME
           value: {{ $.Values.teams.name }}
         - name: SENTINEL_SERVICE_TYPE
           value: "4"
