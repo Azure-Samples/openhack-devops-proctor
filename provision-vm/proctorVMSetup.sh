@@ -54,17 +54,17 @@ echo "############### Installing Packages ###############"
 #  - powershell 
 #  - docker-ce
 
-sudo apt-get update 
-sudo apt-get install -y apt-transport-https
-sudo apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
-sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-sudo apt-get install -y powershell docker-ce
+sudo DEBIAN_FRONTEND=noninteractive apt-get update 
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y powershell docker-ce
 
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
-sudo git clone -b master https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
