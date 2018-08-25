@@ -2,9 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: run_nginx  -n ${teamName}${teamNumber}" 1>&2; exit 1; }
+usage() { echo "Usage: send_msg -e <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -m <message>" 1>&2; exit 1; }
 
-declare teamId=""
 declare recipientEmail=""
 declare chatConnectionString=""
 declare chatMessageQueue=""

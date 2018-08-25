@@ -9,10 +9,9 @@ AZUREPASSWORD=$2
 SUBID=$3
 LOCATION=$4
 TEAMNAME=$5
-TEAMNUMBER=$6
-RECIPIENTEMAIL=$7
-CHATCONNECTIONSTRING=$8
-CHATMESSAGEQUEUE=$9
+RECIPIENTEMAIL=$6
+CHATCONNECTIONSTRING=$7
+CHATMESSAGEQUEUE=$8
 GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"
@@ -102,12 +101,12 @@ echo "Password: $AZUREPASSWORD"
 echo "Subscription ID: $SUBID"
 echo "Location: $LOCATION"
 echo "Team Name: $TEAMNAME"
-echo "Team number: $TEAMNUMBER"
+echo "Recipient email: $RECIPIENTEMAIL"
 
 # Running the provisioning of the team environment
 az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD">teamdeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE">teamdeploy.out &
 
 echo "############### End of custom script ###############"
