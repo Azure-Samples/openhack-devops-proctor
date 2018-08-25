@@ -115,10 +115,9 @@ func report(cfg *config, logmsg *logmsg) (*http.Response, error) {
 }
 
 func healthCheck(cfg *config) (int, error) {
-	log.Printf((*cfg).Endpoint)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", (*cfg).Endpoint, nil)
-	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+	req.Header.Set("Accept", "*/*")
 	res, err := client.Do(req)
 	if res != nil {
 		return res.StatusCode, err
