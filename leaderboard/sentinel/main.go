@@ -78,7 +78,7 @@ func main() {
 			res, err := logHealthcheckFailed(&cfg, logmsg)
 			if err != nil {
 				//error logging message to sentinel api
-				printAPIErrorMessage(&cfg, err, res, logmsg)
+				logFailureToPostToSentinel(&cfg, err, res, logmsg)
 			}
 			fmt.Println(
 				fmt.Sprintf("%s down! ping retry in %d ms",
@@ -91,7 +91,7 @@ func main() {
 	fmt.Println("Exiting...")
 }
 
-func printAPIErrorMessage(cfg *config, err error, res *http.Response, logmsg *logmsg) {
+func logFailureToPostToSentinel(cfg *config, err error, res *http.Response, logmsg *logmsg) {
 	logJSON, err := json.Marshal(*logmsg)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("Log marshal error: %s", err.Error()))
@@ -102,10 +102,10 @@ func printAPIErrorMessage(cfg *config, err error, res *http.Response, logmsg *lo
 		body = "unavailable"
 	}
 	if cfg.Debug {
-		fmt.Println(fmt.Sprintf("Healthcheck failed for endpoint: %s \nErrorMessage: %s \nRemoteStatusCode: %d \nRemoteMessage: %s \nSentMessage: %s",
+		fmt.Println(fmt.Sprintf("Log healthcheck to Sentinel failed for endpoint: %s \nErrorMessage: %s \nRemoteStatusCode: %d \nRemoteMessage: %s \nSentMessage: %s",
 			cfg.APIURL, err.Error(), res.StatusCode, body, logJSON))
 	} else {
-		fmt.Println(fmt.Sprintf("Healthcheck failed for endpoint: %s \nErrorMessage: %s \nRemoteStatusCode: %d",
+		fmt.Println(fmt.Sprintf("Log healthcheck to Sentinel failed for endpoint: %s \nErrorMessage: %s \nRemoteStatusCode: %d",
 			cfg.APIURL, err.Error(), res.StatusCode))
 	}
 }
