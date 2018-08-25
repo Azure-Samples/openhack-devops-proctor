@@ -21,8 +21,8 @@ if [ -z "$teamName" ] ; then
 fi
 
 # create a www directory
-if [ -d "/home/azureuser/www" ]; then
-    mkdir /home/azureuser/www
+if [[ -e "/home/azureuser/www" ]]; then
+    mkdir -p /home/azureuser/www
 fi 
 
 sudo zip /home/azureuser/www/teamfiles.zip /root/.kube/config /root/.azure/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
