@@ -3,7 +3,7 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -u <azureUserName> -p <azurePassword>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword>" 1>&2; exit 1; }
 echo "$@"
 
 declare subscriptionId=""
@@ -13,10 +13,17 @@ declare teamNumber=""
 declare azcliVerifiedVersion="2.0.43"
 declare azureUserName=""
 declare azurePassword=""
+declare recipientEmail=""
+declare chatConnectionString=""
+declare chatMessageQueue=""
+declare provisioningVMIpaddress=""
 
 # Initialize parameters specified from command line
-while getopts ":i:l:n:e:u:p:" arg; do
+while getopts ":c:i:l:n:e:q:r:u:p:" arg; do
     case "${arg}" in
+        c)
+            chatConnectionString=${OPTARG}
+        ;;
         i)
             subscriptionId=${OPTARG}
         ;;
@@ -28,6 +35,12 @@ while getopts ":i:l:n:e:u:p:" arg; do
         ;;
         e)
             teamNumber=${OPTARG}
+        ;;
+        q)
+            chatMessageQueue=${OPTARG}
+        ;;
+        r)
+            recipientEmail=${OPTARG}
         ;;
         u)
             azureUserName=${OPTARG}
@@ -148,6 +161,7 @@ echo "hostingPlanName           = "${hostingPlanName}
 echo "mobileAppName             = "${mobileAppName}
 echo "jenkinsVMPassword         = "${jenkinsVMPassword}
 echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
+echo "recipientEmail"           = "${recipientEmail}"
 echo "=========================================="
 
 
@@ -156,13 +170,6 @@ echo "Username: $azureUserName"
 echo "Password: $azurePassword"
 echo "Command will be az login -u $azureUserName -p $azurePassword"
 az login --username=$azureUserName --password=$azurePassword
-#az account show 1> /dev/null
-
-#if [ $? != 0 ];
-#then
-#    az login -u $azureUserName -p $azurePassword
-#    exit 0
-#fi
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
@@ -272,3 +279,10 @@ bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
 
 echo "16-Expose the team settings on a website"
 bash ./run_nginx.sh -n ${teamName}${teamNumber} 
+
+echo "17-Send Message home"
+provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress | [0]")
+echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
+bash ./send_msg.sh -n  -e "$recipientEmail" -c "$chatConnectionString" -q "$chatMessageQueue" -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018"
+
+echo "############ END OF TEAM PROVISION ############"
