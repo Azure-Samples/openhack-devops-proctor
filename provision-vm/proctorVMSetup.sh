@@ -14,6 +14,8 @@ CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
 GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
+export DEBIAN_FRONTEND=noninteractive
+
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
 curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
