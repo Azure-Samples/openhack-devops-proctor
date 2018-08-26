@@ -17,37 +17,19 @@ CHATMESSAGEQUEUE=$8
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
 curl -L https://packages.microsoft.com/keys/microsoft.asc 2>&1 | sudo apt-key add -
-if [ $? -ne 0 ]; then
-    echo "Command failed - curl 1"
-fi 
 
 # Get the Docker GPG key 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg 2>&1 | sudo apt-key add -
-if [ $? -ne 0 ]; then
-    echo "Command failed - curl 2"
-fi 
 # sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
 
 # Azure-cli
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ xenial main"
-if [ $? -ne 0 ]; then
-    echo "Command failed - apt-get 1"
-fi 
 # Dotnet SDK v2.1
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main"
-if [ $? -ne 0 ]; then
-    echo "Command failed - apt-get 2"
-fi 
 # Add MSSQL source 
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/16.04/prod xenial main"
-if [ $? -ne 0 ]; then
-    echo "Command failed - apt-get 3"
-fi 
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
-if [ $? -ne 0 ]; then
-    echo "Command failed - apt-get 4"
-fi 
 
 echo "############### Installing Helm v2.10.0 ###############"
 sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
@@ -85,21 +67,18 @@ echo "############### Install Powershell Core and AzureRM modules ##############
 # https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
 # Install PowerShell
 
-# #Change trust policy on powershell gallery to Trusted for unattended install
-# sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
-# #Install AzureRM Modules
-# sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-# sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-# sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
+#Change trust policy on powershell gallery to Trusted for unattended install
+sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
+#Install AzureRM Modules
+sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
+sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
+sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 echo azure-cli hold | sudo dpkg --set-selections
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
 sudo apt-get upgrade -y
-if [ $? -ne 0 ]; then
-    echo "Command failed - apt-get upgrade"
-fi 
 
 #Set environement variables
 export PATH=$PATH:/opt/mssql-tools/bin
