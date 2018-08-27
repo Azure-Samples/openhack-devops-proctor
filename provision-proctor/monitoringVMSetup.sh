@@ -90,6 +90,6 @@ echo "Location: $LOCATION"
 az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -u "$AZUREUSERNAME" -p "$AZUREPASSWORD">monitoringeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -u '$AZUREUSERNAME' -p '$AZUREPASSWORD'>monitoringeploy.out &
 
 echo "############### End of custom script ###############"
