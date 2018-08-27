@@ -12,15 +12,14 @@ TEAMNAME=$5
 RECIPIENTEMAIL=$6
 CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
-GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-
-export DEBIAN_FRONTEND=noninteractive
+#GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
-curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+curl -L https://packages.microsoft.com/keys/microsoft.asc 2>&1 | sudo apt-key add -
+
 # Get the Docker GPG key 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg 2>&1 | sudo apt-key add -
 # sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
 
 # Azure-cli
@@ -33,26 +32,16 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 
 echo "############### Installing Helm v2.10.0 ###############"
-sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
 sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
 echo "############### Installing Packages ###############" 
-#  - apt-transport-https
-#  - jq
-#  - git
-#  - zip
-#  - azure-cli=2.0.31-1~xenial
-#  - mssql-tools
-#  - unixodbc-dev
-#  - dotnet-sdk-2.1.4
-#  - powershell 
-#  - docker-ce
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
@@ -85,7 +74,7 @@ sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
 sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
 sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
-echo azure-cli hold | sudo dpkg --set-selection
+echo azure-cli hold | sudo dpkg --set-selections
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
@@ -104,6 +93,8 @@ echo "Subscription ID: $SUBID"
 echo "Location: $LOCATION"
 echo "Team Name: $TEAMNAME"
 echo "Recipient email: $RECIPIENTEMAIL"
+echo "ChatConnectionString= $CHATCONNECTIONSTRING"
+echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
 
 # Running the provisioning of the team environment
 az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
