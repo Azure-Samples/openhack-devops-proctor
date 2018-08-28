@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euox pipefail
 IFS=$'\n\t'
 
 usage() { echo "Usage:  ./deploy_jenkins.sh -g <resourceGroupName> -l <resourceGroupLocation> -p <jenkinsVMPassword> -u <jenkinsURL>" 1>&2; exit 1; }
