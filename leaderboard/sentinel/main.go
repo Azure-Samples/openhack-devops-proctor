@@ -27,7 +27,7 @@ type config struct {
 	APIURL        string `env:"SENTINEL_API_URL,required"`
 	Interval      int    `env:"SENTINEL_POLLING_INTERVAL" envDefault:"1"`
 	RetryDuration int    `env:"SENTINEL_RETRY_DURATION" envDefault:"1000"`
-	Debug         bool   `env:"SENTINEL_DEBUG" envDefault:false`
+	Debug         bool   `env:"SENTINEL_DEBUG" envDefault:"false"`
 }
 
 type logmsg struct {
