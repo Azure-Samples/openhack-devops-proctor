@@ -1,5 +1,10 @@
 #!/bin/bash
 
+set -euox pipefail
+IFS=$'\n\t'
+
+JENKINSPASSWORD=$1
+
 # Docker
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -29,4 +34,4 @@ usermod -aG docker jenkins
 sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
 
 # Run Jenkins
-sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 oguzpastirmaci/openhack-jenkins-docker
+sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 -e "JENKINS_PASS=$JENKINSPASSWORD" oguzpastirmaci/openhack-jenkins-docker
