@@ -70,5 +70,4 @@ fi
     az vm open-port --port 8080 --resource-group $resourceGroupName --name $jenkinsURL --priority 102
 
     # Use CustomScript extension to install.
-    # az vm extension set --publisher Microsoft.Azure.Extensions --version 2.0 --name CustomScript --vm-name $jenkinsURL --resource-group $resourceGroupName --settings '{"fileUris": ["https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/jenkins-security/provision-team/configure_jenkins.sh"],"commandToExecute": "./configure_jenkins.sh $jenkinsVMPassword"}'
     az vm extension set --publisher Microsoft.Azure.Extensions --version 2.0 --name CustomScript --vm-name $jenkinsURL --resource-group $resourceGroupName --protected-settings "{\"fileUris\": [\"https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/jenkins-security/provision-team/configure_jenkins.sh\"], \"commandToExecute\": \"sh configure_jenkins.sh $jenkinsVMPassword\"}"
