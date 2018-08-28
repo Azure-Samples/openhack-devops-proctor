@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -euox pipefail
-IFS=$'\n\t'
-
 JENKINSPASSWORD=$1
 
 # Docker
