@@ -69,7 +69,7 @@ echo "Creating the database..."
 (
 	set -x
 	az sql db create --server $sqlServerName --resource-group $resourceGroupName --name $sqlDBName \
-	--service-objective S0 --collation 'SQL_Latin1_General_CP1_CI_AS' -c 200 -e Standard -f Gen4
+	--service-objective S6 --collation 'SQL_Latin1_General_CP1_CI_AS'
 )
 
 if [ $? == 0 ];
