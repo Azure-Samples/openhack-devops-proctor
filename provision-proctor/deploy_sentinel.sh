@@ -44,11 +44,16 @@ if [[ -z "$csvFile" ]]; then
     [[ "${csvFile:?}" ]]
 fi
 
+if [ ! -f $csvFile ]; then
+    echo "File $csvFile not found"
+    exit 1
+fi
+
 chartPath="../leaderboard/sentinel/helm"
 echo -e "\nhelm install ... from: " $chartPath
 
 # Obtain the kvstore files from the teams 
-UNIQUECRED=$(awk -F, '!seen[$3]++' credentials.csv)
+UNIQUECRED=$(awk -F, '!seen[$3]++' $csvFile)
 
 for cred in $UNIQUECRED
 do 
