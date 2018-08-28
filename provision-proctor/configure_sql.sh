@@ -98,9 +98,8 @@ az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName 
 #Create schema in db
 sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./CreateLeaderboardDb.sql -e
 
-#Add Sample data
-# We don't need it for leaderboard. 
-# bash ./sql_data_init.sh -s $sqlServerFQDN -u $sqlServerUsername -p $sqlPassword -d $sqlDBName
+#Initialize Db
+sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./InitLeaderboard.sql -e
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
