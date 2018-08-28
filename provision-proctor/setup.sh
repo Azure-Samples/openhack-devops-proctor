@@ -209,8 +209,9 @@ bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupProctor -t 'sent
 echo "7-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl)"
 bash ./build_sentinel.sh -r $resourceGroupProctor -g $registryName -l $resourceGroupLocation -a $apiUrl
 
-echo "8-Deploy sentinel to AKS"
-bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber}
+####### Commenting sentinel deployment to manual step for the moment since it needs the teams credentials files
+# echo "8-Deploy sentinel to AKS"
+# bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber} -f ${credentials.csv}
 
 echo "9-Build and deploy leaderboard website to AKS  (bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL)"
 bash ./build_deploy_web.sh -m ${proctorName}${proctorNumber} -d $dnsURL

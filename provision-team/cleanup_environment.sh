@@ -25,14 +25,11 @@ if [[ ! -d "/home/azureuser/www" ]]; then
     mkdir -p /home/azureuser/www
 fi 
 
-sudo zip /home/azureuser/www/teamfiles.zip /root/.kube/config /root/.azure/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
-sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
-sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
-
 # 1- Rename /home/azureuser/.azure/aksServicePrincipal.json to /home/azureuser/.azure/aksServicePrincipal-team-number.json
 if [ -f /home/root/.azure/aksServicePrincipal.json ]; then
     aksSPlocation="/home/azureuser/team_env/$teamName/aksServicePrincipal-$teamName.json"
     cp /home/azureuser/.azure/aksServicePrincipal.json $aksSPlocation
+    sudo cp /root/.azure/aksServicePrincipal.json /home/azureuser/www/aksServicePrincipal.json
     kvstore set $teamName aksSPlocation $aksSPlocation
     echo "The aksServicePrincipal.json file has been moved to $aksSPlocation"
 fi
@@ -41,7 +38,11 @@ fi
 if [ -f /home/root/.kube/config ]; then
     kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
     cp /home/azureuser/.kube/config $kubeconfiglocation
+    sudo cp /root/.kube/config /home/azureuser/www/kubeconfig
     kvstore set $teamName kubeconfig $kubeconfiglocation
     echo "Copied the kubeconfig file to $kubeconfiglocation"
 fi
 
+sudo zip /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
+sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
+sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
