@@ -132,7 +132,7 @@ func logHealthcheckFailed(cfg *config, logmsg *logmsg) (*http.Response, error) {
 
 func pingHealthCheck(cfg *config) (int, error) {
 	client := &http.Client{
-		Timeout: time.Second * 10
+		Timeout: time.Second * 10,
 	}
 	req, err := http.NewRequest("GET", (*cfg).Endpoint, nil)
 	req.Header.Set("Accept", "*/*")
