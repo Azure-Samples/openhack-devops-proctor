@@ -22,8 +22,11 @@ sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-am
 sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
-# Configure access
-usermod -aG docker azureuser
+# Configure accessusermod -aG docker azureuser
+usermod -aG docker jenkins
+
+# Enable Docker Remote API
+sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
 
 # Run Jenkins
 sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 oguzpastirmaci/openhack-jenkins-docker
