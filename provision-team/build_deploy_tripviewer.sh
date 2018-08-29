@@ -9,6 +9,7 @@ IFS=$'\n\t'
 usage() { echo "Usage: build_deploy_tripviewer.sh -m <teamName> -d <dnsURL>" 1>&2; exit 1; }
 
 declare teamName=""
+declare dnsURL=""
 
 # Initialize parameters specified from command line
 while getopts ":m:d:" arg; do
@@ -31,7 +32,7 @@ fi
 if [[ -z "$dnsURL" ]]; then
     echo "Public DNS address where the API will be hosted behind."
     echo "Enter public DNS name."
-    read dnsUrl
+    read dnsURL
     [[ "${dnsURL:?}" ]]
 fi
 
