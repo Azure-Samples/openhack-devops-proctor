@@ -35,17 +35,22 @@ usermod -aG docker jenkins
 sudo rm -rf /var/lib/docker/volumes/jenkins_home/
 
 # Enable Docker Remote API
+echo "Enabling Docker Remote API"
 sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 cd /home/jenkins/openhack-jenkins-docker
+pwd
 
 # Change Jenkins password
+echo "Changing Jenkins password"
 sudo sed -i "s/jenkinspassword/${JENKINSPASSWORD}/g" Dockerfile
 
 # Build image
+echo "Building Docker image"
 sudo docker build . -t openhack-jenkins-local
 
 # Run Jenkins
+echo "Running Jenkins container"
 sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 openhack-jenkins-local
