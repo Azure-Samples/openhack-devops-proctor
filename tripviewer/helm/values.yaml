@@ -18,4 +18,6 @@ ingress:
     endpoint:
       host: akstraefikopenhackut20.eastus.cloudapp.azure.com
       paths:
-      - path: /tripviewer
+      - path: /
+      - path: /UserProfile
+      - path: /Trips
