@@ -45,7 +45,7 @@ pwd
 
 # Change Jenkins password
 echo "Changing Jenkins password"
-sudo sed -i "s/jenkinspassword/${JENKINSPASSWORD}/g" Dockerfile
+sudo sed -i "s/jenkinspassword/${JENKINSPASSWORD}/g" default-user.groovy
 
 # Build image
 echo "Building Docker image"
