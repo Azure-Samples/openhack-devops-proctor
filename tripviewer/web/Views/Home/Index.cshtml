@@ -2,6 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
+<script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            var idleInterval = setInterval("reloadPage()", 30000);
+        });
+
+        function reloadPage() {
+            location.reload();
+        }
+
+</script>
+
+<div id="UserProfileInfo"></div>
+
 <!--
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">

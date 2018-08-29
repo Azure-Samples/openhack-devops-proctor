@@ -57,7 +57,7 @@ namespace TripViewer
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=UserProfile}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
