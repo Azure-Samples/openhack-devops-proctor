@@ -71,7 +71,7 @@ namespace DeviceSim
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Api Connection Information
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikopenhackhts9.westus2.cloudapp.azure.com");
+            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");

@@ -236,9 +236,9 @@ namespace DeviceSim.Controllers
 
             //Update USer
             CurrentUser.TotalTrips++;
-            CurrentUser.TotalDistance += CurrentTrip.Distance;
-            CurrentUser.HardStops += CurrentTrip.HardStops;
-            CurrentUser.HardAccelerations += CurrentTrip.HardAccelerations;
+            CurrentUser.TotalDistance = CurrentUser.TotalDistance + CurrentTrip.Distance;
+            CurrentUser.HardStops = CurrentUser.HardStops + CurrentTrip.HardStops;
+            CurrentUser.HardAccelerations = CurrentUser.HardAccelerations + CurrentTrip.HardAccelerations;
 
             try
             {
