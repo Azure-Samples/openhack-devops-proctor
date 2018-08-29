@@ -114,3 +114,105 @@ inner join logmessages as l WITH (NOLOCK) on t.[teamname] = l.teamname
 where l.createddate >= c.startdatetime and l.createddate <= c.enddatetime and c.IsCompleted=1 and cd.ScoreEnabled = 1
 group by t.teamname, cd.name
 ```
+
+## Calculate Service Health
+```SQL
+SET NOCOUNT ON
+
+DECLARE @TeamId nvarchar(128)
+DECLARE @TeamName nvarchar(50)
+DECLARE @ServiceType int
+DECLARE @BadMinutes int
+DECLARE @i INT =1
+DECLARE @count INT
+DECLARE @exist INT
+DECLARE @Status nvarchar(12)
+
+DECLARE @TTeams TABLE (
+	RN INT IDENTITY(1,1),
+	TeamId nvarchar(128),
+	Teamname nvarchar(50))
+
+DECLARE @TStatusCalc1 TABLE (
+	RN INT IDENTITY(1,1),
+	TeamId nvarchar(128),
+	TeamName nvarchar(50),
+	ServiceType int,
+	BadMinutes int)
+
+DECLARE @TServiceStatus TABLE (
+	RN INT IDENTITY(1,1),
+	TeamId nvarchar(128) NOT NULL,
+	ServiceType int NOT NULL,
+	Status nvarchar(12) NOT NULL)
+
+ --Insert list of teams
+ INSERT INTO @TTeams(TeamId, TeamName)
+ SELECT Id, TeamName FROM Teams
+
+ SELECT @count = COUNT(RN) FROM @TTeams
+ WHILE (@i <= @count)
+ BEGIN
+	 SELECT @TeamId=TeamId, @TeamName=TeamName FROM @TTeams WHERE RN = @i
+	 INSERT INTO @TServiceStatus(TeamId,ServiceType,Status) VALUES(@TeamId,1,'GREEN')
+	 INSERT INTO @TServiceStatus(TeamId,ServiceType,Status) VALUES(@TeamId,2,'GREEN')
+	 INSERT INTO @TServiceStatus(TeamId,ServiceType,Status) VALUES(@TeamId,3,'GREEN')
+	 INSERT INTO @TServiceStatus(TeamId,ServiceType,Status) VALUES(@TeamId,4,'GREEN')
+	 SELECT @i = @i + 1
+ END
+
+INSERT INTO @TStatusCalc1 (TeamId, TeamName, ServiceType, BadMinutes)
+SELECT t.teamId, l.TeamName, l.Type, COUNT(DISTINCT l.Timeslice) AS BadMinutes
+FROM LogMessages as l INNER JOIN @TTeams as t on l.TeamName = t.TeamName
+WHERE l.CreatedDate >= DATEADD(minute, -5, DATEADD(mi, DATEDIFF(mi, 0, GETDATE()), 0))
+	AND l.CreatedDate <= DATEADD(mi, DATEDIFF(mi, 0, GETDATE()), 0)
+GROUP BY l.TeamName,t. TeamId, l.Type
+ORDER BY l.TeamName, l.Type
+
+SET @i = 1
+SELECT @count = COUNT(RN) FROM @TStatusCalc1
+ WHILE (@i <= @count)
+ BEGIN
+	 SELECT @TeamId=TeamId, @ServiceType=ServiceType, @BadMinutes=BadMinutes
+	 FROM @TStatusCalc1
+	 WHERE RN = @i
+
+	 UPDATE @TServiceStatus SET [Status] = CASE @BadMinutes
+	 	WHEN 2 THEN 'YELLOW'
+	 	WHEN 1 THEN 'YELLOW'
+	 	ELSE 'RED'
+	 	END
+	 WHERE TeamId=@TeamId AND ServiceType=@ServiceType
+
+	 SELECT @i = @i + 1
+ END
+
+SET @i = 1
+SELECT @count = COUNT(RN) FROM @TServiceStatus
+ WHILE (@i <= @count)
+ BEGIN
+	 SELECT @TeamId=TeamId, @ServiceType=ServiceType, @Status=Status
+	 FROM @TServiceStatus
+	 WHERE RN = @i
+
+	 SELECT @exist=COUNT(*) FROM ServiceStatus WHERE TeamId=@TeamId AND ServiceType=@ServiceType
+
+	 IF @exist > 0
+		 BEGIN
+		 UPDATE ServiceStatus SET [Status] = @Status
+		 WHERE TeamId=@TeamId AND ServiceType=@ServiceType
+		 END
+	 ELSE
+	 	BEGIN
+	 	INSERT INTO ServiceStatus  VALUES (@TeamId, @ServiceType, @Status)
+	 	END
+	 SELECT @i = @i + 1
+ END
+
+
+SELECT * FROM @TTeams
+SELECT * FROM @TStatusCalc1
+SELECT * FROM @TServiceStatus
+SELECT * FROM ServiceStatus
+
+```
