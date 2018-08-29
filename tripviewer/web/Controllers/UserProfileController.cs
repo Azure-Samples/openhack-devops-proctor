@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
 
+
 namespace TripViewer.Controllers
 {
     public class UserProfileController : Controller

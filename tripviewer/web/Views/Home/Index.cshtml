@@ -2,18 +2,22 @@
     ViewData["Title"] = "Home Page";
 }
 
-<script type="text/javascript" language="javascript">
-        $(document).ready(function () {
-            var idleInterval = setInterval("reloadPage()", 30000);
-        });
+<ul>
 
-        function reloadPage() {
-            location.reload();
-        }
+    <li>
+        <div><a href="/dashboard/" title="Go to Traefic Dashboard" />Traefic Dashboard</div>
+    </li>
 
-</script>
+</ul>
 
-<div id="UserProfileInfo"></div>
+<div id="UserProfileInfo">
+
+    @*@await Html.PartialAsync("/Views/UserProfile/Index.cshtml");*@
+    
+
+    @*<partial name="/Views/UserProfile/Index.cshtml" />*@
+
+</div>
 
 <!--
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
