@@ -46,7 +46,7 @@ cd /home/jenkins/openhack-jenkins-docker
 sudo sed -i "s/jenkinspassword/${JENKINSPASSWORD}/g" Dockerfile
 
 # Build image
-sudo docker build . -t openhack-jenkins
+sudo docker build . -t openhack-jenkins-local
 
 # Run Jenkins
-sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 openhack-jenkins
+sudo docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 openhack-jenkins-local
