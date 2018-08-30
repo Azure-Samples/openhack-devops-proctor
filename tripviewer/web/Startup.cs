@@ -9,17 +9,24 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TripViewer.Utility;
 
 namespace TripViewer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            // Set up configuration sources.
+            var builder = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .SetBasePath(env.ContentRootPath);
+                //.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -31,7 +38,8 @@ namespace TripViewer
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddOptions();
+            services.Configure<TripViewerConfiguration>(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }

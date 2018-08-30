@@ -4,18 +4,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
-
+using TripViewer.Utility;
 
 namespace TripViewer.Controllers
 {
     public class UserProfileController : Controller
     {
-        UserStore up = new UserStore("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
+        private readonly TripViewerConfiguration _envvars;
+
+        public UserProfileController(IOptions<TripViewerConfiguration> EnvVars)
+        {
+            _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
+
+        }
+
         // GET: UserProfile
         public ActionResult Index()
         {
+            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            UserStore up = new UserStore(teamendpoint);
             List<User> userColl = up.GetItemsAsync().Result;
             var user = userColl[0];
             user.ProfilePictureUri = $"https://cdn4.iconfinder.com/data/icons/danger-soft/512/people_user_business_web_man_person_social-512.png";
