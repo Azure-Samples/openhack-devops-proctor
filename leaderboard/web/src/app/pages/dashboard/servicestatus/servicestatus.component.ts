@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'service-status',
+  selector: 'ngx-servicestatus',
   templateUrl: './servicestatus.component.html',
   styleUrls: ['./servicestatus.component.scss'],
 })
