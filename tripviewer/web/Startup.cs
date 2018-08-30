@@ -20,8 +20,8 @@ namespace TripViewer
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .SetBasePath(env.ContentRootPath);
-                //.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
         }
