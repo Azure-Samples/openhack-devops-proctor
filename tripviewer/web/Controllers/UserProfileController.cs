@@ -18,7 +18,6 @@ namespace TripViewer.Controllers
         public UserProfileController(IOptions<TripViewerConfiguration> EnvVars)
         {
             _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
-
         }
 
         // GET: UserProfile

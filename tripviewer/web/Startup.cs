@@ -19,10 +19,18 @@ namespace TripViewer
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .SetBasePath(env.ContentRootPath);
-                //.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+           .AddEnvironmentVariables()
+           .SetBasePath(env.ContentRootPath);
 
+            if (env.IsDevelopment())
+            {
+                builder.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+            }
+            else
+            {
+                builder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            }
+           
             Configuration = builder.Build();
         }
 
@@ -39,7 +47,9 @@ namespace TripViewer
             });
 
             services.AddOptions();
-            services.Configure<TripViewerConfiguration>(Configuration);
+
+            //services.Configure<TripViewerConfiguration>(Configuration);
+            services.Configure<TripViewerConfiguration>(options => Configuration.GetSection("EnvVars").Bind(options));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
