@@ -222,16 +222,25 @@ namespace Sentinel.Controllers
 
         //Service Health
         // * GET /api/leaderboard/servicehealth/ - get health for all teams services
+
         // * GET /api/leaderboard/servicehealth/{teamName} - get health for a team`
 
         /// <summary>
         ///
         /// </summary>
         /// <returns>ListOfServiceHealth Records</returns>
-        [HttpGet("servicehealth/", Name = "GetAllServiceHealth")]
+        [HttpGet("servicehealth", Name = "GetAllServiceHealth")]
         public List<ServiceHealth> GetAllServiceHealth()
         {
-            return null;
+            var query = from s in _context.ServiceStatus
+                join t in _context.Teams on s.TeamId equals t.Id
+                select new ServiceHealth {
+                    TeamId = s.TeamId,
+                    Team = t,
+                    ServiceType = s.ServiceType,
+                    HealthStatus = s.Status
+                };
+            return  query.ToList<ServiceHealth>();
         }
     }
 }

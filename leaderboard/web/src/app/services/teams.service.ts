@@ -21,6 +21,13 @@ export class TeamsService {
     catchError(this.handleError));
   };
 
+  getServiceStatus(): Observable<ITeam[]> {
+    return this.http.get<IServiceStatus[]>(this.backendUrl + 'servicestatus').pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  };
+
   private handleError(err: HttpErrorResponse) {
     // logging it to the console
     let errorMessage = '';

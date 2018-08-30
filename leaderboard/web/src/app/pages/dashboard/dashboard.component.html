@@ -1,13 +1,5 @@
 <ng-container *ngFor="let t of teams">
   <nb-card>
-    <nb-card-header>
-      <div class="row">
-        <div class="col">Team Name</div>
-        <div class="col-md-4" >Services</div>
-        <div class="col">Score</div>
-        <div class="col">DownTime</div>
-      </div>
-    </nb-card-header>
     <nb-card-body>
       <div class="row">
         <div class="col">
@@ -34,4 +26,36 @@
       </div>
     </nb-card-body>
   </nb-card>
+  <div class='table-responsive' *ngIf='teams && teams.length'>
+      <table class='table'>
+        <thead>
+          <tr>
+            <th>Team Name</th>
+            <th>POI</th>
+            <th>USER</th>
+            <th>USER-JAVA</th>
+            <th>TRIPS</th>
+            <th>Score</th>
+            <th>Downtime</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let t of teams'>
+              <td>
+                <a [routerLink]="['/teams', t.id]">
+                  {{ t.teamName }}
+                </a>
+              </td>
+              <service-status></service-status>
+              <td>{{ product.productCode | lowercase | convertToSpaces: '-'}}</td>
+              <td>{{ product.releaseDate }}</td>
+              <td>{{ product.price | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td><pm-star [rating]='product.starRating'
+                  (ratingClicked)='onRatingClicked($event)'>
+              </pm-star>
+          </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
 </ng-container>

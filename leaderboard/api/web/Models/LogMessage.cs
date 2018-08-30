@@ -7,14 +7,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sentinel.Models
 {
-
-    public enum EndpointType
-    {
-        POI = 1,
-        USER = 2,
-        TRIPS = 3
-    }
-
     public class LogMessage
     {
         public String Id {get;set;}

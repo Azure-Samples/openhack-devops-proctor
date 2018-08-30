@@ -7,12 +7,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sentinel.Models
 {
+
     public class ServiceHealth
     {
         public String TeamId {get;set;}
-        public string TeamName { get; set; }
+        public Team Team { get; set; }
         public string HealthStatus { get; set; }
-        public int MinutesDown { get; set; }
+        public EndpointType ServiceType { get; set; }
 
         public ServiceHealth()
         {
