@@ -264,25 +264,28 @@ bash ./build_deploy_user.sh -s ./test_fetch_build -b Release -r $resourceGroupTe
 echo "11-Build and deploy Trip API to AKS  (# bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-trip' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "12-Build and User-Profile API to AKS  (# bash ./build_deploy_user-profile.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-userprofile' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
+echo "12-Build and deploy User-Profile API to AKS  (# bash ./build_deploy_user-profile.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-userprofile' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_user-java.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user-java' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "13-Build and deploy the simulator (# bash Usage: build_deploy_simulator.sh -n ${teamName}${teamNumber} -q 18000 -d $dnsURL -t <image tag optional>)"
+echo "13-Build and deploy Tripviewer website to AKS (# bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL)"
+bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL
+
+echo "14-Build and deploy the simulator (# bash Usage: build_deploy_simulator.sh -n ${teamName}${teamNumber} -q 18000 -d $dnsURL -t <image tag optional>)"
 bash ./build_deploy_simulator.sh -n ${teamName}${teamNumber} -q '18000' -d $dnsURL
 
-echo "14-Deploy Jenkins VM (# bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL) "
+echo "15-Deploy Jenkins VM (# bash ./deploy_jenkins.sh -g $resourceGroupTeam -l $resourceGroupLocation -p $jenkinsVMPassword -u $jenkinsURL) "
 bash ./deploy_jenkins.sh -g ${resourceGroupTeam} -l ${resourceGroupLocation} -p ${jenkinsVMPassword} -u ${jenkinsURL}
 
-echo "15-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
+echo "16-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
-echo "16-Clean the working environment"
+echo "17-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
 
-echo "16-Expose the team settings on a website"
+echo "18-Expose the team settings on a website"
 bash ./run_nginx.sh -n ${teamName}${teamNumber} 
 
-echo "17-Send Message home"
+echo "19-Send Message home"
 provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
 echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
 bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018"

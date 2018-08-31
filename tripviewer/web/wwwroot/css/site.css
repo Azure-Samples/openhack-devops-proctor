@@ -13,6 +13,10 @@ body {
 }
 
 
+.fillspace img {
+   width: 100%;
+   height: 100%;
+}
 
 /* Carousel */
 .carousel-caption p {
