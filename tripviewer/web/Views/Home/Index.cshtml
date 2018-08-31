@@ -1,22 +1,37 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+<h2>DevOps Openhack Team Resources</h2>
+<p>Welcome to your team's Trip viewer website running on your AKS cluster.  
+    The <a href="/Trip"> trip page </a> will replay the trips being sent via the simulator on your cluster.  
+    The <a href="/UserProfile"> profile page </a> will show the total number of trips and distance traveled for the user of those simulated trips.
+    Both of these pages are one way to verify that all of your APIs are functioning.
+</p>
+<p>Check out these useful links for your team:</p>
 <ul>
-
     <li>
-        <div><a href="/dashboard/" title="Go to Traefic Dashboard" />Traefik Dashboard</div>
+        <a href="/dashboard/" title="Go to Traefik Dashboard">Traefik Dashboard</a>
     </li>
-
 </ul>
 
+<p>Swagger API documentation pages:</p>
+<ul>
+    <li>
+        <a href="/api/docs/user" title="User Node API swagger docs">User API (Node.js)</a>
+    </li>
+    <li>
+        <a href="/api/docs/user-java" title="User Java API swagger docs">User API (Java)</a>
+    </li>
+    <li>
+        <a href="/api/docs/trips" title="Trips API swagger docs">Trips API (Golang)</a>
+    </li>
+    <li>
+        <a href="/api/docs/poi" title="POI API swagger docs">POI API (dotnet 2.1)</a>
+    </li>
+</ul>
 <div id="UserProfileInfo">
-
     @*@await Html.PartialAsync("/Views/UserProfile/Index.cshtml");*@
-    
 
     @*<partial name="/Views/UserProfile/Index.cshtml" />*@
-
 </div>
-
 
