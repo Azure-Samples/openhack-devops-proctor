@@ -1,0 +1,23 @@
+replicaCount: 1
+repository:
+  image: acrreplace.azurecr.io/devopsoh/imagereplace
+  tag: latest
+  pullPolicy: Always
+image:
+  name: tripviewer
+  label: tripviewer
+  containerPort: 80
+service:
+  externalPort: 80
+  type: ClusterIP
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  rules:
+    endpoint:
+      host: akstraefikopenhackut20.eastus.cloudapp.azure.com
+      paths:
+      - path: /
+      - path: /UserProfile
+      - path: /Trips
