@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Sentinel.Data;
 using Sentinel.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sentinel.Controllers
 {
@@ -230,17 +231,10 @@ namespace Sentinel.Controllers
         /// </summary>
         /// <returns>ListOfServiceHealth Records</returns>
         [HttpGet("servicehealth", Name = "GetAllServiceHealth")]
-        public List<ServiceHealth> GetAllServiceHealth()
+        public List<Team> GetAllServiceHealth()
         {
-            var query = from s in _context.ServiceStatus
-                join t in _context.Teams on s.TeamId equals t.Id
-                select new ServiceHealth {
-                    TeamId = s.TeamId,
-                    Team = t,
-                    ServiceType = s.ServiceType,
-                    HealthStatus = s.Status
-                };
-            return  query.ToList<ServiceHealth>();
+            var query = _context.Teams.Include(tm => tm.ServiceStatus);
+            return  query.ToList();
         }
     }
 }

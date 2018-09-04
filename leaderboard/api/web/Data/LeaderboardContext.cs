@@ -14,7 +14,16 @@ namespace Sentinel.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<ChallengeDefinition> ChallengeDefinitions { get; set; }
-        public DbSet<SvcStatus> ServiceStatus {get;set;}
+        public DbSet<ServiceStatus> ServiceStatuses {get;set;}
         public DbSet<LogMessage> LogMessages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ServiceStatus>()
+                        .HasOne(t => t.Team)
+                        .WithMany(t => t.ServiceStatus);
+
+            modelBuilder.Entity<ServiceStatus>().HasKey(s => new {s.TeamId, s.ServiceType});
+        }
     }
 }

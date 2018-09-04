@@ -1,12 +1,17 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace Sentinel.Models
 {
-    public class SvcStatus {
-        [Key, ForeignKey("Teams"), Column(Order = 0)]
+    [Table("ServiceStatus")]
+    public class ServiceStatus {
         public String TeamId {get;set;}
+
+        [JsonIgnore]
+        public Team Team { get;set;}
+
         public EndpointType ServiceType {get;set;}
         public string Status { get; set; }
     }
