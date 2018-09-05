@@ -45,7 +45,7 @@ echo "############### Installing Packages ###############"
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.0.44-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.45-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
