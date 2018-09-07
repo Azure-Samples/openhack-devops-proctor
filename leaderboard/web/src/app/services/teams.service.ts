@@ -1,9 +1,8 @@
-import { Injectable, Output } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import { IServiceHealth } from '../shared/servicehealth'
 import { ITeam } from '../shared/team';
 
 @Injectable({
@@ -12,9 +11,7 @@ import { ITeam } from '../shared/team';
 export class TeamsService {
   backendUrl = environment.backendUrl;
 
-  ServiceHealth: IServiceHealth[];
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getTeams(): Observable<ITeam[]> {
     return this.http.get<ITeam[]>(this.backendUrl + 'teams').pipe(
@@ -23,8 +20,8 @@ export class TeamsService {
     catchError(this.handleError));
   };
 
-  getServiceHealth(): Observable<IServiceHealth[]> {
-    return this.http.get<IServiceHealth[]>(this.backendUrl + 'servicehealth').pipe(
+  getServiceHealth(): Observable<ITeam[]> {
+    return this.http.get<ITeam[]>(this.backendUrl + 'servicehealth').pipe(
       // tslint:disable-next-line:no-console
       tap(data => console.log('All: ' + JSON.stringify(data))),
     catchError(this.handleError));
