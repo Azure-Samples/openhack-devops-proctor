@@ -1,5 +1,4 @@
 import { Component, OnInit, Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import {interval} from 'rxjs';
 import { ITeam } from '../../shared/team';
 import { TeamsService } from '../../services/teams.service';
