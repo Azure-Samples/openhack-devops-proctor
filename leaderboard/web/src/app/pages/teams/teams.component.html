@@ -6,13 +6,16 @@
         <div class='card-body'>
           <div class='row'>
             <div class="col">
-              <a class="btn btn-primary" style="width:100px; margin-left:10px; margin-top:10px;"  >
+              <a class="btn btn-primary nav-link" style="width:150px; margin-left:10px; margin-top:10px;"
+              href='/#/pages/teams/teams-add' >
               Add a team
-            </a></div>
+            </a>
+          </div>
             <div class='col-md-2'>Filter by:</div>
             <div class='col-md-4'>
               <input type='text'
                      [(ngModel)]='listFilter' />
+                     link to user component
             </div>
           </div>
           <div class='row'
@@ -22,7 +25,7 @@
             </div>
           </div>
           <div class='table-responsive'>
-            <table class='table' *ngIf='teams && teams.length'>
+            <table class='table' *ngIf='filteredTeams && filteredTeams.length'>
               <thead>
                 <tr>
                   <th>Team Name</th>

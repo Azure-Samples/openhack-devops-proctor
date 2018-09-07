@@ -12,12 +12,12 @@ export class ServiceStatusComponent implements OnInit {
 
   constructor( ) { }
 
-  getStatusColor(): string {
+  getStatusColor(): object {
     return {
       'color': this.serviceStatusArray.filter(
         s => s.serviceType === this.serviceType)[0]
         .status.toLocaleUpperCase(),
-      'font-size': 48,
+      'font-size': 48
     };
   }
 

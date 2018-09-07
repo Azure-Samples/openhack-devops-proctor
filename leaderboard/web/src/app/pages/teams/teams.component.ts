@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {RouterLink} from '@angular/router';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/map';
 import { ITeam } from '../../shared/team';
