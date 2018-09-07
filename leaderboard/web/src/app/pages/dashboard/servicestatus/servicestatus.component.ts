@@ -14,7 +14,9 @@ export class ServiceStatusComponent implements OnInit {
 
   getStatusColor(): string {
     return {
-      'color': this.serviceStatusArray.filter(s => s.serviceType === this.serviceType)[0].status.toLocaleUpperCase(),
+      'color': this.serviceStatusArray.filter(
+        s => s.serviceType === this.serviceType)[0]
+        .status.toLocaleUpperCase(),
       'font-size': 48,
     };
   }

@@ -8,16 +8,10 @@ import { ServiceStatusComponent } from './servicestatus/servicestatus.component'
   imports: [
     ThemeModule,
     NgxEchartsModule,
-    // FontAwesomeModule,
-    // AngularFontAwesomeModule,
   ],
   declarations: [
     DashboardComponent,
     ServiceStatusComponent,
   ],
-  // exports:[
-  //   FontAwesomeModule,
-  //   AngularFontAwesomeModule,
-  // ]
 })
 export class DashboardModule { }
