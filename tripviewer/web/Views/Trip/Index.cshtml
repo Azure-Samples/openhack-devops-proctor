@@ -1,0 +1,119 @@
+﻿@*@model IEnumerable<Simulator.DataObjects.Trip>*@
+
+@{
+    ViewData["Title"] = "Trips";
+}
+
+<h2>Trip Replay Comming Soon :) </h2>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecordedTimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsComplete)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasSimulatedObdData)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AverageSpeed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FuelUsed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HardStops)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HardAccelerations)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Distance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecordedTimeStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTimeStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsComplete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasSimulatedObdData)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AverageSpeed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FuelUsed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HardStops)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HardAccelerations)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Distance)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@
