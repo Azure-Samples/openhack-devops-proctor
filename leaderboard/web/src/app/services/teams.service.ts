@@ -3,7 +3,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-
 import { ITeam } from '../shared/team';
 
 @Injectable({
@@ -12,10 +11,17 @@ import { ITeam } from '../shared/team';
 export class TeamsService {
   backendUrl = environment.backendUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getTeams(): Observable<ITeam[]> {
     return this.http.get<ITeam[]>(this.backendUrl + 'teams').pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  };
+
+  getServiceHealth(): Observable<ITeam[]> {
+    return this.http.get<ITeam[]>(this.backendUrl + 'servicehealth').pipe(
       // tslint:disable-next-line:no-console
       tap(data => console.log('All: ' + JSON.stringify(data))),
     catchError(this.handleError));

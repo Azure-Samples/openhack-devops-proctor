@@ -1,9 +1,8 @@
 import { Component, OnInit, Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/map';
+import {interval} from 'rxjs';
 import { ITeam } from '../../shared/team';
 import { TeamsService } from '../../services/teams.service';
+
 
 @Injectable()
 @Component({
@@ -22,10 +21,10 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
-
-    this.pollingData = Observable.interval(5000)
+    const pollingInterval = interval(5000);
+    this.pollingData = pollingInterval
       .subscribe((value) => {
-        this.teamService.getTeams()
+        this.teamService.getServiceHealth()
         .subscribe(
           data => {
             this.teams = data;
