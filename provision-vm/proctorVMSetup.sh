@@ -37,7 +37,7 @@ sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.10.5/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -45,9 +45,9 @@ echo "############### Installing Packages ###############"
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.43-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.45-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y powershell docker-ce
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
@@ -59,20 +59,6 @@ sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 echo "############### Install kvstore ###############"
 sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
 echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
-
-#pick up changes to bash profile
-#source /home/azureuser/.bashrc
-
-echo "############### Install Powershell Core and AzureRM modules ###############"
-# https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-powershell-core-on-linux?view=powershell-6#ubuntu-1604
-# Install PowerShell
-
-#Change trust policy on powershell gallery to Trusted for unattended install
-sudo pwsh -command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}"
-#Install AzureRM Modules
-sudo pwsh -command "& {Install-Module AzureRM.NetCore}"
-sudo pwsh -command "& {Import-Module AzureRM.Netcore}"
-sudo pwsh -command "& {Import-Module AzureRM.Profile.Netcore}"
 
 echo azure-cli hold | sudo dpkg --set-selections
 
