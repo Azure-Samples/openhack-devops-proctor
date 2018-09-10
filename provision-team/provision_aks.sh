@@ -108,7 +108,7 @@ fi
 echo "Creating AKS Cluster..."
 (
     set -x
-    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.10.6 --service-principal $SP_ID --client-secret $SP_PASS
+    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.11.2 --service-principal $SP_ID --client-secret $SP_PASS
 )
 
 if [ $? == 0 ];
