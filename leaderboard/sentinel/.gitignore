@@ -3,3 +3,4 @@ _vendor-*
 /sentinel
 /sentinel.exe
 setenv.sh
+../sentinel/debug

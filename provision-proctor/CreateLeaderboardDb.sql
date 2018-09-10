@@ -91,6 +91,20 @@ GO
 
 ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT DF_Challenges_IsCompleted DEFAULT 0 FOR IsCompleted
 
+GO
+
+CREATE TABLE leaderboard.dbo.ServiceStatus (
+	TeamId nvarchar(128) NOT NULL,
+	ServiceType int NOT NULL,
+	Status nvarchar(12) NOT NULL,
+)
+
+GO
+
+ALTER TABLE leaderboard.dbo.ServiceStatus ADD CONSTRAINT ServiceStatus_PK PRIMARY KEY (TeamId,ServiceType)
+
+GO
+
 CREATE TABLE leaderboard.dbo.AspNetRoleClaims(
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[RoleId] [nvarchar](128) NOT NULL,

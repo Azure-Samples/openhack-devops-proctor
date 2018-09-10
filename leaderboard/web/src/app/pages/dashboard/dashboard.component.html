@@ -1,37 +1,28 @@
-<ng-container *ngFor="let t of teams">
-  <nb-card>
-    <nb-card-header>
-      <div class="row">
-        <div class="col">Team Name</div>
-        <div class="col-md-4" >Services</div>
-        <div class="col">Score</div>
-        <div class="col">DownTime</div>
-      </div>
-    </nb-card-header>
-    <nb-card-body>
-      <div class="row">
-        <div class="col">
-          <h4>{{t.teamName}}</h4>
-        </div>
-        <div class="col">
-          <button class="btn btn-success btn-demo">POI </button>
-        </div>
-        <div class="col">
-          <button class="btn btn-success btn-demo">USER</button>
-        </div>
-        <div class="col">
-          <button class="btn btn-danger btn-demo">USER-Java</button>
-        </div>
-        <div class="col">
-          <button class="btn btn-danger btn-demo">TRIP</button>
-        </div>
-        <div class="col">
-          <h4>{{t.points}} points</h4>
-        </div>
-        <div class="col">
-          <h4>{{ t.downTimeMinutes | number:'1.0-0' }} min.</h4>
-        </div>
-      </div>
-    </nb-card-body>
-  </nb-card>
+<ng-container>
+  <div class='table-responsive' *ngIf='teams && teams.length'>
+      <table class='table'>
+        <thead>
+          <tr>
+            <th>Team Name</th>
+            <th>POI</th>
+            <th>USER</th>
+            <th>TRIPS</th>
+            <th>USER-JAVA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let t of teams'>
+              <td>
+                <a >
+                  {{ t.teamName }}
+                </a>
+              </td>
+              <td><ngx-servicestatus [serviceStatusArray]='t.serviceStatus' [serviceType]=1></ngx-servicestatus></td>
+              <td><ngx-servicestatus [serviceStatusArray]='t.serviceStatus' [serviceType]=2></ngx-servicestatus></td>
+              <td><ngx-servicestatus [serviceStatusArray]='t.serviceStatus' [serviceType]=3></ngx-servicestatus></td>
+              <td><ngx-servicestatus [serviceStatusArray]='t.serviceStatus' [serviceType]=4></ngx-servicestatus></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
 </ng-container>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Sentinel.Data;
 using Sentinel.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sentinel.Controllers
 {
@@ -222,16 +223,18 @@ namespace Sentinel.Controllers
 
         //Service Health
         // * GET /api/leaderboard/servicehealth/ - get health for all teams services
+
         // * GET /api/leaderboard/servicehealth/{teamName} - get health for a team`
 
         /// <summary>
         ///
         /// </summary>
         /// <returns>ListOfServiceHealth Records</returns>
-        [HttpGet("servicehealth/", Name = "GetAllServiceHealth")]
-        public List<ServiceHealth> GetAllServiceHealth()
+        [HttpGet("servicehealth", Name = "GetAllServiceHealth")]
+        public List<Team> GetAllServiceHealth()
         {
-            return null;
+            var query = _context.Teams.Include(tm => tm.ServiceStatus);
+            return  query.ToList();
         }
     }
 }
