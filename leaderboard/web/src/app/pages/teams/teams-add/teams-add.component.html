@@ -1,3 +1,22 @@
-<p>
-  teams-add works!
-</p>
+<div class="container">
+  <h1>Create a new team</h1>
+  <form #teamForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="teamName">Team Name</label>
+      <input type="text" class="form-control" id="teamName" name="teamName" [(ngModel)]="model.teamName" required #name="ngModel">
+    </div>
+
+    TODO: remove this: {{model.teamName}}
+    <div class="form-group">
+      <label for="scoringEnabled">Scoring Enabled</label>
+      <input type="checkbox" class="form-control" name="isScoringEnabled" value="false"
+        [(ngModel)]="model.isScoringEnabled">
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+
+  </form>
+</div>
+<div *ngIf='errorMessage' class='alert alert-danger'>
+  Error: {{ errorMessage }}
+</div>
