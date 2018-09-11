@@ -6,13 +6,12 @@ using Sentinel.Data;
 using Sentinel.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Cors;
 
 namespace Sentinel.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-   // [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
+
     public class LeaderboardController : ControllerBase
     {
         private readonly LeaderboardContext _context;
