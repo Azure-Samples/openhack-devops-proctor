@@ -1,4 +1,4 @@
-Teams are deployed with one deployment with the 3 services. 
+This kubernetes deployment contains 4 sentinel containers in the pod correspoinding to each API for the team. 
 
 TeamID      |  ApiURL
 {{ $.Values.teams.name }}  | {{ $.Values.teams.endpointUrl }} 
