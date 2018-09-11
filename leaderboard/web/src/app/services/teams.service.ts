@@ -13,15 +13,15 @@ export class TeamsService {
 
   constructor(private http: HttpClient) {}
 
-  createTeam(tm: ITeam ) : Observable<ITeam> {
-    var url = this.backendUrl + 'teams';
-    var payload = JSON.stringify(tm);
-    var headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
-    var options =  {
-        headers: headers
+  createTeam(tm: ITeam ): Observable<ITeam> {
+    const url = this.backendUrl + 'teams';
+    const payload = JSON.stringify(tm);
+    const headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
+    const options =  {
+        headers: headers,
     };
 
-    return this.http.post<ITeam>(url,payload, options,).pipe(
+    return this.http.post<ITeam>(url, payload, options).pipe(
       // tslint:disable-next-line:no-console
       tap(data => console.log('All: ' + JSON.stringify(data))),
     catchError(this.handleError));

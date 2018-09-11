@@ -16,7 +16,7 @@ export class TeamsAddComponent implements OnInit {
   ngOnInit() {
   }
 
-  onSubmit(){
+  onSubmit() {
     this.teamService.createTeam(this.model)
     .subscribe(
       data => {
