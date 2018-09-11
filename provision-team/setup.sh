@@ -283,7 +283,7 @@ echo "17-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
 
 echo "18-Expose the team settings on a website"
-bash ./run_nginx.sh -n ${teamName}${teamNumber} 
+bash ./run_nginx.sh
 
 echo "19-Send Message home"
 provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
