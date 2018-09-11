@@ -14,6 +14,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: false,
   },
   {
+    title: 'Challenges',
+    icon: 'nb-star',
+    link: '/pages/challenges',
+    home: false,
+  },
+  {
     icon: 'nb-locked',
     title: 'Login',
     link: '/auth/login',
