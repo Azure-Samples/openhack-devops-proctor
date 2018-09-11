@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChallengesAddComponent } from './challenges-add.component';
+import { ChallengesManageComponent } from './challenges-manage.component';
 
 describe('ChallengesAddComponent', () => {
-  let component: ChallengesAddComponent;
-  let fixture: ComponentFixture<ChallengesAddComponent>;
+  let component: ChallengesManageComponent;
+  let fixture: ComponentFixture<ChallengesManageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChallengesAddComponent ],
+      declarations: [ ChallengesManageComponent ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChallengesAddComponent);
+    fixture = TestBed.createComponent(ChallengesManageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
