@@ -13,6 +13,14 @@ export class ServiceStatusComponent implements OnInit {
   constructor( ) { }
 
   getStatusColor(): object {
+    if (this.serviceStatusArray == undefined || this.serviceStatusArray.length < 4)
+    {
+      return {
+        'color': 'grey',
+        'font-size': 48,
+      };
+    }
+
     return {
       'color': this.serviceStatusArray.filter(
         s => s.serviceType === this.serviceType)[0]

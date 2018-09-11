@@ -19,6 +19,9 @@ namespace Sentinel.Models
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
         public List<ServiceStatus> ServiceStatus {get;set;}
 
+        // [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        // public List<Challenge> Challenges {get;set;}
+
         public Team()
         {
             Id = Guid.NewGuid().ToString();

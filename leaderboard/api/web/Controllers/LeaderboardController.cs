@@ -6,11 +6,13 @@ using Sentinel.Data;
 using Sentinel.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace Sentinel.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+   // [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
     public class LeaderboardController : ControllerBase
     {
         private readonly LeaderboardContext _context;
@@ -161,7 +163,10 @@ namespace Sentinel.Controllers
         [HttpGet("challenges", Name = "GetChallenges")]
         public List<Challenge> GetChallenges()
         {
-            return _context.Challenges.ToList<Challenge>();
+            var query = _context.Challenges
+                .Include(tm => tm.Team)
+                .Include(cd => cd.ChallengeDefinition);
+            return  query.ToList();
         }
 
         /// <summary>
