@@ -23,6 +23,12 @@ namespace Sentinel.Data
                         .HasOne(t => t.Team)
                         .WithMany(t => t.ServiceStatus);
 
+            modelBuilder.Entity<Challenge>()
+                .HasOne(c => c.Team);
+
+            modelBuilder.Entity<Challenge>()
+                .HasOne(c => c.ChallengeDefinition);
+
             modelBuilder.Entity<ServiceStatus>().HasKey(s => new {s.TeamId, s.ServiceType});
         }
     }

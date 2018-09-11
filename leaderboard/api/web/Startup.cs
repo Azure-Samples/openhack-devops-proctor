@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using FluentValidation.AspNetCore;
@@ -137,7 +138,8 @@ namespace Sentinel
             }
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 
             app.UseExceptionHandler(
                 builder =>

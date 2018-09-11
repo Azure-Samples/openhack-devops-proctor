@@ -5,6 +5,10 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TeamsComponent } from './teams/teams.component';
 import { TeamsAddComponent } from './teams/teams-add/teams-add.component';
+import { TeamsDeleteComponent } from './teams/teams-delete/teams-delete.component';
+import { ChallengesComponent } from './challenges/challenges.component';
+import { ChallengesAddComponent } from './challenges//challenges-add/challenges-add.component';
+import { ChallengesDeleteComponent } from './challenges/challenges-delete/challenges-delete.component';
 
 const routes: Routes = [{
   path: '',
@@ -19,10 +23,25 @@ const routes: Routes = [{
       component: TeamsAddComponent,
     },
     {
+      path: 'teams/teams-delete',
+      component: TeamsDeleteComponent,
+    },
+    {
       path: 'teams',
       component: TeamsComponent,
     },
-
+    {
+      path: 'challenges',
+      component: ChallengesComponent,
+    },
+    {
+      path: 'challenges/challenges-add',
+      component: ChallengesAddComponent,
+    },
+    {
+      path: 'challenges/challenges-delete',
+      component: ChallengesDeleteComponent,
+    },
     {
       path: '',
       redirectTo: 'dashboard',
