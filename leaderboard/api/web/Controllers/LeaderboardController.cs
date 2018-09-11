@@ -12,7 +12,6 @@ namespace Sentinel.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-   // [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
     public class LeaderboardController : ControllerBase
     {
         private readonly LeaderboardContext _context;
