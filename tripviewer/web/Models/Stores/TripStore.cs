@@ -5,7 +5,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    public class TripStore : BaseStore, IBaseStore<Trip>
+    public class TripStore : BaseStore//, IBaseStore<Trip>
     {
         public TripStore(string EndPoint)
         {
@@ -36,34 +36,34 @@
             return trips;
         }
 
-        public async Task<Trip> CreateItemAsync(Trip item)
-        {
-            HttpResponseMessage response = await Client.PostAsJsonAsync<Trip>("api/trips", item);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-            {
-                response.Content.Headers.ContentType.MediaType = "application/json";
-                item = await response.Content.ReadAsAsync<Trip>();
-            }
-            return item;
-        }
+        //public async Task<Trip> CreateItemAsync(Trip item)
+        //{
+        //    HttpResponseMessage response = await Client.PostAsJsonAsync<Trip>("api/trips", item);
+        //    response.EnsureSuccessStatusCode();
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        response.Content.Headers.ContentType.MediaType = "application/json";
+        //        item = await response.Content.ReadAsAsync<Trip>();
+        //    }
+        //    return item;
+        //}
 
-        public async Task<bool> UpdateItemAsync(Trip item)
-        {
-            HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/trips/{item.Id}", item);
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-                response.Content.Headers.ContentType.MediaType = "application/json";
-            return true;
-        }
+        //public async Task<bool> UpdateItemAsync(Trip item)
+        //{
+        //    HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/trips/{item.Id}", item);
+        //    response.EnsureSuccessStatusCode();
+        //    if (response.IsSuccessStatusCode)
+        //        response.Content.Headers.ContentType.MediaType = "application/json";
+        //    return true;
+        //}
 
-        public async Task<bool> DeleteItemAsync(Trip item)
-        {
-            HttpResponseMessage response = await Client.DeleteAsync($"api/trips/{item.Id}");
-            response.EnsureSuccessStatusCode();
-            if (response.IsSuccessStatusCode)
-                response.Content.Headers.ContentType.MediaType = "application/json";
-            return true;
-        }
+        //public async Task<bool> DeleteItemAsync(Trip item)
+        //{
+        //    HttpResponseMessage response = await Client.DeleteAsync($"api/trips/{item.Id}");
+        //    response.EnsureSuccessStatusCode();
+        //    if (response.IsSuccessStatusCode)
+        //        response.Content.Headers.ContentType.MediaType = "application/json";
+        //    return true;
+        //}
     }
 }

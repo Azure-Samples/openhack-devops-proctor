@@ -9,11 +9,10 @@
   <ItemGroup>
     <Compile Remove="Models\Stores\IBaseStore.cs" />
     <Compile Remove="Models\Stores\PoiStore.cs" />
-    <Compile Remove="Models\Stores\TripPointStore.cs" />
-    <Compile Remove="Models\Stores\TripStore.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Kendo.Mvc" Version="2016.2.616" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.2" />
