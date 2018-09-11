@@ -6,8 +6,8 @@ import { ChallengesDeleteComponent } from './challenges-delete/challenges-delete
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
   ],
-  declarations: [ChallengesComponent, ChallengesAddComponent, ChallengesDeleteComponent]
+  declarations: [ChallengesComponent, ChallengesAddComponent, ChallengesDeleteComponent],
 })
 export class ChallengesModule { }

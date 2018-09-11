@@ -8,7 +8,7 @@ describe('ChallengesDeleteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChallengesDeleteComponent ]
+      declarations: [ ChallengesDeleteComponent ],
     })
     .compileComponents();
   }));

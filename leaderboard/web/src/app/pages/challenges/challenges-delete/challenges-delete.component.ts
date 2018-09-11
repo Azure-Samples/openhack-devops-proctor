@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'challenges-delete',
+  selector: 'ngx-challenges-delete',
   templateUrl: './challenges-delete.component.html',
-  styleUrls: ['./challenges-delete.component.scss']
+  styleUrls: ['./challenges-delete.component.scss'],
 })
 export class ChallengesDeleteComponent implements OnInit {
 

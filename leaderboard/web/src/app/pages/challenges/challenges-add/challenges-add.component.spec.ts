@@ -8,7 +8,7 @@ describe('ChallengesAddComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChallengesAddComponent ]
+      declarations: [ ChallengesAddComponent ],
     })
     .compileComponents();
   }));

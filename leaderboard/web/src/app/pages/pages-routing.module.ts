@@ -24,7 +24,7 @@ const routes: Routes = [{
     },
     {
       path: 'teams/teams-delete',
-      component: TeamsAddComponent,
+      component: TeamsDeleteComponent,
     },
     {
       path: 'teams',
