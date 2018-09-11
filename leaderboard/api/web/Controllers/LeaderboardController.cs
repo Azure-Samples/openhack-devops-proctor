@@ -11,6 +11,7 @@ namespace Sentinel.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+
     public class LeaderboardController : ControllerBase
     {
         private readonly LeaderboardContext _context;
@@ -161,7 +162,10 @@ namespace Sentinel.Controllers
         [HttpGet("challenges", Name = "GetChallenges")]
         public List<Challenge> GetChallenges()
         {
-            return _context.Challenges.ToList<Challenge>();
+            var query = _context.Challenges
+                .Include(tm => tm.Team)
+                .Include(cd => cd.ChallengeDefinition);
+            return  query.ToList();
         }
 
         /// <summary>

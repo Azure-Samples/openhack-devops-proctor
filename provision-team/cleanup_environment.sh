@@ -43,6 +43,7 @@ if [ -f /home/root/.kube/config ]; then
     echo "Copied the kubeconfig file to $kubeconfiglocation"
 fi
 
+# 3- Setup files to serve via nginx
 sudo zip /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
 sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
 sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
