@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
@@ -12,6 +12,20 @@ export class TeamsService {
   backendUrl = environment.backendUrl;
 
   constructor(private http: HttpClient) {}
+
+  createTeam(tm: ITeam ): Observable<ITeam> {
+    const url = this.backendUrl + 'teams';
+    const payload = JSON.stringify(tm);
+    const headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
+    const options =  {
+        headers: headers,
+    };
+
+    return this.http.post<ITeam>(url, payload, options).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  };
 
   getTeams(): Observable<ITeam[]> {
     return this.http.get<ITeam[]>(this.backendUrl + 'teams').pipe(
