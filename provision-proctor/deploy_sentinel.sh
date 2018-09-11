@@ -45,7 +45,7 @@ fi
 chartPath="../leaderboard/sentinel/helm"
 echo -e "\nhelm install ... from: " $chartPath
 
-if [[ $localEnv == "no" ]]
+if [[ $localEnv == "no" ]]; then
 
     if [[ -z "$csvFile" ]]; then
         echo "Speficy the location of file containing the teams' Azure credentials"
@@ -95,7 +95,7 @@ fi
 TAG=$registryName"/devopsoh/sentinel"
 
 for team in $teamList; do
-    if [[ $team != *"monitoring"*]]
+    if [[ "$team" != *"monitoring"* ]]; then
         keys=$(kvstore keys $team)
 
         if [[ " ${keys[@]} " =~ "endpoint" ]]; then
