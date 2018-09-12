@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Router, ActivatedRoute } from '@angular/router';
+import { ChallengesService } from '../../../services/challenges.service';
 @Component({
   selector: 'ngx-challenges-delete',
   templateUrl: './challenges-delete.component.html',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChallengesDeleteComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private cs: ChallengesService) { }
 
   ngOnInit() {
   }

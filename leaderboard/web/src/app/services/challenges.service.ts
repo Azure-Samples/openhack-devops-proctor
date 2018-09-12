@@ -20,6 +20,12 @@ export class ChallengesService {
     catchError(this.handleError));
   };
 
+  getChallenge(id: string): Observable<IChallenge> {
+    return this.http.get<IChallenge>(this.backendUrl + 'challenges/' + id).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
 
   private handleError(err: HttpErrorResponse) {
     // logging it to the console

@@ -1,58 +1,53 @@
 <ng-container>
-    <div class='card'>
-        <div class='card-header'>
-          {{pageTitle}}
+  <div class='card'>
+    <div class='card-header'>
+      {{pageTitle}}
+    </div>
+    <div class='card-body'>
+      <div class='row'>
+        <div class="col">
+          <a class="btn btn-primary nav-link" style="width:150px; margin-left:10px; margin-top:10px;" href='/#/pages/teams/teams-add'>
+            Add a team
+          </a>
         </div>
-        <div class='card-body'>
-          <div class='row'>
-            <div class="col">
-              <a class="btn btn-primary nav-link" style="width:150px; margin-left:10px; margin-top:10px;"
-              href='/#/pages/teams/teams-add' >
-              Add a team
-            </a>
-          </div>
-            <div class='col-md-2'>Filter by:</div>
-            <div class='col-md-4'>
-              <input type='text'
-                     [(ngModel)]='listFilter' />
-                     link to user component
-            </div>
-          </div>
-          <div class='row'
-               *ngIf='listFilter'>
-            <div class='col-md-6'>
-              <h4>Filtered by team name: {{listFilter}}</h4>
-            </div>
-          </div>
-          <div class='table-responsive'>
-            <table class='table' *ngIf='filteredTeams && filteredTeams.length'>
-              <thead>
-                <tr>
-                  <th>Team Name</th>
-                  <th>Score</th>
-                  <th>Downtime (mins)</th>
-                  <th>Is Scoring Enabled</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor='let team of filteredTeams'>
-                  <td>
-                      {{ team.teamName }}
-                  </td>
-                  <td>{{ team.points }}</td>
-                  <td>{{ team.downTimeMinutes }}</td>
-                  <td>
-                    <input type="checkbox" [(ngModel)]="team.isScoringEnabled"/>
+        <div class='col-md-2'>Filter by Team Name:</div>
+        <div class='col-md-3'>
+          <input type='text' [(ngModel)]='listFilter' />
+        </div>
+      </div>
+      <div class='row' *ngIf='listFilter'>
+        <div class='col-md-6'>
+          <h4>Filtered by team name: {{listFilter}}</h4>
+        </div>
+      </div>
+      <div class='table-responsive'>
+        <table class='table' *ngIf='filteredTeams && filteredTeams.length'>
+          <thead>
+            <tr>
+              <th>Team Name</th>
+              <th>Score</th>
+              <th>Downtime (mins)</th>
+              <th>Is Scoring Enabled</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let team of filteredTeams'>
+              <td>
+                {{ team.teamName }}
+              </td>
+              <td>{{ team.points }}</td>
+              <td>{{ team.downTimeMinutes }}</td>
+              <td>
+                <input type="checkbox" [(ngModel)]="team.isScoringEnabled" />
 
-                    </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div *ngIf='errorMessage'
-           class='alert alert-danger'>
-        Error: {{ errorMessage }}
-      </div>
+    </div>
+  </div>
+  <div *ngIf='errorMessage' class='alert alert-danger'>
+    Error: {{ errorMessage }}
+  </div>
 </ng-container>
