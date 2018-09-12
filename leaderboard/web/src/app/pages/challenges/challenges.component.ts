@@ -38,7 +38,7 @@ performFilter(filterBy: string): IChallenge[] {
           this.challenges = challenges;
           this.filteredChallenges = this.challenges;
       },
-      error => this.errorMessage = <any> error
+      error => this.errorMessage = <any> error,
   );
   }
 
