@@ -35,9 +35,6 @@
           <tbody>
             <tr *ngFor='let challenge of filteredChallenges'>
                 <td>
-
-                  </td>
-                <td>
                   <a [routerLink]="[ '/pages/challenges/challenges-manage/', challenge.id ]">{{ challenge.team.teamName }}</a>
                 </td>
                 <td>{{ challenge.challengeDefinition.name}}</td>

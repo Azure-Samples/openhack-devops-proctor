@@ -7,11 +7,7 @@ import { TeamsComponent } from './teams/teams.component';
 import { TeamsAddComponent } from './teams/teams-add/teams-add.component';
 import { TeamsDeleteComponent } from './teams/teams-delete/teams-delete.component';
 import { ChallengesComponent } from './challenges/challenges.component';
-<<<<<<< HEAD
 import { ChallengesManageComponent } from './challenges//challenges-manage/challenges-manage.component';
-=======
-import { ChallengesAddComponent } from './challenges//challenges-add/challenges-add.component';
->>>>>>> 277e199665c5e37ff00b161723de2f554691e633
 import { ChallengesDeleteComponent } from './challenges/challenges-delete/challenges-delete.component';
 
 const routes: Routes = [{
