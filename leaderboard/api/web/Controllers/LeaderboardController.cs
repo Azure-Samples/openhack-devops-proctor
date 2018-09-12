@@ -7,6 +7,7 @@ using Sentinel.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
+using StackExchange.Redis;
 
 namespace Sentinel.Controllers
 {
@@ -38,12 +39,12 @@ namespace Sentinel.Controllers
         // * POST /api/leaderboard/challenges/ - create a challenge for a team
         // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
 
+        //Challenge Definitions
+        // * GET /api/leaderboard/challengedefinitions - Get list of challenge definitions.
+
         //Service Health
         // * GET /api/leaderboard/servicehealth/ - get health for all teams services
         // * GET /api/leaderboard/servicehealth/{teamName} - get health for a team`
-
-        //Challenge Definitions
-        // * GET /api/leaderboard/challengedefinitions/id/{challengeId}
 
         // Sentinel Controller
         // * GET /api/sentinel/logs/{teamId} - gets all logs for a team
@@ -225,19 +226,46 @@ namespace Sentinel.Controllers
             return NoContent();
         }
 
-        //Service Health
-        // * GET /api/leaderboard/servicehealth/ - get health for all teams services
-
-        // * GET /api/leaderboard/servicehealth/{teamName} - get health for a team`
+        //Challenge Definitions
+        // * GET /api/leaderboard/challengedefinitions - Get list of challenge definitions.
 
         /// <summary>
         ///
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("challengedefinitions", Name = "GetAllChallengeDefinitions")]
+        public List<ChallengeDefinition> GetAllChallengeDefinitions()
+        {
+            var query = from cd in _context.ChallengeDefinitions orderby cd.MaxPoints ascending, cd.Name ascending select cd;
+
+            return query.ToList<ChallengeDefinition>();
+        }
+
+        //Service Health APIS
+
+        /// <summary>
+        /// GET /api/leaderboard/servicehealth/ - get health for all teams services
         /// </summary>
         /// <returns>ListOfServiceHealth Records</returns>
         [HttpGet("servicehealth", Name = "GetAllServiceHealth")]
         public List<Team> GetAllServiceHealth()
         {
             var query = _context.Teams.Include(tm => tm.ServiceStatus);
+            return  query.ToList();
+        }
+
+        /// <summary>
+        /// GET /api/leaderboard/servicehealth/{teamName} - get health for a team
+        /// </summary>
+        /// <param name="teamName"></param>
+        /// <returns>ListOfServiceHealth Records</returns>
+
+        [HttpGet("servicehealth/{teamName}", Name = "GetServiceHealthForTeam")]
+        [Produces("application/json", Type = typeof(Team))]
+        public List<Team> GetServiceHealthForTeam(string teamName)
+        {
+            var query = _context.Teams.Where(tm => tm.TeamName == teamName)
+                .Include(tm => tm.ServiceStatus);
             return  query.ToList();
         }
     }
