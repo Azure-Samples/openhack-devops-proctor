@@ -141,6 +141,7 @@ declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;ran
 declare sqlDBName="mydrivingDB"
 declare jenkinsVMPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare jenkinsURL="jenkins${teamName}${teamNumber}"
+declare zipPassword=$(< /dev/urandom tr -dc '!@#$%_A-Z-a-z-0-9' | head -c${1:-32};echo;)
 
 echo "=========================================="
 echo " VARIABLES"
@@ -164,8 +165,8 @@ echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.clouda
 echo "recipientEmail            = "${recipientEmail}
 echo "chatConnectionString      = "${chatConnectionString}
 echo "chatMessageQueue          = "${chatMessageQueue}
+echo "zipPassword"              = "${zipPassword}"
 echo "=========================================="
-
 
 #login to azure using your credentials
 echo "Username: $azureUserName"
@@ -280,7 +281,7 @@ echo "16-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
 
 echo "17-Clean the working environment"
-bash ./cleanup_environment.sh -t ${teamName}${teamNumber}
+bash ./cleanup_environment.sh -t ${teamName}${teamNumber} -p $zipPassword
 
 echo "18-Expose the team settings on a website"
 bash ./run_nginx.sh
@@ -288,6 +289,6 @@ bash ./run_nginx.sh
 echo "19-Send Message home"
 provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
 echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
-bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018"
+bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018 with zip password $zipPassword"
 
 echo "############ END OF TEAM PROVISION ############"
