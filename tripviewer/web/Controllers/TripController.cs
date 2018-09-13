@@ -25,9 +25,22 @@ namespace TripViewer.Controllers
         public IActionResult Index()
         {
             var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+
+            //Get trips
             TripStore t = new TripStore(teamendpoint);
             List<Trip> trips = t.GetItemsAsync().Result;
-            return View(trips);
+            //Get Last Trip
+            var last = trips.Max(trip => trip.RecordedTimeStamp);
+            var tlast = from Trip latest in trips
+                        where latest.RecordedTimeStamp == last
+                        select latest;
+            //Get TripPoints
+            TripPointStore tps = new TripPointStore(teamendpoint);            
+            List<TripPoint> tripPoints = tps.GetItemsAsync(tlast.First()).Result;
+
+            
+
+            return View(tripPoints);
         }
     }
 }
