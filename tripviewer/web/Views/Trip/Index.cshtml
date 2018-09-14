@@ -3,6 +3,7 @@
 @model IEnumerable<TripPoint>
 @{
     ViewData["Title"] = "Trips";
+    var mapKey = ViewData["MapKey"];
 }
 
 
@@ -86,9 +87,10 @@
             }
         }
     </script>
-    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GGx5FPM76O' async defer></script>
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=@(mapKey)' async defer></script>
 </head>
 <body>
+   @* @{ Html.RenderPartial("RenderMap"); }*@
     <div>
         <h2>View Last Trip</h2>
         <button onclick="showDetail()">Toggle Detail</button>

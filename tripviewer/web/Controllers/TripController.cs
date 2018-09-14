@@ -24,6 +24,7 @@ namespace TripViewer.Controllers
         public IActionResult Index()
         {
             var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            var bingMapsKey = _envvars.BING_MAPS_KEY;
 
             //Get trips
             TripStore t = new TripStore(teamendpoint);
@@ -36,10 +37,28 @@ namespace TripViewer.Controllers
             //Get TripPoints
             TripPointStore tps = new TripPointStore(teamendpoint);
             List<TripPoint> tripPoints = tps.GetItemsAsync(tlast.First()).Result;
-
-
-
+            
+            ViewData["MapKey"] = bingMapsKey;
             return View(tripPoints);
+        }
+
+        public PartialViewResult RenderMap()
+        {
+            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            //Get trips
+            TripStore t = new TripStore(teamendpoint);
+            List<Trip> trips = t.GetItemsAsync().Result;
+            //Get Last Trip
+            var last = trips.Max(trip => trip.RecordedTimeStamp);
+            var tlast = from Trip latest in trips
+                        where latest.RecordedTimeStamp == last
+                        select latest;
+            //Get TripPoints
+            TripPointStore tps = new TripPointStore(teamendpoint);
+            List<TripPoint> tripPoints = tps.GetItemsAsync(tlast.First()).Result;
+
+            
+            return PartialView(tripPoints);
         }
     }
 }
