@@ -36,6 +36,7 @@ namespace Sentinel.Controllers
         // Challenges
         // * GET /api/leaderboard/challenges/ - get challenges for all teams
         // * GET /api/leaderboard/challenges/{teamName} - get challenges for a team
+        // * GET /api/leaderboard/challenges/id/{challengeId} - get challenge by id
         // * POST /api/leaderboard/challenges/ - create a challenge for a team
         // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
 
@@ -177,10 +178,30 @@ namespace Sentinel.Controllers
         [HttpGet("challenges/{teamName}",Name = "GetChallengesForTeam")]
         public List<Challenge> GetChallengesForTeam(string teamName){
 
-            var query = from c in _context.Challenges join t in _context.Teams on c.TeamId equals t.Id where t.TeamName == teamName select c;
+            Team team = _context.Teams.Where(t => t.TeamName == teamName).Single<Team>();
 
+            //var query = from c in _context.Challenges join t in _context.Teams on c.TeamId equals t.Id where t.TeamName == teamName select c;
+            var query = _context.Challenges.Where(c => c.TeamId == team.Id)
+                .Include(tm => tm.Team)
+                .Include(cd => cd.ChallengeDefinition);
             return query.ToList<Challenge>();
         }
+
+        /// <summary>
+        /// GET /api/leaderboard/challenges/id/{challengeId} - get challenge by id
+        /// </summary>
+        /// <param name="challengeId"></param>
+        /// <returns>List of challenges</returns>
+        [HttpGet("challenges/id/{challengeId}",Name = "GetChallengeById")]
+        public Challenge GetChallengeById(string challengeId){
+
+            var query = _context.Challenges.Where(c => c.Id == challengeId)
+                .Include(tm => tm.Team)
+                .Include(cd => cd.ChallengeDefinition);
+            return query.Single<Challenge>();
+        }
+
+
 
         /// <summary>
         /// POST /api/leaderboard/challenges/ - create a challenge for a team

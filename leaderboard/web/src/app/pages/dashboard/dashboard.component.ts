@@ -1,5 +1,5 @@
-import { Component, OnInit, Injectable } from '@angular/core';
-import {interval} from 'rxjs';
+import { Component, OnInit, Injectable, OnDestroy } from '@angular/core';
+import {interval, Subscription} from 'rxjs';
 import { ITeam } from '../../shared/team';
 import { TeamsService } from '../../services/teams.service';
 
@@ -12,7 +12,7 @@ import { TeamsService } from '../../services/teams.service';
 })
 export class DashboardComponent implements OnInit {
   teams: ITeam[];
-  private pollingData: any; // tslint:disable-line
+  private pollingData: Subscription; // tslint:disable-line
   errorMessage = '';
 
   constructor(private teamService: TeamsService) {
@@ -32,5 +32,11 @@ export class DashboardComponent implements OnInit {
           error => this.errorMessage = <any>error,
         );
       });
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.pollingData.unsubscribe();
   }
 }

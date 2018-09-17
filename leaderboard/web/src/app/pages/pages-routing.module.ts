@@ -8,6 +8,7 @@ import { TeamsAddComponent } from './teams/teams-add/teams-add.component';
 import { TeamsDeleteComponent } from './teams/teams-delete/teams-delete.component';
 import { ChallengesComponent } from './challenges/challenges.component';
 import { ChallengesManageComponent } from './challenges//challenges-manage/challenges-manage.component';
+import { ChallengesAddComponent } from './challenges//challenges-add/challenges-add.component';
 import { ChallengesDeleteComponent } from './challenges/challenges-delete/challenges-delete.component';
 
 const routes: Routes = [{
@@ -35,7 +36,7 @@ const routes: Routes = [{
       component: ChallengesComponent,
     },
     {
-      path: 'challenges/challenges-manage/:id',
+      path: 'challenges/challenges-manage/:id/:teamname',
       component: ChallengesManageComponent,
     },
     {
@@ -43,7 +44,11 @@ const routes: Routes = [{
       component: ChallengesManageComponent,
     },
     {
-      path: 'challenges/challenges-delete',
+      path: 'challenges/challenges-add',
+      component: ChallengesAddComponent,
+    },
+    {
+      path: 'challenges/challenges-delete/:id',
       component: ChallengesDeleteComponent,
     },
     {
