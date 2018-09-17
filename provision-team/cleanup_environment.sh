@@ -1,49 +1,45 @@
 #!/bin/bash
 
-usage() { echo "Usage: cleanup_environment.sh -t <teamName>" 1>&2; exit 1; }
+usage() { echo "Usage: cleanup_environment.sh -t <teamName> -p <password>" 1>&2; exit 1; }
 
-while getopts ":t:" arg; do
+while getopts ":t:p:" arg; do
     case "${arg}" in
         t)
             teamName=${OPTARG}
+        ;;
+        p)
+            password=${OPTARG}
         ;;
     esac
 done
 
 if [[ -z "$teamName" ]]; then
-    echo "Enter the teamName to use to rename the aksServicePrincipal file to"
+    echo "Enter the teamName to use for filepath"
     read teamName
 fi
-
-if [ -z "$teamName" ] ; then
-    echo "The team name is empty"
-    usage
+if [[ -z "$password" ]]; then
+    echo "Enter the password to encrypt the zip file"
+    read password
 fi
-
 # create a www directory
 if [[ ! -d "/home/azureuser/www" ]]; then
     mkdir -p /home/azureuser/www
 fi 
 
-# 1- Rename /home/azureuser/.azure/aksServicePrincipal.json to /home/azureuser/.azure/aksServicePrincipal-team-number.json
-if [ -f /home/root/.azure/aksServicePrincipal.json ]; then
-    aksSPlocation="/home/azureuser/team_env/$teamName/aksServicePrincipal-$teamName.json"
-    cp /home/azureuser/.azure/aksServicePrincipal.json $aksSPlocation
-    sudo cp /root/.azure/aksServicePrincipal.json /home/azureuser/www/aksServicePrincipal.json
-    kvstore set $teamName aksSPlocation $aksSPlocation
-    echo "The aksServicePrincipal.json file has been moved to $aksSPlocation"
-fi
+# Copy the kubeconfig file
+kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
+sudo cp /root/.kube/config /home/azureuser/www/kubeconfig
+sudo cp /root/.kube/config $kubeconfiglocation
+echo "Copied the kubeconfig file to $kubeconfiglocation"
 
-# 2- Copy the kubeconfig file
-if [ -f /home/root/.kube/config ]; then
-    kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
-    cp /home/azureuser/.kube/config $kubeconfiglocation
-    sudo cp /root/.kube/config /home/azureuser/www/kubeconfig
-    kvstore set $teamName kubeconfig $kubeconfiglocation
-    echo "Copied the kubeconfig file to $kubeconfiglocation"
-fi
+kvstore set $teamName kubeconfig $kubeconfiglocation
+kvstore set $teamName zippassword $password
 
-# 3- Setup files to serve via nginx
-sudo zip /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/aksServicePrincipal.json /home/azureuser/team_env/kvstore/${teamName}
+# Setup files to serve via nginx
 sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
+sudo zip -e --password ${password} /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/ohteamvalues
+echo "Zipped /home/azureuser/www/teamfiles.zip with password $password"
 sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
+
+# Set proper ownership for the regular user after script completes
+sudo chown -R azureuser:azureuser /home/azureuser

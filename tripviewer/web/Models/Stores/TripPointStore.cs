@@ -6,7 +6,7 @@
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    public class TripPointStore : BaseStore, IBaseStore<TripPoint>
+    public class TripPointStore : BaseStore//, IBaseStore<TripPoint>
     {
 
         public TripPointStore(string EndPoint)
