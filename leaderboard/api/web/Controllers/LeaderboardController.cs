@@ -7,7 +7,6 @@ using Sentinel.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
-using StackExchange.Redis;
 
 namespace Sentinel.Controllers
 {

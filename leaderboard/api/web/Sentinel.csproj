@@ -21,9 +21,4 @@
   <ItemGroup>
     <Content Remove="Properties\launchSettings.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="StackExchange.Redis.StrongName">
-      <HintPath>..\..\..\..\..\..\..\..\..\..\usr\local\share\dotnet\sdk\NuGetFallbackFolder\stackexchange.redis.strongname\1.2.4\lib\netstandard1.5\StackExchange.Redis.StrongName.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
