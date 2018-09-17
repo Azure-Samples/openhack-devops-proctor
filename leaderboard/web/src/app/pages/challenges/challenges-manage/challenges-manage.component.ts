@@ -95,12 +95,31 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.model.challengeDefinitionId =
+      this.challengeDefinitions.find(cd => cd.name == <string>this.form.controls.selectChallenge.value).id;
+    this.model.teamId =
+      this.teams.find(t => t.teamName == <string>this.form.controls.selectTeam.value).id;
+    this.model.challengeDefinition = null;
+    this.model.team = null;
 
+    const startDateGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
+    const endDateGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
+
+    const d: Date = (<Date>(startDateGroup.controls.startDateTime as FormControl).value);
+    const h:number = (<number>startDateGroup.controls.startHours.value);
+    const m:number = (<number>startDateGroup.controls.startMins.value);
+
+    this.model.setDate(ChallengeDateType.Start,d,h,m);
+
+    this.createChallenge().then(r => {
+      if(this.form){
+        this.form.reset();
+      }
+      this.router.navigate(['/pages/challenges']);
+    });
   }
 
-
-
-  filterChallengeDefinitions(){
+  filterChallengeDefinitions() {
     if(this.challengesForTeam && this.challengesForTeam.length > 0){
       const challengeNamesForTeam = this.challengesForTeam.filter(c => c.endDateTime !== null).map(c => c.challengeDefinition.name);
       const challengesNotCompleted = this.challengeDefinitionNames
@@ -170,6 +189,21 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
           reject(error);
         },
       ));
+  }
+
+  createChallenge() {
+    return new Promise((resolve, reject) =>
+    this.cs.createChallengeForTeam(this.model)
+    .subscribe(
+      data => {
+        this.model = <Challenge>data;
+        resolve(data);
+      },
+      error => {
+        this.errorMessage = <any>error;
+        reject(error);
+      },
+    ));
   }
 
   setSelectedTeam(){
