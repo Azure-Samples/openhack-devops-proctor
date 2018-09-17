@@ -9,8 +9,6 @@
   <ItemGroup>
     <Compile Remove="Models\Stores\IBaseStore.cs" />
     <Compile Remove="Models\Stores\PoiStore.cs" />
-    <Compile Remove="Models\Stores\TripPointStore.cs" />
-    <Compile Remove="Models\Stores\TripStore.cs" />
   </ItemGroup>
 
   <ItemGroup>

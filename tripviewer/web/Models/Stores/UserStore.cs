@@ -36,34 +36,6 @@
             return users;
         }
 
-        //public async Task<User> CreateItemAsync(User item)
-        //{
-        //    HttpResponseMessage response = await Client.PostAsJsonAsync<User>("api/user-java", item);
-        //    response.EnsureSuccessStatusCode();
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        response.Content.Headers.ContentType.MediaType = "application/json";
-        //        item = await response.Content.ReadAsAsync<User>();
-        //    }
-        //    return item;
-        //}
-
-        //public async Task<bool> UpdateItemAsync(User item)
-        //{
-        //    HttpResponseMessage response = await Client.PatchAsJsonAsync($"api/user-java/{item.UserId}", item);
-        //    response.EnsureSuccessStatusCode();
-        //    if (response.IsSuccessStatusCode)
-        //        response.Content.Headers.ContentType.MediaType = "application/json";
-        //    return true;
-        //}
-
-        //public async Task<bool> DeleteItemAsync(User item)
-        //{
-        //    HttpResponseMessage response = await Client.DeleteAsync($"api/user-java/{item.UserId}");
-        //    response.EnsureSuccessStatusCode();
-        //    if (response.IsSuccessStatusCode)
-        //        response.Content.Headers.ContentType.MediaType = "application/json";
-        //    return true;
-        //}
+        
     }
 }

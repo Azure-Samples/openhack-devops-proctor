@@ -25,3 +25,5 @@ spec:
         env:
           - name: TEAM_API_ENDPOINT
             value: "http://{{ .Values.ingress.rules.endpoint.host }}"
+	  - name: BING_MAPS_KEY
+	    value: "{{ .Values.viewer.mapkey}}"
