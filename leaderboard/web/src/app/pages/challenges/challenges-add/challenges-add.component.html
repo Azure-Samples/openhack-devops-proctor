@@ -1,0 +1,41 @@
+<h1>Add Challenge</h1>
+<form [formGroup]="addChallengeForm" (ngSubmit)="onSubmit()">
+  <div formGroupName="teamSelect" *ngIf='teams && teams.length' novalidate>
+    <label for="team">Team</label>
+    <select class="form-control" formControlName="team" required>
+      <option *ngFor="let tm of teams" [ngValue]="tm">{{tm.teamName}}</option>
+    </select>
+  </div>
+  <div formGroupName="challengeDefinitionSelect" *ngIf='challengeDefinitions && challengeDefinitions.length' novalidate>
+      <label for="challengeDefinitions">Team</label>
+      <select class="form-control" formControlName="challengeDefinitions">
+        <option *ngFor="let cd of challengeDefinitions" [ngValue]="cd"> {{cd.name}} </option>
+      </select>
+    </div>
+
+      <div class="form-group" formGroupName="startDateTimeGroup" *ngIf='model'  style="width:50%">
+          <label for="startDate" formControlName="startDateLabel">Start Date</label>
+        </div>
+  <button class="btn btn-success" type="submit" [disabled]="!addChallengeForm.valid">Submit</button>
+
+</form>
+<div *ngIf='errorMessage' class='alert alert-danger'>
+  Error: {{ errorMessage }}
+</div>
+<br>
+<br>
+<br>
+<p>
+  Form Value: {{ model | json }}
+</p>
+
+<br><br>
+<p>
+    Form Value: {{ addChallengeForm.value | json }}
+  </p>
+
+
+  <p>
+    Form Status: {{ addChallengeForm.status }}
+  </p>
+

@@ -1,3 +1,117 @@
-<p>
-  challenges-add works!
-</p>
+<mat-card>
+  <mat-card-title>
+    {{addEdit}} Challenge
+  </mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label" for="selectTeam">Select Team - required</label>
+        <div class="col-md-8">
+          <mat-form-field>
+            <mat-select formControlName="selectTeam" placeholder="Select Team" (selectionChange)="updateChallengeList()">
+              <mat-option *ngFor="let teamName of teamNames" [value]="teamName">{{teamName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label" for="selectChallenge">Select Challenge - required</label>
+        <div class="col-md-8">
+          <mat-form-field>
+            <mat-select formControlName="selectChallenge" placeholder="Select Challenge">
+              <mat-option *ngFor="let cdName of challengeDefinitionNames" [value]="cdName">{{cdName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <hr>
+      <div formGroupName="startDateTimeGroup">
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="startDTP">Start Date/Time - required</label>
+          <div class="col-md-8">
+            <mat-form-field>
+              <input matInput [matDatepicker]="startDTP" formControlName="startDateTime" placeholder="Choose a start date"
+                >
+              <mat-datepicker-toggle matSuffix [for]="startDTP">
+                <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-datepicker #startDTP>{{startDate}}</mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="startHours">Hour:Min (UTC) - required</label>
+          <div class="col-md-8">
+            <mat-form-field>
+              <mat-select formControlName="startHours" placeholder="Select Hour">
+                <mat-option *ngFor="let hour of hours" [value]="hour">{{hour}}</mat-option>
+              </mat-select>
+            </mat-form-field>&nbsp;&nbsp;
+            <mat-form-field>
+              <mat-select formControlName="startMins" placeholder="Select Minutes">
+                <mat-option *ngFor="let minute of minutes" [value]="minute">{{minute}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="editEnabled()">
+        <hr>
+        <div formGroupName="endDateTimeGroup">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="startDTP">End Date/Time</label>
+            <div class="col-md-8">
+              <mat-form-field>
+                <input matInput [matDatepicker]="endDTP" formControlName="endDateTime" placeholder="Choose an end date"
+                  disabled>
+                <mat-datepicker-toggle matSuffix [for]="endDTP">
+                  <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #endDTP></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="endHours">Hour:Min (UTC)</label>
+            <div class="col-md-4">
+              <mat-form-field>
+                <mat-select formControlName="endHours" placeholder="Select Hour" disabled>
+                  <mat-option *ngFor="let hour of hours" [value]="hour">{{hour}}</mat-option>
+                </mat-select>
+              </mat-form-field>&nbsp;&nbsp;
+              <mat-form-field>
+                <mat-select formControlName="endMins" placeholder="Select Minutes" disabled>
+                  <mat-option *ngFor="let minute of minutes" [value]="minute">{{minute}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-8">
+          <button class="btn btn-primary" style='width:120px' type="submit" [disabled]="!form.valid">
+            Save
+          </button>
+          &nbsp;
+          <button class="btn btn-secondary" style='width:120px' type="button" [routerLink]="['/pages/challenges']">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+    <br>Dirty: {{ form.dirty }}
+    <br>Touched: {{ form.touched }}
+    <br>Valid: {{ form.valid }}
+    <br>Controls valid:{{controlsValid()}}
+    <br>Value: {{ form.value | json }}
+    <br>Model: {{model | json}}
+    <div class='alert alert-danger' *ngIf='errorMessage'>{{errorMessage}}
+    </div>
+  </mat-card-content>
+</mat-card>

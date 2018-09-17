@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import { IChallenge } from '../shared/challenge';
+import { IChallengeDefinition } from '../shared/challengedefinition';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,40 @@ export class ChallengesService {
     catchError(this.handleError));
   };
 
+  getChallengeDefinitions(): Observable<IChallengeDefinition[]> {
+    return this.http.get<IChallengeDefinition[]>(this.backendUrl + 'challengeDefinitions').pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  };
+
+  getChallenge(id: string): Observable<IChallenge> {
+    return this.http.get<IChallenge>(this.backendUrl + 'challenges/id/' + id).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
+
+  getChallengesForTeam(teamName: string): Observable<IChallenge[]> {
+    return this.http.get<IChallenge[]>(this.backendUrl + 'challenges/' + teamName).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
+
+  createChallengeForTeam(c: IChallenge): Observable<IChallenge> {
+    const url = this.backendUrl + 'challenges';
+    const payload = JSON.stringify(c);
+    const headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
+    const options =  {
+        headers: headers,
+    };
+
+    return this.http.post<IChallenge>(url, payload, options).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
 
   private handleError(err: HttpErrorResponse) {
     // logging it to the console

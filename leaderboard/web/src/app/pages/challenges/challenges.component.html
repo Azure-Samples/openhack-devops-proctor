@@ -4,8 +4,13 @@
     </div>
     <div class='card-body'>
         <div class='row'>
-            <div class='col-md-2'>Filter by Team:</div>
-            <div class='col-md-4'>
+            <div class="col-md-3">
+              <a class="btn btn-primary nav-link" href='/#/pages/challenges/challenges-manage'>
+                Add a Challenge
+              </a>
+            </div>
+            <div class='col-md-3'>Filter by Team:</div>
+            <div class='col-md-2'>
               <input type='text' [(ngModel)]='listFilter' />
             </div>
           </div>
@@ -30,7 +35,7 @@
           <tbody>
             <tr *ngFor='let challenge of filteredChallenges'>
                 <td>
-                  <a [routerLink]="[ '/pages/challenges/challenges-manage/', challenge.id ]">{{ challenge.team.teamName }}</a>
+                  <a [routerLink]="[ '/pages/challenges/challenges-manage/', challenge.id, challenge.team.teamName ]">{{ challenge.team.teamName }}</a>
                 </td>
                 <td>{{ challenge.challengeDefinition.name}}</td>
                 <td>{{ challenge.startDateTime }}</td>
