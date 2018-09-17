@@ -3,7 +3,7 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword> -j <bingAPIkey>" 1>&2; exit 1; }
 echo "$@"
 
 declare subscriptionId=""
@@ -17,9 +17,10 @@ declare recipientEmail=""
 declare chatConnectionString=""
 declare chatMessageQueue=""
 declare provisioningVMIpaddress=""
+declare bingAPIkey=""
 
 # Initialize parameters specified from command line
-while getopts ":c:i:l:n:e:q:r:u:p:" arg; do
+while getopts ":c:i:l:n:e:q:r:u:p:j:" arg; do
     case "${arg}" in
         c)
             chatConnectionString=${OPTARG}
@@ -47,6 +48,9 @@ while getopts ":c:i:l:n:e:q:r:u:p:" arg; do
         ;;
         p)
             azurePassword=${OPTARG}
+        ;;
+        j)
+            bingAPIkey=${OPTARG}
         ;;
     esac
 done
@@ -166,6 +170,7 @@ echo "recipientEmail            = "${recipientEmail}
 echo "chatConnectionString      = "${chatConnectionString}
 echo "chatMessageQueue          = "${chatMessageQueue}
 echo "zipPassword"              = "${zipPassword}"
+echo "bingAPIkey"               = "${bingAPIkey}"
 echo "=========================================="
 
 #login to azure using your credentials
@@ -268,8 +273,8 @@ bash ./build_deploy_trip.sh -s ./test_fetch_build -b Release -r $resourceGroupTe
 echo "12-Build and deploy User-Profile API to AKS  (# bash ./build_deploy_user-profile.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-userprofile' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_user-java.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-user-java' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
 
-echo "13-Build and deploy Tripviewer website to AKS (# bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL)"
-bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL
+echo "13-Build and deploy Tripviewer website to AKS (# bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL -j $bingAPIkey)"
+bash ./build_deploy_tripviewer.sh -m ${teamName}${teamNumber} -d $dnsURL -j $bingAPIkey
 
 echo "14-Build and deploy the simulator (# bash Usage: build_deploy_simulator.sh -n ${teamName}${teamNumber} -q 18000 -d $dnsURL -t <image tag optional>)"
 bash ./build_deploy_simulator.sh -n ${teamName}${teamNumber} -q '18000' -d $dnsURL
