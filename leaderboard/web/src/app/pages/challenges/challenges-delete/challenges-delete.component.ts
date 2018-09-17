@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChallengesService } from '../../../services/challenges.service';
 import { Challenge } from '../challenge';
@@ -17,8 +17,8 @@ import { IChallengeDefinition } from '../../../shared/challengedefinition';
 export class ChallengesDeleteComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private sub: Subscription;
-  hours = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
-  minutes = [0,5,10,15,20,25,30,35,40,45,50];
+  hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
   teamNames: string[];
   challengeDefinitionNames: string[];
 
@@ -34,7 +34,6 @@ export class ChallengesDeleteComponent implements OnInit, OnDestroy {
   errorMessage = '';
 
   constructor(private route: ActivatedRoute,
-    private router: Router,
     private cs: ChallengesService,
     private ts: TeamsService,
     private fb: FormBuilder) { }
@@ -61,7 +60,7 @@ export class ChallengesDeleteComponent implements OnInit, OnDestroy {
     Promise.all([
     this.getTeams(),
     this.getChallengeDefinitions(),
-    //this.getChallengesForTeam(),
+    // this.getChallengesForTeam(),
     ])
     .then((results: any[]) => {
       if (this.id !== null && this.id !== undefined) {
@@ -72,7 +71,7 @@ export class ChallengesDeleteComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.sub.unsubscribe();
   }
 
   onSubmit() { }

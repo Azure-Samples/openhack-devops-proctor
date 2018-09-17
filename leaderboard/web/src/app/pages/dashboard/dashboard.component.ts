@@ -10,7 +10,7 @@ import { TeamsService } from '../../services/teams.service';
   styleUrls: ['./dashboard.component.scss'],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   teams: ITeam[];
   private pollingData: Subscription; // tslint:disable-line
   errorMessage = '';
@@ -35,8 +35,8 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
     this.pollingData.unsubscribe();
   }
 }

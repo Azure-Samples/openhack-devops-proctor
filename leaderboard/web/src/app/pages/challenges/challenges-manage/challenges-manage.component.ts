@@ -42,12 +42,12 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({
-      selectTeam: ['',Validators.required],
+      selectTeam: ['', Validators.required],
       selectChallenge: ['', Validators.required],
       startDateTimeGroup: this.fb.group({
-        startDateTime: [new Date(),Validators.required],
-        startHours: [1,Validators.required],
-        startMins: [0,Validators.required],
+        startDateTime: [new Date(), Validators.required],
+        startHours: [1, Validators.required],
+        startMins: [0, Validators.required],
       }),
       endDateTimeGroup: this.fb.group({
         endDateTime: '',
@@ -69,18 +69,17 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     ])
       .then((results: any[]) => {
         if (this.id !== null && this.id !== undefined) {
-          //edit code path
+          // edit code path
           this.addEdit = 'Edit';
 
-          if(this.form){
+          if (this.form) {
             this.form.reset();
           }
 
           this.filterChallengeDefinitions();
           this.setSelectedTeam();
           this.setSelectedChallenge();
-        }
-        else{
+        } else {
           // add code path
           this.model = new Challenge();
           this.startDate = this.model.getDate(ChallengeDateType.Start);
@@ -96,23 +95,33 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.model.challengeDefinitionId =
-      this.challengeDefinitions.find(cd => cd.name == <string>this.form.controls.selectChallenge.value).id;
+      this.challengeDefinitions.find(cd => cd.name === <string>this.form.controls.selectChallenge.value).id;
     this.model.teamId =
-      this.teams.find(t => t.teamName == <string>this.form.controls.selectTeam.value).id;
+      this.teams.find(t => t.teamName === <string>this.form.controls.selectTeam.value).id;
     this.model.challengeDefinition = null;
     this.model.team = null;
 
     const startDateGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
-    const endDateGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
 
-    const d: Date = (<Date>(startDateGroup.controls.startDateTime as FormControl).value);
-    const h:number = (<number>startDateGroup.controls.startHours.value);
-    const m:number = (<number>startDateGroup.controls.startMins.value);
 
-    this.model.setDate(ChallengeDateType.Start,d,h,m);
+    const ds: Date = (<Date>(startDateGroup.controls.startDateTime as FormControl).value);
+    const hs: number = (<number>startDateGroup.controls.startHours.value);
+    const ms: number = (<number>startDateGroup.controls.startMins.value);
+
+    this.model.setDate(ChallengeDateType.Start, ds, hs, ms);
+
+    if (this.addEdit === 'Edit') {
+      const endDateGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
+
+      const de: Date = (<Date>(endDateGroup.controls.endDateTime as FormControl).value);
+      const he: number = (<number>endDateGroup.controls.endHours.value);
+      const me: number = (<number>endDateGroup.controls.endHours.value);
+
+      this.model.setDate(ChallengeDateType.End, de, he, me);
+    }
 
     this.createChallenge().then(r => {
-      if(this.form){
+      if (this.form) {
         this.form.reset();
       }
       this.router.navigate(['/pages/challenges']);
@@ -120,7 +129,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   }
 
   filterChallengeDefinitions() {
-    if(this.challengesForTeam && this.challengesForTeam.length > 0){
+    if (this.challengesForTeam && this.challengesForTeam.length > 0) {
       const challengeNamesForTeam = this.challengesForTeam.filter(c => c.endDateTime !== null).map(c => c.challengeDefinition.name);
       const challengesNotCompleted = this.challengeDefinitionNames
         .filter(item => challengeNamesForTeam.indexOf(item) < 0);
@@ -206,11 +215,11 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     ));
   }
 
-  setSelectedTeam(){
+  setSelectedTeam() {
     const selectedTeamName = this.model.team.teamName;
     this.form.controls.selectTeam.patchValue(selectedTeamName);
   }
-  setSelectedChallenge(){
+  setSelectedChallenge() {
     const selectedChallengeDefinitionName = this.model.challengeDefinition.name;
     this.form.controls.selectChallenge.patchValue(selectedChallengeDefinitionName);
   }
@@ -219,13 +228,13 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     const startTimeGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
     const endTimeGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
 
-    let n: number =this.model.getHours(ChallengeDateType.Start);
+    let n: number = this.model.getHours(ChallengeDateType.Start);
     startTimeGroup.controls.startHours.patchValue(n);
 
     n = this.model.getMinutes(ChallengeDateType.Start);
     startTimeGroup.controls.startMins.patchValue(n);
 
-    if(this.model.endDateTime != null){
+    if (this.model.endDateTime != null) {
       n = this.model.getHours(ChallengeDateType.End);
       endTimeGroup.controls.endHours.patchValue(n);
 
@@ -234,13 +243,13 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateChallengeList(){
+  updateChallengeList() {
     const selTeam: string = this.form.controls.selectTeam.value;
 
     Promise.all([
-      this.getChallengesForTeam(selTeam)
+      this.getChallengesForTeam( selTeam ),
     ]).then((results: any[]) => {
-      const cd:FormControl = this.form.controls.selectChallenge as FormControl;
+      const cd: FormControl = this.form.controls.selectChallenge as FormControl;
       cd.reset();
       this.filterChallengeDefinitions();
     });
@@ -250,11 +259,11 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   controlsValid(): string {
     const startDateTimeGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
 
-    return "selectTeam: " + this.form.controls.selectTeam.valid +
-      ", selectChallenge: " + this.form.controls.selectChallenge.valid +
-      ", startDateTime: " + startDateTimeGroup.controls.startDateTime.valid +
-      ", startHours: " + startDateTimeGroup.controls.startHours.valid +
-      ", startMins: " + startDateTimeGroup.controls.startMins.valid;
+    return 'selectTeam: ' + this.form.controls.selectTeam.valid +
+      ', selectChallenge: ' + this.form.controls.selectChallenge.valid +
+      ', startDateTime: ' + startDateTimeGroup.controls.startDateTime.valid +
+      ', startHours: ' + startDateTimeGroup.controls.startHours.valid +
+      ', startMins: ' + startDateTimeGroup.controls.startMins.valid;
   }
 
   editEnabled(): boolean {

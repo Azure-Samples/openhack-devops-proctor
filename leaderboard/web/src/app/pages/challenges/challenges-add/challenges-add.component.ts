@@ -1,15 +1,14 @@
-import { Component, OnInit, VERSION } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ChallengesService } from '../../../services/challenges.service';
 import { Challenge } from '../challenge';
 import { TeamsService } from '../../../services/teams.service';
 import { ITeam } from '../../../shared/team';
 import { IChallengeDefinition } from '../../../shared/challengedefinition';
 @Component({
-  selector: 'challenges-add',
+  selector: 'ngx-challenges-add',
   templateUrl: './challenges-add.component.html',
-  styleUrls: ['./challenges-add.component.scss']
+  styleUrls: ['./challenges-add.component.scss'],
 })
 export class ChallengesAddComponent implements OnInit {
   id: string;
@@ -44,9 +43,7 @@ export class ChallengesAddComponent implements OnInit {
   //   }
   // };
 
-  constructor(private route: ActivatedRoute,
-    private router: Router,
-    private cs: ChallengesService,
+  constructor( private cs: ChallengesService,
     private ts: TeamsService,
     private fb: FormBuilder) {
 
@@ -54,7 +51,7 @@ export class ChallengesAddComponent implements OnInit {
 
   addChallengeForm = this.fb.group({
     teamSelect: this.fb.group({
-      team:['', Validators.required],
+      team: ['', Validators.required],
     }),
     challengeDefinitionSelect: this.fb.group({
       challengeDefinition: [''],
@@ -77,24 +74,19 @@ export class ChallengesAddComponent implements OnInit {
   }
 
   onSubmit() {
-    let teamSelect: FormGroup = this.addChallengeForm.controls.teamSelect as FormGroup;
+    const teamSelect: FormGroup = this.addChallengeForm.controls.teamSelect as FormGroup;
     this.model.team = <ITeam>teamSelect.controls.team.value;
     this.model.teamId = this.model.team.id;
 
-    let challengeSelect: FormGroup = this.addChallengeForm.controls.challengeDefinitionSelect as FormGroup;
+    const challengeSelect: FormGroup = this.addChallengeForm.controls.challengeDefinitionSelect as FormGroup;
     this.model.challengeDefinition = <IChallengeDefinition>challengeSelect.controls.team.value;
     this.model.challengeDefinitionId = this.model.challengeDefinition.id;
 
-    let startDateTimeGroup: FormGroup =this.addChallengeForm.controls.startDateTimeGroup as FormGroup;
+    const startDateTimeGroup: FormGroup = this.addChallengeForm.controls.startDateTimeGroup as FormGroup;
 
-    var d = new Date(startDateTimeGroup.controls.startDateTime.value);
+    const d = new Date(startDateTimeGroup.controls.startDateTime.value);
     this.model.startDateTime = d.toString()
 
-    console.log(this.model);
-  }
-
-  updateStartDateTime(changes) {
-    console.log(changes);
   }
 
   getTeams() {
