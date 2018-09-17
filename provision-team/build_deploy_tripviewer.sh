@@ -6,19 +6,23 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: build_deploy_tripviewer.sh -m <teamName> -d <dnsURL>" 1>&2; exit 1; }
+usage() { echo "Usage: build_deploy_tripviewer.sh -m <teamName> -d <dnsURL> -j <bingAPIkey>" 1>&2; exit 1; }
 
 declare teamName=""
 declare dnsURL=""
+declare bingAPIkey=""
 
 # Initialize parameters specified from command line
-while getopts ":m:d:" arg; do
+while getopts ":d:j:m:" arg; do
     case "${arg}" in
-        m)
-            teamName=${OPTARG}
-        ;;
         d)
             dnsURL=${OPTARG}
+        ;;
+        j)
+            bingAPIkey=${OPTARG}
+        ;;
+        m)
+            teamName=${OPTARG}
         ;;
     esac
 done
@@ -47,6 +51,7 @@ declare registryName="${teamName}acr"
 #DEBUG
 echo $resourceGroupName
 echo $dnsURL
+echo $bingAPIkey
 echo $teamName
 echo -e '\n'
 
@@ -79,4 +84,8 @@ echo -e "\nhelm install ... from: " $installPath
 
 BASE_URI='http://'$dnsURL
 echo "Base URI: $BASE_URI"
-helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL
+if [[ "${bingAPIkey}" == "" ]]; then
+    helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL
+else
+    helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL,viewer.mapkey=$bingAPIkey
+fi

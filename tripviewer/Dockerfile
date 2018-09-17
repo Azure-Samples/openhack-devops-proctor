@@ -4,7 +4,7 @@ COPY . .
 RUN dotnet publish "web/TripViewer.csproj" -c Release -o /publish
 
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
-ENV TEAM_API_ENDPOINT="http://akstraefikopenhackvld9.westus.cloudapp.azure.com"
+ENV TEAM_API_ENDPOINT="http://akstraefikchangeme.westus.cloudapp.azure.com",BING_MAPS_KEY="changeme"
 WORKDIR /app
 COPY --from=build /publish .
 ENTRYPOINT ["dotnet", "TripViewer.dll"]
