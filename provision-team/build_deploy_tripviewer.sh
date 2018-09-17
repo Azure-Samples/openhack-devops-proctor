@@ -40,13 +40,7 @@ if [[ -z "$dnsURL" ]]; then
     [[ "${dnsURL:?}" ]]
 fi
 
-if [[ -z "$bingAPIkey" ]]; then
-    echo "Enter Bing API Key."
-    read bingAPIkey
-    [[ "${bingAPIkey:?}" ]]
-fi
-
-if [ -z "$teamName" ] || [ -z "$dnsURL" ] || [ -z "$bingAPIkey" ]; then
+if [ -z "$teamName" ] || [ -z "$dnsURL" ]; then
     echo "A parameter is missing."
     usage
 fi
@@ -90,4 +84,8 @@ echo -e "\nhelm install ... from: " $installPath
 
 BASE_URI='http://'$dnsURL
 echo "Base URI: $BASE_URI"
-helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL,viewer.mapkey=$bingAPIkey
+if [[ "${bingAPIkey}" == "" ]]; then
+    helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL
+else
+    helm install $installPath --name web --set repository.image=$TAG,ingress.rules.endpoint.host=$dnsURL,viewer.mapkey=$bingAPIkey
+fi
