@@ -14,6 +14,12 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <span class="has-eror" style="color:#f44336">
+          <span *ngIf="form.get('selectTeam').errors?.challengeOpenForTeam">
+            An existing challenge is open for this team. Close it by setting End Date/Time before adding a new
+            challenge.
+          </span>
+        </span>
       </div>
 
       <div class="form-group row">
@@ -32,8 +38,7 @@
           <label class="col-md-2 col-form-label" for="startDTP">Start Date/Time - required</label>
           <div class="col-md-8">
             <mat-form-field>
-              <input matInput [matDatepicker]="startDTP" formControlName="startDateTime" placeholder="Choose a start date"
-                >
+              <input matInput [matDatepicker]="startDTP" formControlName="startDateTime" placeholder="Choose a start date">
               <mat-datepicker-toggle matSuffix [for]="startDTP">
                 <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
               </mat-datepicker-toggle>

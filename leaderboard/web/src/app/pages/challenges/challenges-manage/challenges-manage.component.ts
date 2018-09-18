@@ -1,12 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { FormGroup, FormControl, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Subscription, Observable } from 'rxjs';
 import { ChallengesService } from '../../../services/challenges.service';
 import { Challenge, ChallengeDateType } from '../challenge';
 import { TeamsService } from '../../../services/teams.service';
 import { ITeam } from '../../../shared/team';
 import { IChallengeDefinition } from '../../../shared/challengedefinition';
+
+export function challengeOpenForTeamValidator(cs: ChallengesService): AsyncValidatorFn {
+  return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
+    return cs.getChallengesForTeam(control.value).map(
+      challenges => {
+        return (challenges && challenges.filter(c => c.endDateTime === null).length > 0) ? {'challengeOpenForTeam': true} : null;
+      },
+    );
+  };
+}
 
 @Component({
   selector: 'ngx-challenges-manage',
@@ -42,7 +52,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({
-      selectTeam: ['', Validators.required],
+      selectTeam: ['', [ Validators.required ], [ challengeOpenForTeamValidator(this.cs) ]],
       selectChallenge: ['', Validators.required],
       startDateTimeGroup: this.fb.group({
         startDateTime: [new Date(), Validators.required],
