@@ -22,8 +22,8 @@
 ### Validations
 - Team: required DONE
 - Challenge: required DONE
-- Team has open challenge: Prompt user to complete challenge as they will not be able to add a new one till last is closed. TODO
-- StartDateTime: greater than enddate < end time of last completed challenge TODO
+- Team has open challenge: Prompt user to complete challenge as they will not be able to add a new one till last is closed. DONE
+- StartDateTime: >= end time of last completed challenge TODO
 
 ### Guards
 - Can Deactivate: ask if want to lose changes TODO

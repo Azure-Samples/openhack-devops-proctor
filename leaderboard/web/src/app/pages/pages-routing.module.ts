@@ -10,7 +10,7 @@ import { ChallengesComponent } from './challenges/challenges.component';
 import { ChallengesManageComponent } from './challenges//challenges-manage/challenges-manage.component';
 import { ChallengesAddComponent } from './challenges//challenges-add/challenges-add.component';
 import { ChallengesDeleteComponent } from './challenges/challenges-delete/challenges-delete.component';
-
+import { ChallengesManageGuard } from './challenges/challenges-manage/challenges-manage.guard';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -38,10 +38,12 @@ const routes: Routes = [{
     {
       path: 'challenges/challenges-manage/:id/:teamname',
       component: ChallengesManageComponent,
+      canDeactivate: [ ChallengesManageGuard ],
     },
     {
       path: 'challenges/challenges-manage',
       component: ChallengesManageComponent,
+      canDeactivate: [ ChallengesManageGuard ] ,
     },
     {
       path: 'challenges/challenges-add',
