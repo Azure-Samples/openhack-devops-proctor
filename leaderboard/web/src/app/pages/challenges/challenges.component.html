@@ -30,6 +30,7 @@
               <th>End Date/Time</th>
               <th>Completed</th>
               <th>Score</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +43,9 @@
                 <td>{{ challenge.endDateTime}}</td>
                 <td>{{challenge.isCompleted}}</td>
                 <td>{{challenge.score}}</td>
+                <td><button mat-button (click)="openDeleteDialog(challenge.id)">
+                  <mat-icon>delete_forever</mat-icon>
+                </button></td>
               </tr>
           </tbody>
         </table>

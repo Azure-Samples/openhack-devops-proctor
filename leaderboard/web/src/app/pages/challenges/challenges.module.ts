@@ -6,7 +6,6 @@ import { ChallengesComponent } from './challenges.component';
 import { ChallengesManageComponent } from './challenges-manage/challenges-manage.component';
 import { ChallengesDeleteComponent } from './challenges-delete/challenges-delete.component';
 
-import { ChallengesAddComponent } from './challenges-add/challenges-add.component';
 import {
   MatCardModule,
   MatFormFieldModule,
@@ -16,7 +15,7 @@ import {
   MatIconModule,
   MatSelectModule,
   MatOptionModule,
-  MatButtonModule } from '@angular/material';
+  MatButtonModule, } from '@angular/material';
 @NgModule({
   imports: [
     CommonModule,
@@ -47,7 +46,6 @@ import {
   declarations: [
     ChallengesComponent,
     ChallengesManageComponent,
-    ChallengesDeleteComponent,
-    ChallengesAddComponent],
+    ChallengesDeleteComponent],
 })
 export class ChallengesModule { }

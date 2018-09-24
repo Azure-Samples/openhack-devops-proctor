@@ -56,6 +56,33 @@ export class ChallengesService {
     catchError(this.handleError));
   }
 
+  updateChallengeForTeam(c: IChallenge): Observable<IChallenge> {
+    const url = this.backendUrl + 'challenges/' + c.id;
+    const payload = JSON.stringify(c);
+    const headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
+    const options =  {
+        headers: headers,
+    };
+
+    return this.http.patch<IChallenge>(url, payload, options).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
+
+  deleteChallengeForTeam(c: IChallenge): Observable<void> {
+    const url = this.backendUrl + 'challenges/' + c.id;
+    const headers = new HttpHeaders({'Content-Type': 'application/json', 'Accept': '*/*'});
+    const options =  {
+        headers: headers,
+    };
+
+    return this.http.delete<void>(url, options).pipe(
+      // tslint:disable-next-line:no-console
+      tap(data => console.log('All: ' + JSON.stringify(data))),
+    catchError(this.handleError));
+  }
+
   private handleError(err: HttpErrorResponse) {
     // logging it to the console
     let errorMessage = '';

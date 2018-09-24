@@ -34,7 +34,7 @@ export class Challenge implements IChallenge {
     }
 
     getDate(dt: ChallengeDateType): Date {
-        return new Date(this.getYear(dt), this.getMonth(dt), this.getDay(dt));
+        return new Date(dt === ChallengeDateType.Start ? this.startDateTime : this.endDateTime);
     }
 
     getDay(dt: ChallengeDateType): number {
@@ -112,14 +112,16 @@ export class Challenge implements IChallenge {
     }
 
     setDate(dt: ChallengeDateType, dateCtrlValue: Date, h: number, m: number): void {
+        const mRound: number = this.round5(m); //ensure we are in 5 min increment
         const day: string    = ('0' + dateCtrlValue.getDate().toString()).slice(-2);
         const month: string  = ('0' + (dateCtrlValue.getMonth() + 1).toString()).slice(-2);
         const year: string   = ('0000' + dateCtrlValue.getFullYear().toString()).slice(-4);
         const hour: string   = ('0' + h.toString()).slice(-2);
-        const min: string    = ('0' + m.toString()).slice(-2);
+        const min: string    = ('0' + mRound.toString()).slice(-2);
 
         const dateString = year + '-' + month + '-' + day + 'T' + hour + ':' + min + ':00.0000000'
 
         dt === ChallengeDateType.Start ? this.startDateTime = dateString : this.endDateTime = dateString;
     }
+
 }
