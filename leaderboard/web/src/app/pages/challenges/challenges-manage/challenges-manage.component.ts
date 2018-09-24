@@ -1,12 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { FormGroup, FormControl, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Subscription, Observable } from 'rxjs';
 import { ChallengesService } from '../../../services/challenges.service';
 import { Challenge, ChallengeDateType } from '../challenge';
 import { TeamsService } from '../../../services/teams.service';
 import { ITeam } from '../../../shared/team';
 import { IChallengeDefinition } from '../../../shared/challengedefinition';
+
+export function challengeOpenForTeamValidator(cs: ChallengesService, addEdit: string): AsyncValidatorFn {
+  return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
+    return cs.getChallengesForTeam(control.value).map(
+      challenges => {
+        return (challenges && challenges.filter(c => addEdit === 'Edit' ?
+          c.team.teamName !== control.value && c.endDateTime === null :
+          c.endDateTime === null)
+          .length > 0) ? {'challengeOpenForTeam': true} : null;
+      },
+    );
+  };
+}
 
 @Component({
   selector: 'ngx-challenges-manage',
@@ -16,7 +29,7 @@ import { IChallengeDefinition } from '../../../shared/challengedefinition';
 export class ChallengesManageComponent implements OnInit, OnDestroy {
   form: FormGroup;
   private sub: Subscription;
-  hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
   minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
   teamNames: string[];
   challengeDefinitionNames: string[];
@@ -27,6 +40,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   addEdit = 'Add';
   teams: ITeam[];
   startDate: Date;
+  endDate: Date;
   challengeDefinitions: IChallengeDefinition[];
   challengesForTeam: Challenge[];
   model: Challenge;
@@ -42,7 +56,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({
-      selectTeam: ['', Validators.required],
+      selectTeam: ['', [ Validators.required ], [ challengeOpenForTeamValidator(this.cs, 'Add') ]],
       selectChallenge: ['', Validators.required],
       startDateTimeGroup: this.fb.group({
         startDateTime: [new Date(), Validators.required],
@@ -72,6 +86,10 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
           // edit code path
           this.addEdit = 'Edit';
 
+          this.form.controls.selectTeam.clearAsyncValidators();
+          this.form.controls.selectTeam.setAsyncValidators(challengeOpenForTeamValidator(this.cs, 'Edit'))
+          this.enableDisableControls();
+
           if (this.form) {
             this.form.reset();
           }
@@ -79,13 +97,16 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
           this.filterChallengeDefinitions();
           this.setSelectedTeam();
           this.setSelectedChallenge();
+          this.checkSetEndDateTime();
+          this.endDate = this.model.getDate(ChallengeDateType.End);
         } else {
           // add code path
           this.model = new Challenge();
-          this.startDate = this.model.getDate(ChallengeDateType.Start);
-        }
 
+        }
+        this.startDate = this.model.getDate(ChallengeDateType.Start);
         this.setDateTimes();
+
       });
   }
 
@@ -118,14 +139,34 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       const me: number = (<number>endDateGroup.controls.endHours.value);
 
       this.model.setDate(ChallengeDateType.End, de, he, me);
+
+      this.model.isCompleted = true;
+
+      this.updateChallenge().then(r => {
+        if (this.form) {
+          this.form.reset();
+        }
+        this.router.navigate(['/pages/challenges']);
+      });
+    } else {
+      this.createChallenge().then(r => {
+        if (this.form) {
+          this.form.reset();
+        }
+        this.router.navigate(['/pages/challenges']);
+      });
     }
 
-    this.createChallenge().then(r => {
-      if (this.form) {
-        this.form.reset();
-      }
-      this.router.navigate(['/pages/challenges']);
-    });
+
+  }
+
+  enableDisableControls() {
+    if (this.addEdit === 'Edit') {
+      this.form.controls.selectTeam.disable();
+      this.form.controls.selectChallenge.disable();
+    } else {
+
+    }
   }
 
   filterChallengeDefinitions() {
@@ -159,7 +200,8 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       this.cs.getChallenge(id)
         .subscribe(
           data => {
-            this.model = <Challenge>data;
+            this.model = new Challenge();
+            Object.assign(this.model, data);
             resolve(data);
           },
           error => {
@@ -215,6 +257,21 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     ));
   }
 
+  updateChallenge() {
+    return new Promise((resolve, reject) =>
+    this.cs.updateChallengeForTeam(this.model)
+    .subscribe(
+      data => {
+        this.model = <Challenge>data;
+        resolve(data);
+      },
+      error => {
+        this.errorMessage = <any>error;
+        reject(error);
+      },
+    ));
+  }
+
   setSelectedTeam() {
     const selectedTeamName = this.model.team.teamName;
     this.form.controls.selectTeam.patchValue(selectedTeamName);
@@ -224,9 +281,23 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     this.form.controls.selectChallenge.patchValue(selectedChallengeDefinitionName);
   }
 
+  checkSetEndDateTime() {
+    if (this.model.endDateTime === null) {
+      // set endDateTime to a time after StartDateTime if null
+      const sd: Date = new Date(this.model.startDateTime);
+      const ed: Date = new Date(sd.getTime() + 5 * 60000);
+      const h: number = ed.getHours();
+      const m: number = ed.getMinutes();
+      this.model.setDate( ChallengeDateType.End, ed, h, m);
+    }
+  }
+
   setDateTimes(): void {
     const startTimeGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
     const endTimeGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
+
+    let d: Date = this.model.getDate(ChallengeDateType.Start);
+    startTimeGroup.controls.startDateTime.patchValue(d);
 
     let n: number = this.model.getHours(ChallengeDateType.Start);
     startTimeGroup.controls.startHours.patchValue(n);
@@ -235,6 +306,9 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
     startTimeGroup.controls.startMins.patchValue(n);
 
     if (this.model.endDateTime != null) {
+      d = this.model.getDate(ChallengeDateType.End);
+      endTimeGroup.controls.endDateTime.patchValue(d);
+
       n = this.model.getHours(ChallengeDateType.End);
       endTimeGroup.controls.endHours.patchValue(n);
 
@@ -264,6 +338,11 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       ', startDateTime: ' + startDateTimeGroup.controls.startDateTime.valid +
       ', startHours: ' + startDateTimeGroup.controls.startHours.valid +
       ', startMins: ' + startDateTimeGroup.controls.startMins.valid;
+  }
+
+  getTimeToolTip() {
+    const d: Date = new Date();
+    return 'The current UTC Date/Time is: ' + d.toUTCString();
   }
 
   editEnabled(): boolean {

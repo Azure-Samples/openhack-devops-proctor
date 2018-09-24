@@ -38,6 +38,7 @@ namespace Sentinel.Controllers
         // * GET /api/leaderboard/challenges/id/{challengeId} - get challenge by id
         // * POST /api/leaderboard/challenges/ - create a challenge for a team
         // * PATCH /api/leaderboard/challenges/{challengeId} - update a challenge.  Update start/end times for a challenge
+        // * DELETE /api/leaderboard/challenges/{challengeId} - delete a challenge.
 
         //Challenge Definitions
         // * GET /api/leaderboard/challengedefinitions - Get list of challenge definitions.
@@ -241,6 +242,24 @@ namespace Sentinel.Controllers
             tmp.Score = c.Score;
 
             _context.Challenges.Update(tmp);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        ///
+        // * DELETE /api/leaderboard/challenges/{challengeId} - delete a challenge.
+
+        [HttpDelete("challenges/{challengeId}", Name = "DeleteChallenge")]
+        public IActionResult DeleteChallenge(string challengeId)
+        {
+            Challenge tmp = _context.Challenges.Find(challengeId);
+
+            if(tmp == null){
+                return NotFound();
+            }
+
+            _context.Challenges.Remove(tmp);
             _context.SaveChanges();
 
             return NoContent();
