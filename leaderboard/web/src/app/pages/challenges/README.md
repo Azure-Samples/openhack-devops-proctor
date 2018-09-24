@@ -52,7 +52,8 @@
 
 ### Guards
 - Can Deactivate: ask if want to lose changes DONE
-- On Save, prompt that you cannot change once saved.
+- On Save, prompt that you cannot change once saved. DONE
 
 
-## Add unsubscribe to list views
+## Add unsubscribe to list views DONE
+## Add delete to the challenges list with modal. DONE

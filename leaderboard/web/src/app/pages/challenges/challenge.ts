@@ -112,7 +112,7 @@ export class Challenge implements IChallenge {
     }
 
     setDate(dt: ChallengeDateType, dateCtrlValue: Date, h: number, m: number): void {
-        const mRound: number = this.round5(m); //ensure we are in 5 min increment
+        const mRound: number = this.round5(m); // ensure we are in 5 min increment
         const day: string    = ('0' + dateCtrlValue.getDate().toString()).slice(-2);
         const month: string  = ('0' + (dateCtrlValue.getMonth() + 1).toString()).slice(-2);
         const year: string   = ('0000' + dateCtrlValue.getFullYear().toString()).slice(-4);

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ChallengesManageComponent } from './challenges-manage.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChallengesManageGuard implements CanDeactivate<ChallengesManageComponent> {
   canDeactivate(component: ChallengesManageComponent): Observable<boolean> | Promise<boolean> | boolean {

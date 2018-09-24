@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IChallenge } from '../../shared/challenge';
 import { ChallengesService } from '../../services/challenges.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { ChallengesDeleteComponent } from './challenges-delete/challenges-delete.component';
 import { Challenge } from './challenge';
 @Component({
@@ -49,7 +49,7 @@ performFilter(filterBy: string): IChallenge[] {
 
   openDeleteDialog(id: string) {
 
-    this.getChallenge(id).then(r =>{
+    this.getChallenge(id).then(r => {
       const dialogRef = this.dialog.open(ChallengesDeleteComponent, {
         width: '250px',
         data: this.challenge,
@@ -73,7 +73,7 @@ performFilter(filterBy: string): IChallenge[] {
         .subscribe(
           data => {
             this.challenge = new Challenge();
-            Object.assign(this.challenge,data);
+            Object.assign(this.challenge, data);
             resolve(data);
           },
           error => {

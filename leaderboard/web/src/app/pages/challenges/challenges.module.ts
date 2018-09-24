@@ -15,7 +15,7 @@ import {
   MatIconModule,
   MatSelectModule,
   MatOptionModule,
-  MatButtonModule, } from '@angular/material';
+  MatButtonModule } from '@angular/material';
 @NgModule({
   imports: [
     CommonModule,

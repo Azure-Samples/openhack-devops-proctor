@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { Router } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { ChallengesService } from '../../../services/challenges.service';
 import { Challenge } from '../challenge';
 

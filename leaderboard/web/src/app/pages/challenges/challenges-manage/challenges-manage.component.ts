@@ -201,7 +201,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.model = new Challenge();
-            Object.assign(this.model,data);
+            Object.assign(this.model, data);
             resolve(data);
           },
           error => {
@@ -283,11 +283,11 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   checkSetEndDateTime() {
     if (this.model.endDateTime === null) {
-      //set endDateTime to a time after StartDateTime if null
+      // set endDateTime to a time after StartDateTime if null
       const sd: Date = new Date(this.model.startDateTime);
-      let ed: Date = new Date(sd.getTime() + 5*60000);
-      let h: number = ed.getHours();
-      let m: number = ed.getMinutes();
+      const ed: Date = new Date(sd.getTime() + 5 * 60000);
+      const h: number = ed.getHours();
+      const m: number = ed.getMinutes();
       this.model.setDate( ChallengeDateType.End, ed, h, m);
     }
   }
@@ -342,7 +342,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   getTimeToolTip() {
     const d: Date = new Date();
-    return "The current UTC Date/Time is: " + d.toUTCString();
+    return 'The current UTC Date/Time is: ' + d.toUTCString();
   }
 
   editEnabled(): boolean {
