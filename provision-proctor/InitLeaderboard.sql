@@ -14,7 +14,7 @@ VALUES(NEWID(),'Challenge 3', 50, 'Implement Unit Testing', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge 4', 50, 'Implement Continous Delivery (CD)', 0);
+VALUES(NEWID(),'Challenge 4', 50, 'Implement Continous Deployment (CD)', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
