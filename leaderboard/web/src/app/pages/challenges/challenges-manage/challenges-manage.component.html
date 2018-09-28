@@ -111,12 +111,14 @@
         </div>
       </div>
     </form>
+  <span *ngIf="!env.production">
     <br>Dirty: {{ form.dirty }}
     <br>Touched: {{ form.touched }}
     <br>Valid: {{ form.valid }}
     <br>Controls valid:{{controlsValid()}}
     <br>Value: {{ form.value | json }}
     <br>Model: {{model | json}}
+  </span>
     <div class='alert alert-danger' *ngIf='errorMessage'>{{errorMessage}}
     </div>
   </mat-card-content>
