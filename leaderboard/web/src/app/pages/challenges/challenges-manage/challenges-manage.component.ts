@@ -146,7 +146,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
       if (e !== null) {
         // abandon save, business rule check failed
-        this.errorMessage = e.key + ": " + e.errorMessage;
+        this.errorMessage = e.key + ': ' + e.errorMessage;
         return;
       }
 
@@ -166,7 +166,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
         if (e !== null) {
           // abandon save, business rule check failed
-          this.errorMessage = e.key + ": " + e.errorMessage;
+          this.errorMessage = e.key + ': ' + e.errorMessage;
           return;
         }
       }
@@ -264,10 +264,10 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       this.cs.getChallengesForTeam(teamName)
         .subscribe(
           data => {
-            let cArr: Array<Challenge> = new Array<Challenge>();
+            const cArr: Array<Challenge> = new Array<Challenge>();
             if (data.length > 0) {
-              for(let i:number = 0; i < data.length; i++) {
-                  let cAssign: Challenge = new Challenge();
+              for (let i: number = 0; i < data.length; i++) {
+                  const cAssign: Challenge = new Challenge();
                   Object.assign(cAssign, data[i]);
                   cArr.push(cAssign);
                 };
@@ -297,13 +297,13 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       },
     ));
   }
-    //end time > start time
+    // end time > start time
   checkEndTimeGreaterThanStartTime(): BusinessRuleValidationError {
     let e: BusinessRuleValidationError = new BusinessRuleValidationError();
 
     e = new Date(this.model.endDateTime) < new Date(this.model.startDateTime) ?
-      { key: "Invalid Start Date/Time",
-        errorMessage: "End Date/Time must be after Challenge Start Date/Time" } : null;
+      { key: 'Invalid Start Date/Time',
+        errorMessage: 'End Date/Time must be after Challenge Start Date/Time' } : null;
 
     return e;
   }
@@ -325,13 +325,13 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
         e = (new Date(maxChallenge.endDateTime) > new Date(this.model.startDateTime)) ?
           {
-            key: "Invalid Start Date/Time",
-            errorMessage: "The selected start date/time needs to be set to a date/time after " + maxChallenge.endDateTime
+            key: 'Invalid Start Date/Time',
+            errorMessage: 'The selected start date/time needs to be set to a date/time after ' + maxChallenge.endDateTime,
           } : null;
-        e === null ? resolve(null): resolve(e);
+        e === null ? resolve(null) : resolve(e);
       });
 
-    }
+    },
     );
 
   }
