@@ -2,32 +2,32 @@
 --Challenge Definitions
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge 0.5', 50, 'Establish your plan', 0);
+VALUES(NEWID(),'Challenge 1', 50, 'Establish your plan', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge 1', 50, 'Implement a Continuous Integration (CI) pipeline', 0);
+VALUES(NEWID(),'Challenge 2', 50, 'Implement Continuous Integration (CI)', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge 2', 50, 'Implement Release Management', 0);
+VALUES(NEWID(),'Challenge 3', 50, 'Implement Unit Testing', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge 3', 50, 'Implement a monitoring solution for your MyDriving', 0);
+VALUES(NEWID(),'Challenge 4', 50, 'Implement Continous Deployment (CD)', 0);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge - Medium 1', 100, 'Testing, testing, and testing', 1);
+VALUES(NEWID(),'Challenge 5', 100, 'Implement a basic Blue/Green Deployment Strategy', 1);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge - Medium 2', 100, 'Are you production-ready?', 1);
+VALUES(NEWID(),'Challenge 6', 200, 'Implement a monitoring solution for your MyDriving APIs', 1);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge - Difficult 1', 200, 'Implement deployment with phased rollout', 1);
+VALUES(NEWID(),'Challenge 7', 200, 'Implement Integration and Load Testing', 1);
 
 INSERT INTO leaderboard.dbo.ChallengeDefinitions
 (Id, Name, MaxPoints, Description, ScoreEnabled)
-VALUES(NEWID(),'Challenge - Difficult 1', 200, 'Can you survive a major disaster?', 1);
+VALUES(NEWID(),'Challenge 8', 200, 'Implement phased rollout with rollback', 1);
