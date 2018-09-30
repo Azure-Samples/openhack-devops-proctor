@@ -51,7 +51,9 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   challengesForTeam: Array<Challenge>;
   model: Challenge;
   validationErrors: BusinessRuleValidationError[];
-
+  currentUTCDateTime: string;
+  currentLocalDateTime: string;
+  timeTooltip: string;
   errorMessage = '';
 
   constructor(private route: ActivatedRoute,
@@ -62,6 +64,10 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    const currentDate: Date = new Date();
+    this.currentLocalDateTime = currentDate.toLocaleString();
+    this.currentUTCDateTime = currentDate.toUTCString();
+
     this.form = this.fb.group({
       selectTeam: ['', [ Validators.required ], [ challengeOpenForTeamValidator(this.cs, 'Add') ]],
       selectChallenge: ['', Validators.required],
@@ -417,11 +423,6 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       ', startDateTime: ' + startDateTimeGroup.controls.startDateTime.valid +
       ', startHours: ' + startDateTimeGroup.controls.startHours.valid +
       ', startMins: ' + startDateTimeGroup.controls.startMins.valid;
-  }
-
-  getTimeToolTip() {
-    const d: Date = new Date();
-    return 'The current UTC Date/Time is: ' + d.toUTCString();
   }
 
   editEnabled(): boolean {
