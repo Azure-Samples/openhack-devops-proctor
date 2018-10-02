@@ -28,5 +28,9 @@ usermod -aG docker jenkins
 # Enable Docker Remote API
 sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
 
+# Restart services
+systemctl daemon-reload
+sudo service docker restart
+
 # Run Jenkins
 sudo docker run --name openhack-jenkins -d --restart always -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 oguzpastirmaci/openhack-jenkins:101
