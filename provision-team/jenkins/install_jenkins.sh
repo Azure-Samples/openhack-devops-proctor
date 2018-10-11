@@ -281,7 +281,7 @@ retry_until_successful sudo test -f /var/lib/jenkins/secrets/initialAdminPasswor
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
-plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents)
+plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
 for plugin in "${plugins[@]}"; do
   run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy"
 done
@@ -476,6 +476,38 @@ sudo service jenkins restart
 # Wait until Jenkins is fully startup and functioning.
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
-#install common tools
+# Git
 sudo apt-get install git --yes
-sudo apt-get install azure-cli --yes
+
+# Docker
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce -y
+
+# Azure CLI
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+sudo apt-get install apt-transport-https
+sudo apt-get update && sudo apt-get install azure-cli
+
+# Kubectl
+az aks install-cli
+
+# Helm v2.9.1
+sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin/helm
+
+# Configure accessusermod -aG docker azureuser
+usermod -aG docker jenkins
+
+# Enable Docker Remote API
+sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
+
+# A restart will do the full reloading.
+sudo service jenkins restart
+# Wait until Jenkins is fully startup and functioning.
+retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
