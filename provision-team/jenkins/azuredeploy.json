@@ -52,7 +52,7 @@
       "vNetAddressPrefixes": "10.0.0.0/16",
       "sNetAddressPrefixes": "10.0.0.0/24",
       "vmPrivateIP": "10.0.0.5",
-      "_artifactsLocation": "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/jenkins-arm-vm/provision-team/",
+      "_artifactsLocation": "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-team/",
       "_extensionScript": "install_jenkins.sh",
       "_artifactsLocationSasToken": ""
     },
