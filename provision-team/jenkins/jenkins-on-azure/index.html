@@ -41,6 +41,9 @@
         <p><span class="snippet">ssh -L 127.0.0.1:8080:localhost:8080 jenkins@{domain-name}</span></p>
         <p>For Windows</p>
         <p><span class="snippet">putty.exe -ssh -L 8080:localhost:8080 jenkins@{domain-name}</span></p>
+        <p>1- After you have started your tunnel, navigate to http://localhost:8080/ on your local machine.</p>
+        <p>2- Unlock the Jenkins dashboard for the first time with the initial admin password. To get this token, SSH into the VM and run:</p>
+        <p><span class="snippet">sudo cat /var/lib/jenkins/secrets/initialAdminPassword</span></p>
       </div>
     </div>
 
