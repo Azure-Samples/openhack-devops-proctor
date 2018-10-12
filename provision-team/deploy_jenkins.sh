@@ -9,6 +9,7 @@ declare resourceGroupName=""
 declare resourceGroupLocation=""
 declare jenkinsVMPassword=""
 declare jenkinsURL=""
+declare adminUsername="jenkins"
 
 # Initialize parameters specified from command line
 while getopts ":g:l:p:u:" arg; do
@@ -71,5 +72,5 @@ fi
 az group deployment create \
     --name "${resourceGroupName}deployment" \
     --resource-group $resourceGroupName \
-    --template-file ../jenkins/azuredeploy.json \
-    --parameters adminPassword=$jenkinsVMPassword jenkinsDnsPrefix=$jenkinsURL
+    --template-file ./jenkins/azuredeploy.json \
+    --parameters adminPassword=$jenkinsVMPassword jenkinsDnsPrefix=$jenkinsURL adminUsername=$adminUsername
