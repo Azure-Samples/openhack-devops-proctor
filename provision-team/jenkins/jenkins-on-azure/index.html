@@ -37,7 +37,10 @@
         <p>This Jenkins instance does not support https, so logging in through a public IP address has been disabled (it would
           expose your password and other information to eavesdropping). To securely login, you need to connect to the Jenkins
           instance using SSH port forwarding.</p>
+        <p>For Linux or Mac</p>
         <p><span class="snippet">ssh -L 127.0.0.1:8080:localhost:8080 jenkins@{domain-name}</span></p>
+        <p>For Windows</p>
+        <p><span class="snippet">putty.exe -ssh -L 8080:localhost:8080 jenkins@{domain-name}</span></p>
       </div>
     </div>
 
