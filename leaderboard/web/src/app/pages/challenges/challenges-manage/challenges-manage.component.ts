@@ -7,6 +7,12 @@ import { Challenge, ChallengeDateType } from '../challenge';
 import { TeamsService } from '../../../services/teams.service';
 import { ITeam } from '../../../shared/team';
 import { IChallengeDefinition } from '../../../shared/challengedefinition';
+import { environment } from '../../../../environments/environment';
+
+class BusinessRuleValidationError {
+  key: string;
+  errorMessage: string;
+}
 
 export function challengeOpenForTeamValidator(cs: ChallengesService, addEdit: string): AsyncValidatorFn {
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
@@ -33,7 +39,7 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
   teamNames: string[];
   challengeDefinitionNames: string[];
-
+  env = environment;
 
   id: string;
   teamName: string;
@@ -42,9 +48,12 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   startDate: Date;
   endDate: Date;
   challengeDefinitions: IChallengeDefinition[];
-  challengesForTeam: Challenge[];
+  challengesForTeam: Array<Challenge>;
   model: Challenge;
-
+  validationErrors: BusinessRuleValidationError[];
+  currentUTCDateTime: string;
+  currentLocalDateTime: string;
+  timeTooltip: string;
   errorMessage = '';
 
   constructor(private route: ActivatedRoute,
@@ -55,6 +64,10 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    const currentDate: Date = new Date();
+    this.currentLocalDateTime = currentDate.toLocaleString();
+    this.currentUTCDateTime = currentDate.toUTCString();
+
     this.form = this.fb.group({
       selectTeam: ['', [ Validators.required ], [ challengeOpenForTeamValidator(this.cs, 'Add') ]],
       selectChallenge: ['', Validators.required],
@@ -115,6 +128,9 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.validationErrors = null;
+    this.errorMessage = '';
+
     this.model.challengeDefinitionId =
       this.challengeDefinitions.find(cd => cd.name === <string>this.form.controls.selectChallenge.value).id;
     this.model.teamId =
@@ -124,38 +140,60 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
     const startDateGroup: FormGroup = this.form.controls.startDateTimeGroup as FormGroup;
 
-
     const ds: Date = (<Date>(startDateGroup.controls.startDateTime as FormControl).value);
     const hs: number = (<number>startDateGroup.controls.startHours.value);
     const ms: number = (<number>startDateGroup.controls.startMins.value);
 
     this.model.setDate(ChallengeDateType.Start, ds, hs, ms);
 
-    if (this.addEdit === 'Edit') {
-      const endDateGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
+    // TODO - this is a hacky way of validating across from groups.  Neew to fix.
+    this.checkStartTimeGreaterThanClosedChallenges().then((e: BusinessRuleValidationError) => {
 
-      const de: Date = (<Date>(endDateGroup.controls.endDateTime as FormControl).value);
-      const he: number = (<number>endDateGroup.controls.endHours.value);
-      const me: number = (<number>endDateGroup.controls.endHours.value);
 
-      this.model.setDate(ChallengeDateType.End, de, he, me);
+      if (e !== null) {
+        // abandon save, business rule check failed
+        this.errorMessage = e.key + ': ' + e.errorMessage;
+        return;
+      }
 
-      this.model.isCompleted = true;
+      if (this.addEdit === 'Edit') {
+        const endDateGroup: FormGroup = this.form.controls.endDateTimeGroup as FormGroup;
 
-      this.updateChallenge().then(r => {
-        if (this.form) {
-          this.form.reset();
+        const de: Date = (<Date>(endDateGroup.controls.endDateTime as FormControl).value);
+        const he: number = (<number>endDateGroup.controls.endHours.value);
+        const me: number = (<number>endDateGroup.controls.endMins.value);
+
+        this.model.setDate(ChallengeDateType.End, de, he, me);
+
+        this.model.isCompleted = true;
+
+            // TODO - this is a hacky way of validating across from groups.  Neew to fix.
+        e = this.checkEndTimeGreaterThanStartTime();
+
+        if (e !== null) {
+          // abandon save, business rule check failed
+          this.errorMessage = e.key + ': ' + e.errorMessage;
+          return;
         }
-        this.router.navigate(['/pages/challenges']);
-      });
-    } else {
-      this.createChallenge().then(r => {
-        if (this.form) {
-          this.form.reset();
-        }
-        this.router.navigate(['/pages/challenges']);
-      });
-    }
+      }
+
+      if (this.addEdit === 'Edit') {
+        this.updateChallenge().then(r => {
+          if (this.form) {
+            this.form.reset();
+          }
+          this.router.navigate(['/pages/challenges']);
+        });
+      } else {
+        this.createChallenge().then(r => {
+          if (this.form) {
+            this.form.reset();
+          }
+          this.router.navigate(['/pages/challenges']);
+        });
+      }
+    });
+
 
 
   }
@@ -229,17 +267,26 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
 
   getChallengesForTeam(teamName: string) {
     return new Promise((resolve, reject) =>
-    this.cs.getChallengesForTeam(teamName)
-      .subscribe(
-        data => {
-          this.challengesForTeam = <Challenge[]>data;
-          resolve(data);
-        },
-        error => {
-          this.errorMessage = <any>error;
-          reject(error);
-        },
-      ));
+      this.cs.getChallengesForTeam(teamName)
+        .subscribe(
+          data => {
+            const cArr: Array<Challenge> = new Array<Challenge>();
+            if (data.length > 0) {
+              for (let i: number = 0; i < data.length; i++) {
+                  const cAssign: Challenge = new Challenge();
+                  Object.assign(cAssign, data[i]);
+                  cArr.push(cAssign);
+                };
+            }
+
+            this.challengesForTeam = cArr;
+            resolve(data);
+          },
+          error => {
+            this.errorMessage = <any>error;
+            reject(error);
+          },
+        ));
   }
 
   createChallenge() {
@@ -255,6 +302,44 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
         reject(error);
       },
     ));
+  }
+    // end time > start time
+  checkEndTimeGreaterThanStartTime(): BusinessRuleValidationError {
+    let e: BusinessRuleValidationError = new BusinessRuleValidationError();
+
+    e = new Date(this.model.endDateTime) < new Date(this.model.startDateTime) ?
+      { key: 'Invalid Start Date/Time',
+        errorMessage: 'End Date/Time must be after Challenge Start Date/Time' } : null;
+
+    return e;
+  }
+
+  // startTime > end time of all closed challenges
+  checkStartTimeGreaterThanClosedChallenges(): Promise<BusinessRuleValidationError | null> {
+    let e: BusinessRuleValidationError = new BusinessRuleValidationError();
+
+    return new Promise<BusinessRuleValidationError>((resolve, reject) => {
+      this.getChallengesForTeam(this.form.controls.selectTeam.value).then((results: any[]) => {
+        if (this.challengesForTeam === undefined || this.challengesForTeam === null || this.challengesForTeam.length < 2) {
+          resolve(null);
+          return;
+        }
+
+        const maxChallenge = this.challengesForTeam.reduce(function (prev, current) {
+          return (new Date(prev.endDateTime) > new Date(current.endDateTime)) ? prev : current;
+        });
+
+        e = (new Date(maxChallenge.endDateTime) > new Date(this.model.startDateTime)) ?
+          {
+            key: 'Invalid Start Date/Time',
+            errorMessage: 'The selected start date/time needs to be set to a date/time after ' + maxChallenge.endDateTime,
+          } : null;
+        e === null ? resolve(null) : resolve(e);
+      });
+
+    },
+    );
+
   }
 
   updateChallenge() {
@@ -338,11 +423,6 @@ export class ChallengesManageComponent implements OnInit, OnDestroy {
       ', startDateTime: ' + startDateTimeGroup.controls.startDateTime.valid +
       ', startHours: ' + startDateTimeGroup.controls.startHours.valid +
       ', startMins: ' + startDateTimeGroup.controls.startMins.valid;
-  }
-
-  getTimeToolTip() {
-    const d: Date = new Date();
-    return 'The current UTC Date/Time is: ' + d.toUTCString();
   }
 
   editEnabled(): boolean {

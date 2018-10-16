@@ -45,6 +45,7 @@ do
     #echo "Subscription: $subid"
     #echo "username: $username"
     #echo "Password: $password"
+
     GUID=$(echo $subid | sed -E -e 's/.{8}-.{4}-.{4}-.{4}-.{12}/guid/')
     if [[ $GUID == "guid" ]]; then
         az login --username=$username --password=$password > /dev/null

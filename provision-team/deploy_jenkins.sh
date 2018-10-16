@@ -9,6 +9,7 @@ declare resourceGroupName=""
 declare resourceGroupLocation=""
 declare jenkinsVMPassword=""
 declare jenkinsURL=""
+declare adminUsername="jenkins"
 
 # Initialize parameters specified from command line
 while getopts ":g:l:p:u:" arg; do
@@ -56,18 +57,20 @@ if [[ -z "$jenkinsURL" ]]; then
     read jenkinsURL
 fi
 
+#Check for existing RG
+if [ `az group exists -n $resourceGroupName -o tsv` == false ]; then
+    echo "Resource group with name" $resourceGroupName "could not be found. Creating new resource group.."
+    set -e
+    (
+        set -x
+        az group create --name $resourceGroupName --location $resourceGroupLocation
+    )
+else
+    echo "Using existing resource group..."
+fi
 
-    # Create a resource group.
-    az group create --name $resourceGroupName --location $resourceGroupLocation
-
-    # Create a new virtual machine, this creates SSH keys if not present.
-    az vm create --resource-group $resourceGroupName --name $jenkinsURL --admin-username jenkins --admin-password $jenkinsVMPassword --image UbuntuLTS --public-ip-address-dns-name $jenkinsURL
-
-    # Open port 22
-    az vm open-port --port 22 --resource-group $resourceGroupName --name $jenkinsURL  --priority 101
-
-    # Open port 8080
-    az vm open-port --port 8080 --resource-group $resourceGroupName --name $jenkinsURL --priority 102
-
-    # Use CustomScript extension to install.
-    az vm extension set --publisher Microsoft.Azure.Extensions --version 2.0 --name CustomScript --vm-name $jenkinsURL --resource-group $resourceGroupName --settings '{"fileUris": ["https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-team/configure_jenkins.sh"],"commandToExecute": "./configure_jenkins.sh"}'
+az group deployment create \
+    --name "${resourceGroupName}deployment" \
+    --resource-group $resourceGroupName \
+    --template-file ./jenkins/azuredeploy.json \
+    --parameters adminPassword=$jenkinsVMPassword jenkinsDnsPrefix=$jenkinsURL adminUsername=$adminUsername

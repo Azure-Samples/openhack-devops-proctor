@@ -4,7 +4,6 @@
   </mat-card-title>
   <mat-card-content>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="selectTeam">Select Team - required</label>
         <div class="col-md-8">
@@ -35,7 +34,7 @@
       <hr>
       <div formGroupName="startDateTimeGroup">
         <div class="form-group row">
-          <label class="col-md-2 col-form-label" for="startDTP">Start Date/Time - required</label>
+          <label class="col-md-2 col-form-label" for="startDTP" title="UTC: {{currentUTCDateTime}}&#10;Local: {{currentLocalDateTime}}">Start Date/Time (UTC) - required</label>
           <div class="col-md-8">
             <mat-form-field>
               <input matInput [matDatepicker]="startDTP" formControlName="startDateTime" placeholder="Choose a start date">
@@ -46,9 +45,8 @@
             </mat-form-field>
           </div>
         </div>
-
         <div class="form-group row">
-          <mat-label class="col-md-2 col-form-label" for="startHours" tooltip="getTimeToolTip()">Hour:Min (UTC) -
+          <mat-label class="col-md-2 col-form-label" for="startHours" title="UTC: {{currentUTCDateTime}}&#10;Local: {{currentLocalDateTime}}">Hour:Min (UTC) -
             required</mat-label>
           <div class="col-md-8">
             <mat-form-field>
@@ -68,7 +66,7 @@
         <hr>
         <div formGroupName="endDateTimeGroup">
           <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="endDTP">End Date/Time - required</label>
+            <label class="col-md-2 col-form-label" for="endDTP" title="UTC: {{currentUTCDateTime}}&#10;Local: {{currentLocalDateTime}}">End Date/Time (UTC) - required</label>
             <div class="col-md-8">
               <mat-form-field>
                 <input matInput [matDatepicker]="endDTP" formControlName="endDateTime" placeholder="Choose an end date">
@@ -81,7 +79,7 @@
           </div>
 
           <div class="form-group row">
-            <mat-label class="col-md-2 col-form-label" for="endHours" matTooltip="getTimeToolTip()">Hour:Min (UTC) -
+            <mat-label class="col-md-2 col-form-label" for="endHours" title="UTC: {{currentUTCDateTime}}&#10;Local: {{currentLocalDateTime}}">Hour:Min (UTC) -
               required</mat-label>
             <div class="col-md-8">
               <mat-form-field>
@@ -111,12 +109,14 @@
         </div>
       </div>
     </form>
+  <span *ngIf="!env.production">
     <br>Dirty: {{ form.dirty }}
     <br>Touched: {{ form.touched }}
     <br>Valid: {{ form.valid }}
     <br>Controls valid:{{controlsValid()}}
     <br>Value: {{ form.value | json }}
     <br>Model: {{model | json}}
+  </span>
     <div class='alert alert-danger' *ngIf='errorMessage'>{{errorMessage}}
     </div>
   </mat-card-content>
