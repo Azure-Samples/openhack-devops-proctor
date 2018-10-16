@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Use this script to validate that all the team environment have been provisioned correclty.
+# The errors.log file contains the list of subscription where the deployment script has not completed successfully.
+
 usage() { echo "Usage: getteams.sh -p <credentials.csv> -i <ssh_private_key>" 1>&2; exit 1; }
 
 while getopts ":p:i:" arg; do
@@ -39,6 +42,10 @@ do
     subid=$(echo $cred | awk -F ", " '{ print $3 }')
     username=$(echo $cred | awk -F ", " '{ print $5 }')
     password=$(echo $cred | awk -F ", " '{ print $6 }')
+    #echo "Subscription: $subid"
+    #echo "username: $username"
+    #echo "Password: $password"
+
     GUID=$(echo $subid | sed -E -e 's/.{8}-.{4}-.{4}-.{4}-.{12}/guid/')
     if [[ $GUID == "guid" ]]; then
         az login --username=$username --password=$password > /dev/null
@@ -55,6 +62,16 @@ do
                 echo "[ERROR] Getting team_env directory failed" >> errors.log
             fi
 
+            # Getting stderr and stdout from custom script extension.
+            ssh -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress sudo cp /var/lib/waagent/custom-script/download/0/stderr .
+            ssh -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress sudo chown azureuser:azureuser ./stderr
+            scp -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress:./stderr ./$teamAAD/
+
+            ssh -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress sudo cp /var/lib/waagent/custom-script/download/0/stdout .
+            ssh -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress sudo chown azureuser:azureuser ./stdout
+            scp -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress:./stdout ./$teamAAD/
+
+            # Getting deployment logs 
             scp -o StrictHostKeyChecking=no -i $ID_RSA_FILE azureuser@$ipaddress:/home/azureuser/openhack-devops-proctor/provision-team/teamdeploy.out ./$teamAAD/
             if [ $? -ne 0 ]; then
                 echo "[ERROR] Getting teamdeploy.out file failed" >> errors.log
