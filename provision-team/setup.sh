@@ -245,7 +245,7 @@ bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s 
 echo "6-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber})"
 bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber}
 
-echo "7-Provision SQL & Mobile App  (bash ./provision_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
+echo "7-Provision SQL (bash ./provision_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
 bash ./provision_sql.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
 
 echo "8-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${teamNumber} -k $keyVaultName -d $sqlDBName)"
