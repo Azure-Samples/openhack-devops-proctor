@@ -138,8 +138,6 @@ declare registryName="${teamName}${teamNumber}acr"
 declare clusterName="${teamName}${teamNumber}aks"
 declare keyVaultName="${teamName}${teamNumber}kv"
 declare sqlServerName="${teamName}${teamNumber}sql"
-declare hostingPlanName="${teamName}${teamNumber}plan"
-declare mobileAppName="${teamName}${teamNumber}app"
 declare sqlServerUsername="${teamName}${teamNumber}sa"
 declare sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)pwd"
 declare sqlDBName="mydrivingDB"
@@ -162,8 +160,6 @@ echo "sqlServerName             = "${sqlServerName}
 echo "sqlServerUsername         = "${sqlServerUsername}
 echo "sqlServerPassword         = "${sqlServerPassword}
 echo "sqlDBName                 = "${sqlDBName}
-echo "hostingPlanName           = "${hostingPlanName}
-echo "mobileAppName             = "${mobileAppName}
 echo "jenkinsVMPassword         = "${jenkinsVMPassword}
 echo "jenkinsURL                = "${jenkinsURL}.${resourceGroupLocation}.cloudapp.azure.com:8080
 echo "recipientEmail            = "${recipientEmail}
@@ -249,8 +245,10 @@ bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s 
 echo "6-Deploy ingress  (bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber})"
 bash ./deploy_ingress_dns.sh -s ./test_fetch_build -l $resourceGroupLocation -n ${teamName}${teamNumber}
 
-echo "7-Provision SQL & Mobile App  (bash ./provision_sql_mobileapp.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
-bash ./provision_sql_mobileapp.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -m $mobileAppName -h $hostingPlanName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
+########### TO UPDATE ###########
+echo "7-Provision SQL & Mobile App  (bash ./provision_sql_mobileapp.sh -s ./test_fetch_build -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName)"
+bash ./provision_sql_mobileapp.sh -g $resourceGroupTeam -l $resourceGroupLocation -q $sqlServerName -k $keyVaultName -u $sqlServerUsername -p $sqlServerPassword -d $sqlDBName
+
 
 echo "8-Configure SQL  (bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${teamNumber} -k $keyVaultName -d $sqlDBName)"
 bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServerUsername -n ${teamName}${teamNumber} -k $keyVaultName -d $sqlDBName
