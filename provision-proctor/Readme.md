@@ -3,7 +3,7 @@
 This is the guide to deploy the environment used by the monitoring solution of the DevOps OpenHack.
 It may also be referenced sometimes as the proctor environment.
 
-Identify and reserve a specific subscription in your classroom to deploy the monitoring environment before your launch this deployment. It is recommended to use either the first one or the last one.
+Identify and reserve a specific subscription in your classroom to deploy the monitoring environment before your launch this deployment. It is recommended to use the last one.
 
 ## Usage
 
