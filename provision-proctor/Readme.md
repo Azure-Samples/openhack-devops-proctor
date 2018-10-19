@@ -1,22 +1,27 @@
-# Infrastructure deployment scripts
+# Infrastructure monitoring deployment scripts
 
-This is the guide to deploy the environment used by the monitoring solution of the OpenHack.
+This is the guide to deploy the environment used by the monitoring solution of the DevOps OpenHack.
 It may also be referenced sometimes as the proctor environment.
 
-Identify a specific subscription to deploy the monitoing environment before your launch this deployment. 
+Identify and reserve a specific subscription in your classroom to deploy the monitoring environment before your launch this deployment. It is recommended to use either the first one or the last one.
 
 ## Usage
 
-1. Deploy the provisioning VM for the monitoring environment using the following ARM Template or the button below.
+1. Identify the VM named "proctorVM" in the subscription that you have selected and update its ssh key pair with your own. Instructions how to do so are here: https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/vmaccess#update-ssh-key 
 
-2. Provision all the team envrionments.
+2. SSH to the VM with the `azureuser` account and navigate to `/home/azureuser/openhack-devops-proctor/provision-proctor`
 
-3. <TO BE COMPLETED> Collect the kvstore files from the VM provisioning the teams. 
+3. Run the following command `nohup ./setup.sh -i <subscriptionId> -l <location> -u <azureUserName> -p '<azurePassword>' > monitoringdeploy.out &`
 
-4. SSH to the VM using the private key provided in the DevOps OpenHack documentation or reset the public key on this VM.
+### **Wait for the script to complete - It will take about 30 min**
 
-5. From the directory `/home/azureuser/openhack-devops-proctor/provision-procotor  ` Run the deployment script [./setup.sh](./setup.sh) on the provisioning VM using the following command line: 
+4. The last line of the `monitoringdeploy.out` file should have this line "############ END OF MONITORING PROVISION ############"
 
-```
-nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -m <proctorName> -u <proctorNumber> -n <teamName> -e <totalTeams> > <proctorName><proctorNumber>.out &
-```
+5. From the classroom manager portal, download the CSV file with the azure credentials of the attendees subscriptions and upload it to the "proctorVM". You can use the following command:
+
+`scp -o StrictHostKeyChecking=no -i ~/.ssh/openhack_rsa [local_path]/credentials.csv azureuser@<IP_ADDRESS>:~/openhack-devops-proctor/provision-proctor/credentials.csv`
+
+
+6. Identify the _proctorEnvironmentName_. It is the first 18 characters of the monitoring resource group. For example if the monitoring resourcegroup is named _monitoring2qy26600rg_ the proctorEnvironmentName is _monitoring2qy26600_.
+
+6. Provision the monitoring agent _Sentinel_ using the following command: `bash ./deploy_sentinel.sh -p <proctorEnvironmentName> -f credentials.csv > deploysentinel.log`
