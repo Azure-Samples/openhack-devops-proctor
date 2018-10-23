@@ -496,9 +496,9 @@ sudo apt-get update && sudo apt-get install azure-cli
 # Kubectl
 az aks install-cli
 
-# Helm v2.9.1
-sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.9.1-linux-amd64.tar.gz
+# Helm v2.11.0
+sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 # Configure accessusermod -aG docker azureuser
@@ -506,6 +506,8 @@ usermod -aG docker jenkins
 
 # Enable Docker Remote API
 sudo sed -i -e 's/ExecStart.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:4243/g' /lib/systemd/system/docker.service
+# Restart Docker daemon
+sudo systemctl restart docker.service
 
 # A restart will do the full reloading.
 sudo service jenkins restart
