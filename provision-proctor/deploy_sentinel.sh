@@ -76,8 +76,8 @@ if [[ $localEnv == "no" ]]; then
             ipaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
             if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
                 teamAAD=$(echo "$username"  | sed -e 's/.*?*@\(.*\)ops.onmicrosoft.com/\1/')
-                curl -o /home/azureuser/team_env/kvstore/$teamAAD http://${ipaddress}:2018/ohteamvalues 
-                echo "$teamAAD is at $ipaddress"
+                curl -o /home/azureuser/team_env/kvstore/${teamAAD,,} http://${ipaddress}:2018/ohteamvalues 
+                echo "${teamAAD,,} is at $ipaddress"
             fi
         fi
     done
