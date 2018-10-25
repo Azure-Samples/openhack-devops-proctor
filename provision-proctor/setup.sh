@@ -221,3 +221,5 @@ bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGr
 
 echo "11-Clean the working environment"
 bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
+
+echo "############ END OF MONITORING PROVISION ############"
