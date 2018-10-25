@@ -23,6 +23,19 @@ while getopts ":c:k:l:p:" arg; do
     esac
 done
 
+declare ZIP_FILES=0
+
+if ! [[ -x "$(gunip --version)" ]]; then
+    echo -e "zip is not installed, you will have to package the files manually.\nRun the following command on Ubuntu: sudo apt-get install zip\nDo you want to continue? (yes|no)"
+    read INSTALL_ZIP 
+    if [[ "$INSTALL_ZIP" != "y" && "$INSTALL_ZIP" != "yes"  ]]; then 
+        echo "Exiting ..."
+        exit 1 
+    else
+        ZIP_FILES=1
+    fi
+fi
+
 if [[ -z "$csvFile" ]]; then
     echo "Indicate the path to the csvfile that was downloaded from the classroom management portal"
     read csvFile
@@ -137,6 +150,9 @@ EOF
 done
 
 # Packaging the results
-zip -r teamfiles.zip OTA*
+if [[ $ZIP_FILES]]; then
+    zip -r teamfiles.zip OTA*
+    echo "Data from the teams deployment are in teamfiles.zip"
+fi
 
-echo "Data from the teams deployment are in teamfiles.zip"
+echo "######## End of validation script ########"
