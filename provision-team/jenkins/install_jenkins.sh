@@ -496,9 +496,9 @@ sudo apt-get update && sudo apt-get install azure-cli
 # Kubectl
 az aks install-cli
 
-# Helm v2.11.0
-sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
+# Helm v2.10.0
+sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 # Configure accessusermod -aG docker azureuser
