@@ -31,13 +31,13 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 
-echo "############### Installing Helm v2.10.0 ###############"
-sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
+echo "############### Installing Helm v2.11.0 ###############"
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.3/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -45,7 +45,7 @@ echo "############### Installing Packages ###############"
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.45-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.49-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
