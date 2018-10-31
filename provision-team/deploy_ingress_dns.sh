@@ -78,7 +78,7 @@ if [ $? -ne 0 ]; then
 fi
 
 count=0
-until kubectl get pods --all-namespaces | grep -E "kube-system(\s){3}tiller.*Running+"
+until kubectl get pods --all-namespaces | grep -E "kube-system.*tiller.*1\/1.*Running+"
 do
         sleep ${wait}
         if [ ${count} -gt ${timeout} ]; then
