@@ -64,7 +64,7 @@ fi
 
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 if [ $? -ne 0 ]; then
-    echo "[ERROR] Creationg of dashboard-admin failed"
+    echo "[ERROR] Creation of dashboard-admin failed"
     exit 1 
 fi
 
