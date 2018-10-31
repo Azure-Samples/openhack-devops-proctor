@@ -11,6 +11,7 @@ usage() { echo "Usage: deploy_ingress_dns.sh -s <relative save location> -l <res
 declare relativeSaveLocation=""
 declare resourceGroupLocation=""
 declare teamName=""
+declare timeout=120  #Number of 5 seconds loop before timeout
 
 # Initialize parameters specified from command line
 while getopts ":s:l:n:" arg; do
@@ -50,21 +51,41 @@ fi
 echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
 
 kubectl create serviceaccount --namespace kube-system tillersa
+if [ $? -ne 0 ]; then
+    echo "[ERROR] Creation of tillersa failed"
+    exit 1 
+fi
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
+if [ $? -ne 0 ]; then
+    echo "[ERROR] Creation of the tiller-cluster-rule failed"
+    exit 1 
+fi
 
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+if [ $? -ne 0 ]; then
+    echo "[ERROR] Creation of dashboard-admin failed"
+    exit 1 
+fi
 
 echo "Upgrading tiller (helm server) to match client version."
 
-helm init --upgrade --service-account tillersa --wait
+helm init --upgrade --service-account tillersa
+if [ $? -ne 0 ]; then
+    echo "[ERROR] The helm init command failed"
+    exit 1 
+fi
 
-tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
-
-while [ $tiller != "Running" ]; do
-        echo "Waiting for tiller ..."
-        tiller=$(kubectl get pods --all-namespaces | grep tiller | awk '{print $4}')
+count=0
+until kubectl get pods --all-namespaces | grep -E "kube-system(\s){3}tiller.*Running+"
+do
         sleep 5
+        if [ $count -gt $timeout ]; then
+            printf "Timeout - Waited %s times 5 seconds on tiller to be Running\n" "$count"
+            exit 1
+        fi
+        printf "Waiting for tiller ...\n"
+        (( ++count ))
 done
 
 echo "tiller upgrade complete."
