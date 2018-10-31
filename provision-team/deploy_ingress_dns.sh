@@ -11,7 +11,8 @@ usage() { echo "Usage: deploy_ingress_dns.sh -s <relative save location> -l <res
 declare relativeSaveLocation=""
 declare resourceGroupLocation=""
 declare teamName=""
-declare timeout=120  #Number of 5 seconds loop before timeout
+declare timeout=120  #Number of loops before timeout on check on tiller
+declare wait=5       #Number of seconds between to checks on tiller
 
 # Initialize parameters specified from command line
 while getopts ":s:l:n:" arg; do
@@ -79,12 +80,12 @@ fi
 count=0
 until kubectl get pods --all-namespaces | grep -E "kube-system(\s){3}tiller.*Running+"
 do
-        sleep 5
-        if [ $count -gt $timeout ]; then
-            printf "Timeout - Waited %s times 5 seconds on tiller to be Running\n" "$count"
+        sleep ${wait}
+        if [ ${count} -gt ${timeout} ]; then
+            printf "Timeout - Waited %s seconds on tiller to be Running\n" "$(($count*$wait))"
             exit 1
         fi
-        printf "Waiting for tiller ...\n"
+        printf "Waiting for tiller ... %s seconds\n" "$(($count*$wait))"
         (( ++count ))
 done
 
