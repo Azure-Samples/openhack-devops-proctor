@@ -70,7 +70,7 @@ echo "$(tput setaf 3)Creating the database...$(tput sgr 0)"
 (
 	set -x
 	az sql db create --server $sqlServerName --resource-group $resourceGroupName --name $sqlDBName \
-	--service-objective S4 --collation 'SQL_Latin1_General_CP1_CI_AS'
+	--service-objective S3 --collation 'SQL_Latin1_General_CP1_CI_AS'
 )
 
 if [ $? == 0 ];
