@@ -83,7 +83,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PO
 BEGIN
 CREATE TABLE [dbo].[POIs](
 	[Id] [nvarchar](128) NOT NULL,
-	[TripId] [nvarchar](max) NULL,
+	[TripId] [nvarchar](128) NULL,
 	[Latitude] [float] NOT NULL,
 	[Longitude] [float] NOT NULL,
 	[POIType] [int] NOT NULL,
@@ -156,7 +156,7 @@ BEGIN
 CREATE TABLE [dbo].[Trips](
 	[Id] [nvarchar](128) NOT NULL,
 	[Name] [nvarchar](max) NULL,
-	[UserId] [nvarchar](max) NULL,
+	[UserId] [nvarchar](128) NULL,
 	[RecordedTimeStamp] [datetime] NOT NULL,
 	[EndTimeStamp] [datetime] NOT NULL,
 	[Rating] [int] NOT NULL,
@@ -412,53 +412,6 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserProfilesOnInsert]'))
-EXEC dbo.sp_executesql @statement = N'CREATE TRIGGER [dbo].[UpdateUserProfilesOnInsert] ON [dbo].[POIs]
-FOR INSERT
-AS
-        -- Do it for all rows inserted (maybe bulk insert)
-        DECLARE crs CURSOR FOR
-                SELECT TripId FROM inserted
-
-        DECLARE @TId nvarchar(100)
-
-        OPEN crs
-        FETCH NEXT FROM crs INTO @TId
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-
-               -- Update Accelerations
-               WITH ascnt1 AS (
-                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt1
-                                  FROM            dbo.POIs AS p INNER JOIN
-                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
-                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
-                                  WHERE        (p.POIType = 1)
-                                  GROUP BY p.TripId, up.UserId
-               )
-               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardAccelerations = ascnt1.cnt1 FROM ascnt1
-               WHERE ascnt1.TripId = @TId AND dbo.UserProfiles.UserId = ascnt1.UserId;
-
-                           -- Update Hard Stops
-               WITH ascnt2 AS (
-                                  SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt2
-                                  FROM            dbo.POIs AS p INNER JOIN
-                                                                           dbo.Trips AS t ON p.TripId = t.Id INNER JOIN
-                                                                           dbo.UserProfiles AS up ON t.UserId = up.UserId
-                                  WHERE        (p.POIType = 2)
-                                  GROUP BY p.TripId, up.UserId
-               )
-               UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardStops = ascnt2.cnt2 FROM ascnt2
-               WHERE ascnt2.TripId = @TId AND dbo.UserProfiles.UserId = ascnt2.UserId;
-
-
-               FETCH NEXT FROM crs INTO @TId
-        END
-        CLOSE crs
-        DEALLOCATE crs'
-GO
-ALTER TABLE [dbo].[POIs] ENABLE TRIGGER [UpdateUserProfilesOnInsert]
-GO
 /****** Object:  Trigger [dbo].[TR_dbo_TripPoints_InsertUpdateDelete]    Script Date: 3/24/2016 7:53:17 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -586,15 +539,15 @@ AS
         -- Do it for all rows inserted (maybe bulk insert)
         DECLARE crs CURSOR FOR
                 SELECT TripId FROM inserted
-        
+
         DECLARE @TId nvarchar(100)
-        
+
         OPEN crs
         FETCH NEXT FROM crs INTO @TId
         WHILE @@FETCH_STATUS = 0
         BEGIN
 
-               -- Update Accelerations      
+               -- Update Accelerations
                WITH ascnt1 AS (
                                   SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt1
                                   FROM            dbo.POIs AS p INNER JOIN
@@ -602,10 +555,10 @@ AS
                                                                            dbo.UserProfiles AS up ON t.UserId = up.UserId
                                   WHERE        (p.POIType = 1)
                                   GROUP BY p.TripId, up.UserId
-               )       
+               )
                UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardAccelerations = ascnt1.cnt1 FROM ascnt1
                WHERE ascnt1.TripId = @TId AND dbo.UserProfiles.UserId = ascnt1.UserId;
-        
+
                -- Update Hard Stops
                WITH ascnt2 AS (
                                   SELECT        p.TripId, up.UserId, COUNT(p.POIType) AS cnt2
@@ -614,11 +567,11 @@ AS
                                                                            dbo.UserProfiles AS up ON t.UserId = up.UserId
                                   WHERE        (p.POIType = 2)
                                   GROUP BY p.TripId, up.UserId
-               )       
+               )
                UPDATE dbo.UserProfiles SET dbo.UserProfiles.HardStops = ascnt2.cnt2 FROM ascnt2
                WHERE ascnt2.TripId = @TId AND dbo.UserProfiles.UserId = ascnt2.UserId;
-        
-        
+
+
                FETCH NEXT FROM crs INTO @TId
         END
         CLOSE crs
