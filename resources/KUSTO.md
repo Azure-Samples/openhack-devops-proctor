@@ -20,7 +20,7 @@ Click the **Run** button.
 
 This query uses **ContainerLog** as data source and searches for the entries that contain the word "simulator". The rows matching the criteria are returned.
 
-Expand the first entry by clicking on the arrow on the left of the line. The rows returned to understand the fields of each entry will be displayed.
+Expand the first entry by clicking on the arrow on the left of the line. The key/value pairs will help understand the fields of each returned row.
 
 Look more specifically at the following fields:
 - TimeGenerated\[UTC\]: This is the time at which the log entry has been generated
