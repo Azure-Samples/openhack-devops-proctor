@@ -6,7 +6,7 @@ Have the Azure CLI installed and the username and password used to logon to the 
 
 ## Usage
 
-1. Login to the azure subscription 
+1. Login to the azure subscription
 
     ```shell
     az login --username='<AzureUserName>' --password='<AzurePassword>'
@@ -18,13 +18,13 @@ Have the Azure CLI installed and the username and password used to logon to the 
     az group create --name="<ResourceGroupName>" --location="<Location>"
     ```
 
-1. Run the deployment in that resourcegroup
+1. Run the deployment in that resource group
 
     ```shell
     az group deployment create --resource-group="<ResourceGroupName>" --template-file ./azuredeploy.json --parameters azureUserName='<AzureUserName>' azurePassword='<AzurePassword>'
     ```
 
-Change `AzureUserName`, `AzureUserName`, `ResourceGroupName`, and `Location` with your values.
+Change `AzureUserName`, `AzurePassword`, `ResourceGroupName`, and `Location` with your values.
 This ARM template will run the ```../provision-vm/proctorVMSetup.sh``` script and launch ```../provision-team/setup.sh``` as a background task.
 
 The logs of the ```setup.sh``` script are located in ```/home/azureuser/openhack-devops-procotor/provision-team/teamdeploy.out```
