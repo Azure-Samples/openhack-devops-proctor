@@ -281,9 +281,8 @@ retry_until_successful sudo test -f /var/lib/jenkins/secrets/initialAdminPasswor
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
-plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggegator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
+plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
 for plugin in "${plugins[@]}"; do
-  echo "###### installing plugin $plugin ######"
   (run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy") || true 
 done
 
@@ -497,9 +496,9 @@ sudo apt-get update && sudo apt-get install azure-cli
 # Kubectl
 az aks install-cli
 
-# Helm v2.10.0
-sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.10.0-linux-amd64.tar.gz
+# Helm v2.11.0
+sudo curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 # Configure accessusermod -aG docker azureuser
