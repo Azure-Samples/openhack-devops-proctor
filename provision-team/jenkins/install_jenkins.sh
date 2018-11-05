@@ -1,4 +1,5 @@
 #!/bin/bash
+# Upstream modified source: https://github.com/Azure/azure-devops-utils/blob/master/jenkins/install_jenkins.sh
 echo $@
 function print_usage() {
   cat <<EOF
@@ -254,14 +255,11 @@ sudo add-apt-repository ppa:openjdk-r/ppa --yes
 
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
 wget -q -O - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
 
-# Get the Microsoft signing key 
-curl -L https://packages.microsoft.com/keys/microsoft.asc 2>&1 | sudo apt-key add -
 # Get the Docker GPG key 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg 2>&1 | sudo apt-key add -
 
-# Azure-cli
-sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main"
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -486,9 +484,7 @@ sudo service jenkins restart
 # Wait until Jenkins is fully startup and functioning.
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
-echo "############### Installing Packages ###############" 
-sudo DEBIAN_FRONTEND=noninteractive apt-get update 
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
+echo "############### Installing Packages ###############"
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.0.49-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
