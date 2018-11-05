@@ -281,8 +281,9 @@ retry_until_successful sudo test -f /var/lib/jenkins/secrets/initialAdminPasswor
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
-plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
+plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggegator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
 for plugin in "${plugins[@]}"; do
+  echo "###### installing plugin $plugin ######"
   (run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy") || true 
 done
 
