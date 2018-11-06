@@ -37,6 +37,6 @@ ssh -i ..\id_rsa azureuser@procohvm336.westus2.cloudapp.azure.com
 
 ## Using the portal
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fopenhack-devops-proctor%2Fvmnologin%2Fprovision-vm%2Flabdeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fopenhack-devops-proctor%2Fnologin%2Fprovision-vm%2Flabdeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>

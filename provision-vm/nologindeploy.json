@@ -192,7 +192,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/vmnologin/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/nologin/provision-vm/proctorVMSetup.sh"
                     ],
                     "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'))]"
                 }
