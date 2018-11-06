@@ -88,4 +88,6 @@ echo "Team Name: $TEAMNAME"
 # Launching the team provisioning in background
 # sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE">teamdeploy.out &
 
+sudo chown -R azureuser:azureuser ~/.docker
+
 echo "############### End of custom script ###############"
