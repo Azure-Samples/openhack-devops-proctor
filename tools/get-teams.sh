@@ -25,7 +25,11 @@ done
 
 declare ZIP_FILES=0
 
-if ! [[ -x "$(gunip --version)" ]]; then
+testzip () {
+    zip --version >/dev/null
+}
+
+if ! testzip; then
     echo -e "zip is not installed, you will have to package the files manually.\nRun the following command on Ubuntu: sudo apt-get install zip\nDo you want to continue? (yes|no)"
     read INSTALL_ZIP 
     if [[ "$INSTALL_ZIP" != "y" && "$INSTALL_ZIP" != "yes"  ]]; then 
@@ -94,7 +98,8 @@ do
                 echo "Resetting public key to ProctorVM "
                 az vm user update --resource-group=ProctorVMRG --name=proctorVM --username azureuser --ssh-key-value $ID_RSA_PUBLIC
             else
-                echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid"
+                echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid - Exiting ..."
+                exit 1
             fi
 
             scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/team_env/* ./$teamAAD/
@@ -150,7 +155,7 @@ EOF
 done
 
 # Packaging the results
-if [[ $ZIP_FILES]]; then
+if [[ $ZIP_FILES ]]; then
     zip -r teamfiles.zip OTA*
     echo "Data from the teams deployment are in teamfiles.zip"
 fi
