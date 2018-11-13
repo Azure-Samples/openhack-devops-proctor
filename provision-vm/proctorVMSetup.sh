@@ -50,11 +50,15 @@ sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 touch /home/azureuser/.bashrc
-echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
+sudo ln -sfn /opt/mssql-tools/bin/sqlcmd /usr/bin/sqlcmd
+sudo ln -sfn /opt/mssql-tools/bin/bcp /usr/bin/bcp
 
 echo "############### Pulling Openhack-tools from Github ###############"
 sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
+# For nologin deployment, check out the nologin branch
+cd /home/azureuser/openhack-devops-proctor
+git checkout nologin
 
 echo "############### Install kvstore ###############"
 sudo install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore

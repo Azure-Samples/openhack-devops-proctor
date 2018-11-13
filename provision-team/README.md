@@ -10,9 +10,11 @@ The required pre-requisites for installing a team environment are installed as p
 
 ## Usage
 
-    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> ><teamName><teamNumber>.out &`
+**NOTE**: Prior to executing the setup script below for a team, you must login against the target subscription. Skip it if you have already done so using the azure cli.
 
-**NOTE: You must login against the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.**
+**NOTE**: Do not run this command as root (`sudo su` or `sudo [command]`). Run it using the standard user.
+
+    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> ><teamName><teamNumber>.out &`
 
 ### Parameters
 
