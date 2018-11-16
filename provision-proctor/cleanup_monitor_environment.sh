@@ -1,9 +1,15 @@
 #!/bin/bash
 
-usage() { echo "Usage: cleanup_environment.sh -t <monitoringName>" 1>&2; exit 1; }
+usage() { echo "Usage: cleanup_environment.sh -c <clusterName> -r <resourceGroupName> -t <monitoringName>" 1>&2; exit 1; }
 
-while getopts ":t:" arg; do
+while getopts ":c:r:t:" arg; do
     case "${arg}" in
+        c)
+            clusterName=${OPTARG}
+        ;;
+        r)
+            resourceGroupName=${OPTARG}
+        ;;
         t)
             monitoringName=${OPTARG}
         ;;
@@ -13,6 +19,16 @@ done
 if [[ -z "$monitoringName" ]]; then
     echo "Enter the monitoringName to use for filepath"
     read monitoringName
+fi
+
+if [[ -z "$resourceGroupName" ]]; then
+    echo "Enter the resourceGroupName to use for filepath"
+    read resourceGroupName
+fi
+
+if [[ -z "$clusterName" ]]; then
+    echo "Enter the clusterName to use for filepath"
+    read clusterName
 fi
 
 # Copy the kubeconfig file
