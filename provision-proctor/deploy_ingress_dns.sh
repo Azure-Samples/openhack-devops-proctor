@@ -115,6 +115,8 @@ echo -e "\n\nInstalling Traefik Ingress controller ..."
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
+helm ls
+
 helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
 echo "Waiting for public IP:"
