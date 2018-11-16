@@ -100,22 +100,12 @@ cat "../provision-team/traefik-values.yaml" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
 
-time=0
-while true; do
-        TILLER_STATUS=$(kubectl get pods --all-namespaces --selector=app=helm -o json | jq -r '.items[].status.phase')
-        echo -e "\n\nVerifying tiller is ready"
-        if [[ "${TILLER_STATUS}" == "Running" ]]; then break; fi
-        sleep 10
-        time=$(($time+10))
-        echo $time "seconds waiting"
-done
-
 echo -e "\n\nInstalling Traefik Ingress controller ..."
 
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
-helm ls
+helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}" --debug --dry-run
 
 helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
 
