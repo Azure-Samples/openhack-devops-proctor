@@ -78,7 +78,7 @@ if [ $? -ne 0 ]; then
 fi
 
 count=0
-until kubectl get pods --all-namespaces | grep -E "kube-system(\s){3}tiller.*Running+"
+until kubectl get pods --all-namespaces | grep -E "kube-system(\s){3}tiller.*1\/1\s*Running+"
 do
         sleep ${wait}
         if [ ${count} -gt ${timeout} ]; then
@@ -104,6 +104,8 @@ echo -e "\n\nInstalling Traefik Ingress controller ..."
 
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
+
+helm version 
 
 helm install --name proctor-ingress ../provision-team/traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}" --debug --dry-run
 
