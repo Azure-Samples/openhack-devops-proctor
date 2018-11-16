@@ -220,6 +220,6 @@ echo "10-Build and deploy leaderboard batch to AKS (bash ./build_deploy_leaderbo
 bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber
 
 echo "11-Clean the working environment"
-bash ./cleanup_monitor_environment.sh -t ${proctorName}${proctorNumber}
+bash ./cleanup_monitor_environment.sh -t ${proctorName}${proctorNumber} -r ${resourceGroupProctor} -c ${clusterName}
 
 echo "############ END OF MONITORING PROVISION ############"
