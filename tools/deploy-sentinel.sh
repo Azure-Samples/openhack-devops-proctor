@@ -101,7 +101,7 @@ echo "Proctor VM is at IP Address: $PROVISIONVM_IP"
             bash ./deploy_sentinel.sh -p ${MONITOR_ENVIRONMENT%??} -f ${CREDENTIALS##*/} -k ${KUBECONFIG_FILE} > sentinel.out
             rm ${CREDENTIALS##*/}
 
-            while ! grep ""############ END OF SENTINEL DEPLOYMENT ############" sentinel.out
+            while ! grep "############ END OF SENTINEL DEPLOYMENT ############" sentinel.out
             do
                 echo "waiting for sentinel deployment"
                 sleep 10
