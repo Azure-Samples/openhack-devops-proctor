@@ -13,15 +13,15 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/teams',
     home: false,
   },
-  {
-    title: 'Challenges',
-    icon: 'nb-star',
-    link: '/pages/challenges',
-    home: false,
-  },
-  {
-    icon: 'nb-locked',
-    title: 'Login',
-    link: '/auth/login',
-  },
+  // {
+  //   title: 'Challenges',
+  //   icon: 'nb-star',
+  //   link: '/pages/challenges',
+  //   home: false,
+  // },
+  // {
+  //   icon: 'nb-locked',
+  //   title: 'Login',
+  //   link: '/auth/login',
+  // },
 ];

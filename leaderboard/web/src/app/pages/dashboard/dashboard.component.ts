@@ -12,6 +12,8 @@ import { TeamsService } from '../../services/teams.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   teams: ITeam[];
+  filteredTeams: ITeam[] = [];
+  _listFilter = '';
   private pollingData: Subscription; // tslint:disable-line
   errorMessage = '';
 
@@ -19,6 +21,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
+  get listFilter(): string {
+    return this._listFilter;
+  }
+
+  set listFilter(value: string) {
+    this._listFilter = value;
+    this.filteredTeams = this.listFilter ? this.performFilter(this.listFilter) : this.teams;
+  }
+
+  performFilter(filterBy: string): ITeam[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.teams.filter((team: ITeam) =>
+      team.teamName.toLocaleLowerCase().indexOf(filterBy) !== -1);
+  }
 
   ngOnInit(): void {
     const pollingInterval = interval(5000);
@@ -28,6 +44,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.teams = data;
+            this.filteredTeams = this.listFilter ? this.performFilter(this.listFilter) : this.teams;
           },
           error => this.errorMessage = <any>error,
         );
