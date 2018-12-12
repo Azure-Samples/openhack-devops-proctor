@@ -131,6 +131,8 @@ echo "Setting subscription to $subscriptionId..."
 
 az account set --subscription $subscriptionId
 
+declare tenantId=$(az account show -s ${subscriptionId} --query tenantId -o tsv)
+
 #TODO need to check if provider is registered and if so don't run this command.  Also probably need to sleep a few minutes for this to finish.
 echo "Registering ContainerServiceProvider..."
 az provider register -n Microsoft.ContainerService
@@ -165,6 +167,7 @@ if [ ! -d "$HOME/team_env/${proctorName}${proctorNumber}" ]; then
 fi
 
 kvstore set ${proctorName}${proctorNumber} subscriptionId ${subscriptionId}
+kvstore set ${proctorName}${proctorNumber} tenantId ${tenantId}
 kvstore set ${proctorName}${proctorNumber} resourceGroupLocation ${resourceGroupLocation}
 kvstore set ${proctorName}${proctorNumber} proctorNumber ${proctorNumber}
 kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
