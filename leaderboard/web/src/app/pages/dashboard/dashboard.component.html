@@ -1,5 +1,14 @@
 <ng-container>
-  <div class='table-responsive' *ngIf='teams && teams.length'>
+    <div class='row'>
+        <div class='col-md-3'>Filter by Team Name:</div>
+        <div class='col-md-3'>
+          <input type='text' [(ngModel)]='listFilter' />
+        </div>
+      </div>
+      <div class=''>
+        &nbsp;
+      </div>
+  <div class='table-responsive' *ngIf='filteredTeams && filteredTeams.length'>
       <table class='table'>
         <thead>
           <tr>
@@ -11,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor='let t of teams'>
+          <tr *ngFor='let t of filteredTeams'>
               <td>
                 <a >
                   {{ t.teamName }}

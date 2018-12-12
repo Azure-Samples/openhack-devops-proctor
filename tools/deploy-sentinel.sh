@@ -91,15 +91,22 @@ echo "Proctor VM is at IP Address: $PROVISIONVM_IP"
 
         # Launch the script to deploy sentinel  
         ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$PROVISIONVM_IP "bash -s"  << EOF
-            export PATH=$PATH:/opt/mssql-tools/bin
+            source ~/.bashrc
+            export PATH=\$PATH:/opt/mssql-tools/bin
             export KVSTORE_DIR=/home/azureuser/team_env/kvstore
             [ -f ~/.kubectl_aliases ] && source ~/.kubectl_aliases
             source <(kubectl completion bash)
-
             cd openhack-devops-proctor/provision-proctor/
             echo "Monitoring environment is : ${MONITOR_ENVIRONMENT%??}"
             bash ./deploy_sentinel.sh -p ${MONITOR_ENVIRONMENT%??} -f ${CREDENTIALS##*/} -k ${KUBECONFIG_FILE} > sentinel.out
             rm ${CREDENTIALS##*/}
+
+            while ! grep "############ END OF SENTINEL DEPLOYMENT ############" sentinel.out
+            do
+                echo "waiting for sentinel deployment"
+                sleep 10
+            done
+
 EOF
     fi
 
