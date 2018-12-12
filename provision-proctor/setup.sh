@@ -131,7 +131,7 @@ echo "Setting subscription to $subscriptionId..."
 
 az account set --subscription $subscriptionId
 
-declare tenantId=$(az account show -s ${subscriptionId} --query tenantId | cut -d '"' -f 2)
+declare tenantId=$(az account show -s ${subscriptionId} --query tenantId -o tsv)
 
 #TODO need to check if provider is registered and if so don't run this command.  Also probably need to sleep a few minutes for this to finish.
 echo "Registering ContainerServiceProvider..."
