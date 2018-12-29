@@ -22,7 +22,7 @@
         },
         "recipientEmail": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "null",
             "metadata": {
                 "description": "recipient email address for notification"
             }
@@ -234,7 +234,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/feature/selfguided/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), variables('azureTenant'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'))]"
                 }
             }
         }
