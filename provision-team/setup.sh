@@ -19,10 +19,14 @@ declare chatMessageQueue=""
 declare provisioningVMIpaddress=""
 declare bingAPIkey=""
 declare tenantId=""
+declare appId=""
 
 # Initialize parameters specified from command line
-while getopts ":c:i:l:n:e:q:r:t:u:p:j:" arg; do
+while getopts ":a:c:i:l:n:e:q:r:t:u:p:j:" arg; do
     case "${arg}" in
+        a)
+            appId=${OPTARG}
+        ;;
         c)
             chatConnectionString=${OPTARG}
         ;;
@@ -172,6 +176,7 @@ echo "chatMessageQueue          = "${chatMessageQueue}
 echo "zipPassword"              = "${zipPassword}"
 echo "bingAPIkey"               = "${bingAPIkey}"
 echo "tenantId"                 = "${tenantId}"
+echo "AppId"                    = "${appId}"
 echo "=========================================="
 
 #login to azure using your credentials
@@ -248,7 +253,7 @@ echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceG
 bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupTeam -r $registryName -l $resourceGroupLocation
 
 echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation)"
-bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation
+bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation -a $appId -n $azureUserName -p $azurePassword
 
 echo "5-Clone repo"
 bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s ./test_fetch_build

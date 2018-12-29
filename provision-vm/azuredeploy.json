@@ -20,6 +20,12 @@
                 "description": "Tenant ID of the service principal account."
             }
         },
+        "spAppId": {
+            "type": "string",
+            "metadata": {
+                "description": "Application ID of the service principal account."
+            }
+        },
         "recipientEmail": {
             "type": "string",
             "defaultValue": "null",
@@ -79,6 +85,7 @@
         "azureUserName": "[parameters('spUserName')]",
         "azurePassword": "[parameters('spPassword')]",
         "azureTenant": "[parameters('spTenant')]",
+        "azureAppId": "[parameters('spAppId')]",
         "recipientEmail":"[parameters('recipientEmail')]",
         "ChatConnectionString" :"[parameters('ChatConnectionString')]",
         "ChatMessageQueue":"[parameters('ChatMessageQueue')]",
@@ -234,7 +241,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/feature/selfguided/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'), ' ', variables('azureAppId') )]"
                 }
             }
         }

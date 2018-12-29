@@ -13,6 +13,7 @@ RECIPIENTEMAIL=$6
 CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
 TENANTID=$9
+APPID=${10}
 #GITBRANCH=
 
 echo "############### Adding package respositories ###############"
@@ -83,9 +84,9 @@ echo "Recipient email: $RECIPIENTEMAIL"
 echo "ChatConnectionString= $CHATCONNECTIONSTRING"
 echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
 echo "Tenant is $TENANTID"
+echo "AppId is $APPID"
 
 # Running the provisioning of the team environment
-## We need to check if we have a username / password or service principal
 
 if [[ -z "$TENANTID" ]]; then
     az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
@@ -95,6 +96,6 @@ fi
 
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID">teamdeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID" -a "$APPID">teamdeploy.out &
 
 echo "############### End of custom script ###############"
