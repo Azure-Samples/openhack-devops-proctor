@@ -3,7 +3,7 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword> -j <bingAPIkey>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword> -j <bingAPIkey> -t <tenantId>" 1>&2; exit 1; }
 echo "$@"
 
 declare subscriptionId=""
@@ -18,9 +18,10 @@ declare chatConnectionString=""
 declare chatMessageQueue=""
 declare provisioningVMIpaddress=""
 declare bingAPIkey=""
+declare tenantId=""
 
 # Initialize parameters specified from command line
-while getopts ":c:i:l:n:e:q:r:u:p:j:" arg; do
+while getopts ":c:i:l:n:e:q:r:t:u:p:j:" arg; do
     case "${arg}" in
         c)
             chatConnectionString=${OPTARG}
@@ -42,6 +43,9 @@ while getopts ":c:i:l:n:e:q:r:u:p:j:" arg; do
         ;;
         r)
             recipientEmail=${OPTARG}
+        ;;
+        t)
+            tenantId=${OPTARG}
         ;;
         u)
             azureUserName=${OPTARG}
@@ -167,13 +171,20 @@ echo "chatConnectionString      = "${chatConnectionString}
 echo "chatMessageQueue          = "${chatMessageQueue}
 echo "zipPassword"              = "${zipPassword}"
 echo "bingAPIkey"               = "${bingAPIkey}"
+echo "tenantId"                 = "${tenantId}"
 echo "=========================================="
 
 #login to azure using your credentials
 echo "Username: $azureUserName"
 echo "Password: $azurePassword"
-echo "Command will be az login -u $azureUserName -p $azurePassword"
-az login --username=$azureUserName --password=$azurePassword
+
+if [[ -z "$tenantId" ]]; then
+    echo "Command will be az login --username=$azureUserName --password=$azurePassword"
+    az login --username=$azureUserName --password=$azurePassword
+else
+        echo "Command will be az login --username=$azureUserName --password=$azurePassword --tenant=$tenantId"
+    az login  --service-principal --username=$azureUserName --password=$azurePassword --tenant=$tenantId
+fi
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."

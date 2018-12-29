@@ -12,7 +12,8 @@ TEAMNAME=$5
 RECIPIENTEMAIL=$6
 CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
-#GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+TENANTID=$9
+#GITBRANCH=
 
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
@@ -53,7 +54,7 @@ touch /home/azureuser/.bashrc
 echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
 echo "############### Pulling Openhack-tools from Github ###############"
-sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+sudo git clone https://github.com/Azure-Samples/openhack-devops-proctor.git --branch feature/selfguided /home/azureuser/openhack-devops-proctor
 sudo chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
 echo "############### Install kvstore ###############"
@@ -81,11 +82,19 @@ echo "Team Name: $TEAMNAME"
 echo "Recipient email: $RECIPIENTEMAIL"
 echo "ChatConnectionString= $CHATCONNECTIONSTRING"
 echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
+echo "Tenant is $TENANTID"
 
 # Running the provisioning of the team environment
-az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
+## We need to check if we have a username / password or service principal
+
+if [[ -z "$TENANTID" ]]; then
+    az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
+else
+    az login --service-principal --username=$AZUREUSERNAME --password=$AZUREPASSWORD --tenant=$TENANTID
+fi 
+
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE">teamdeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID">teamdeploy.out &
 
 echo "############### End of custom script ###############"
