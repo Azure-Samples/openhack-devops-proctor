@@ -304,13 +304,13 @@ echo "18-Expose the team settings on a website"
 bash ./run_nginx.sh
 
 #This line is not valid when using a self-provisioning.
-if [[ "${chatConnectionString}" != "null" ]] && [[ "${chatMessageQueue}" != "null" ]]; then
+if [ "${chatConnectionString}" == "null" ] && [ "${chatMessageQueue}" == "null" ]; then
+    echo "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
+else
     echo "19-Send Message home"
     provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
     echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
     bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
-else
-    echo "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
 fi
 
 echo "############ END OF TEAM PROVISION ############"
