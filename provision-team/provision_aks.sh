@@ -115,7 +115,7 @@ kvstore set ${teamName} ACR_URI $ACR_ID
 echo "Granting Service Princpal " $SP_NAME " access to ACR " $teamName"acr" "..."
 (
     set -x
-    az role assignment create --assignee $SP_ID --role Reader --scope $ACR_ID
+    az role assignment create --assignee $SP_ID --role acrpull --scope $ACR_ID
 )
 
 if [ $? == 0 ];
