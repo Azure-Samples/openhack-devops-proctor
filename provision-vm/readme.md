@@ -1,43 +1,48 @@
 # Infrastructure provisioning VM
-
+ 
 ## Pre-requisites
 
-Have the Azure CLI installed and the username and password used to logon to the azure subscription.
+Have the Azure CLI installed (tested with version 2.0.49) and the username and password used to logon to the azure subscription.
 
 ## Usage
 
-1. Login to the azure subscription
+Open a shell promt in the `provision-vm` directory and run the follwing commands
+
+1. Login to the azure subscription using your credentials
 
     ```shell
     az login --username='<AzureUserName>' --password='<AzurePassword>'
     ```
+1. Create a service principal with the role owner in your subscription
+
+    ```shell
+    az ad sp create-for-rbac -n "DevOpsOHSP" --role owner
+    ```
+
+    Take note of the following:
+        `appId`
+        `password`
+        `tenant`
 
 1. Create new resource group
 
     ```shell
-    az group create --name="<ResourceGroupName>" --location="<Location>"
+    az group create --name='ProctorVMRG' --location='<Location>'
     ```
 
-1. Run the deployment in that resource group
+1. Run the deployment in that resource group using the values from the service principal created in step 2.
 
     ```shell
-    az group deployment create --resource-group="<ResourceGroupName>" --template-file ./azuredeploy.json --parameters azureUserName='<AzureUserName>' azurePassword='<AzurePassword>'
+    az group deployment create --resource-group='ProctorVMRG' --template-file ./azuredeploy.json --parameters spUserName=http://DevOpsOHSP spPassword='<password>' spTenant='<tenant>' spAppId='<appId>'
     ```
 
-Change `AzureUserName`, `AzurePassword`, `ResourceGroupName`, and `Location` with your values.
-This ARM template will run the ```../provision-vm/proctorVMSetup.sh``` script and launch ```../provision-team/setup.sh``` as a background task.
+The deployment will first deploy and configure a virtual machine using the ```../provision-vm/proctorVMSetup.sh``` script. Subsequently ```../provision-team/setup.sh``` will be executed as a detached task on that virtual machine.
 
-The logs of the ```setup.sh``` script are located in ```/home/azureuser/openhack-devops-procotor/provision-team/teamdeploy.out```
+If needed for troubleshooting purposes, the logs of the ```setup.sh``` script are located in ```/home/azureuser/openhack-devops-procotor/provision-team/teamdeploy.out```
 
 **Note:** The ARM Template has been designed for one deployment in a given subscription. Other scenarios are at your own risk.
 
-The full deployment takes about 30 min to complete. If the deployment of the ARM template has completed, it does not mean that the team setup script has completed.
-
-Use the private key provided in the OpenHack manual to logon to the team provisioning VM using the `-i <private_key>` parameter.
-
-```shell
-ssh -i ..\id_rsa azureuser@procohvm336.westus2.cloudapp.azure.com
-```
+The full deployment takes about 45 minutes to complete. The deployment of the ARM template will complete before the provisioning of the team environment has completed.
 
 ## Using the portal
 
