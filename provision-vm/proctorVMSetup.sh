@@ -33,9 +33,9 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 
-echo "############### Installing Helm v2.11.0 ###############"
-sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
+echo "############### Installing Helm v2.12.2 ###############"
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.12.2-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.12.2-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
