@@ -39,7 +39,7 @@ sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.3/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.5/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -66,6 +66,9 @@ echo azure-cli hold | sudo dpkg --set-selections
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
+
+#Holding walinuxagent before upgrade
+sudo apt-mark hold walinuxagent
 sudo apt-get upgrade -y
 
 #Set environement variables
