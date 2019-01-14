@@ -64,6 +64,9 @@ echo azure-cli hold | sudo dpkg --set-selections
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
+
+#Holding walinuxagent before upgrade
+sudo apt-mark hold walinuxagent
 sudo apt-get upgrade -y
 
 #Set environement variables
