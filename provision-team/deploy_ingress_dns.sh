@@ -110,12 +110,13 @@ while true; do
         echo $time "seconds waiting"
 done
 
-echo -e "\n\nInstalling Traefik Ingress controller ..."
+echo -e "\n\nWaiting 15 seconds then installing Traefik Ingress controller ..."
 
+sleep 15
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
-helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}"
+helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}" --debug
 
 echo "Waiting for public IP:"
 time=0
