@@ -12,6 +12,9 @@ declare subscriptionId=""
 declare resourceGroupName=""
 declare clusterName=""
 declare resourceGroupLocation=""
+declare appId=""
+declare appName=""
+declare appPassword=""
 
 # Initialize parameters specified from command line
 while getopts ":a:i:g:c:l:n:p:" arg; do
@@ -84,7 +87,7 @@ fi
 teamName=${resourceGroupName:0:-2}
 
 # Create SPN if not provided
-if [ -z "$appName" ] || [ -z "$appId" ] || [ -z "$appPassword" ]; then
+if [ -z "${appName}" ] || [ -z "${appId}" ] || [ -z "${appPassword}" ]; then
     echo "One service principal value is missing\n Creating ServicePrincipal for AKS Cluster.."
     export SP_JSON=`az ad sp create-for-rbac --role="Contributor"`
     export SP_NAME=`echo $SP_JSON | jq -r '.name'`
