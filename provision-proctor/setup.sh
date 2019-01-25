@@ -131,6 +131,8 @@ echo "Setting subscription to $subscriptionId..."
 
 az account set --subscription $subscriptionId
 
+declare tenantId=$(az account show -s ${subscriptionId} --query tenantId -o tsv)
+
 #TODO need to check if provider is registered and if so don't run this command.  Also probably need to sleep a few minutes for this to finish.
 echo "Registering ContainerServiceProvider..."
 az provider register -n Microsoft.ContainerService
@@ -165,6 +167,7 @@ if [ ! -d "$HOME/team_env/${proctorName}${proctorNumber}" ]; then
 fi
 
 kvstore set ${proctorName}${proctorNumber} subscriptionId ${subscriptionId}
+kvstore set ${proctorName}${proctorNumber} tenantId ${tenantId}
 kvstore set ${proctorName}${proctorNumber} resourceGroupLocation ${resourceGroupLocation}
 kvstore set ${proctorName}${proctorNumber} proctorNumber ${proctorNumber}
 kvstore set ${proctorName}${proctorNumber} resourceGroupProctor ${resourceGroupProctor}
@@ -220,6 +223,6 @@ echo "10-Build and deploy leaderboard batch to AKS (bash ./build_deploy_leaderbo
 bash ./build_deploy_leaderboard_batch.sh -r $resourceGroupProctor -l $resourceGroupLocation -t leaderboard-batch -g $registryName -m $proctorName -u $proctorNumber
 
 echo "11-Clean the working environment"
-bash ../provision-team/cleanup_environment.sh -t ${proctorName}${proctorNumber}
+bash ./cleanup_monitor_environment.sh -t ${proctorName}${proctorNumber} -r ${resourceGroupProctor} -c ${clusterName}
 
 echo "############ END OF MONITORING PROVISION ############"

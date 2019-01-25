@@ -174,7 +174,7 @@
         ],
         "properties": {
           "hardwareProfile": {
-            "vmSize": "Standard_D2_v2"
+            "vmSize": "Standard_D2s_v3"
           },
           "osProfile": {
             "computerName": "[variables('vmName')]",
@@ -193,7 +193,7 @@
               "caching": "ReadWrite",
               "createOption": "FromImage",
               "managedDisk": {
-                "storageAccountType": "Standard_LRS"
+                "storageAccountType": "Premium_LRS"
               }
             }
           },

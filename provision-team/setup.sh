@@ -3,7 +3,7 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword> -j <bingAPIkey>" 1>&2; exit 1; }
+usage() { echo "Usage: setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> -r <recipientEmail> -c <chatConnectionString> -q <chatMessageQueue> -u <azureUserName> -p <azurePassword> -j <bingAPIkey> -t <tenantId>" 1>&2; exit 1; }
 echo "$@"
 
 declare subscriptionId=""
@@ -18,10 +18,15 @@ declare chatConnectionString=""
 declare chatMessageQueue=""
 declare provisioningVMIpaddress=""
 declare bingAPIkey=""
+declare tenantId=""
+declare appId=""
 
 # Initialize parameters specified from command line
-while getopts ":c:i:l:n:e:q:r:u:p:j:" arg; do
+while getopts ":a:c:i:l:n:e:q:r:t:u:p:j:" arg; do
     case "${arg}" in
+        a)
+            appId=${OPTARG}
+        ;;
         c)
             chatConnectionString=${OPTARG}
         ;;
@@ -42,6 +47,9 @@ while getopts ":c:i:l:n:e:q:r:u:p:j:" arg; do
         ;;
         r)
             recipientEmail=${OPTARG}
+        ;;
+        t)
+            tenantId=${OPTARG}
         ;;
         u)
             azureUserName=${OPTARG}
@@ -167,18 +175,28 @@ echo "chatConnectionString      = "${chatConnectionString}
 echo "chatMessageQueue          = "${chatMessageQueue}
 echo "zipPassword"              = "${zipPassword}"
 echo "bingAPIkey"               = "${bingAPIkey}"
+echo "tenantId"                 = "${tenantId}"
+echo "AppId"                    = "${appId}"
 echo "=========================================="
 
 #login to azure using your credentials
 echo "Username: $azureUserName"
 echo "Password: $azurePassword"
-echo "Command will be az login -u $azureUserName -p $azurePassword"
-az login --username=$azureUserName --password=$azurePassword
+
+if [[ -z "$tenantId" ]]; then
+    echo "Command will be az login --username=$azureUserName --password=$azurePassword"
+    az login --username=$azureUserName --password=$azurePassword
+else
+        echo "Command will be az login --username=$azureUserName --password=$azurePassword --tenant=$tenantId"
+    az login  --service-principal --username=$azureUserName --password=$azurePassword --tenant=$tenantId
+fi
 
 #set the default subscription id
 echo "Setting subscription to $subscriptionId..."
 
 az account set --subscription $subscriptionId
+
+declare tenantId=$(az account show -s ${subscriptionId} --query tenantId -o tsv)
 
 #TODO need to check if provider is registered and if so don't run this command.  Also probably need to sleep a few minutes for this to finish.
 echo "Registering ContainerServiceProvider..."
@@ -214,6 +232,7 @@ if [ ! -d "/home/azureuser/team_env/${teamName}${teamNumber}" ]; then
 fi
 
 kvstore set ${teamName}${teamNumber} subscriptionId ${subscriptionId}
+kvstore set ${teamName}${teamNumber} tenantId ${tenantId}
 kvstore set ${teamName}${teamNumber} resourceGroupLocation ${resourceGroupLocation}
 kvstore set ${teamName}${teamNumber} teamNumber ${teamNumber}
 kvstore set ${teamName}${teamNumber} keyVaultName ${keyVaultName}
@@ -237,7 +256,7 @@ echo "1-Provision ACR  (bash ./provision_acr.sh -i $subscriptionId -g $resourceG
 bash ./provision_acr.sh -i $subscriptionId -g $resourceGroupTeam -r $registryName -l $resourceGroupLocation
 
 echo "2-Provision AKS  (bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation)"
-bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation
+bash ./provision_aks.sh -i $subscriptionId -g $resourceGroupTeam -c $clusterName -l $resourceGroupLocation -a $appId -n $azureUserName -p $azurePassword
 
 echo "5-Clone repo"
 bash ./git_fetch.sh -u https://github.com/Azure-Samples/openhack-devops-team -s ./test_fetch_build
@@ -287,9 +306,14 @@ bash ./cleanup_environment.sh -t ${teamName}${teamNumber} -p $zipPassword
 echo "18-Expose the team settings on a website"
 bash ./run_nginx.sh
 
-echo "19-Send Message home"
-provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
-echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
-bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
+#This line is not valid when using a self-provisioning.
+if [ "${chatConnectionString}" == "null" ] && [ "${chatMessageQueue}" == "null" ]; then
+    echo "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
+else
+    echo "19-Send Message home"
+    provisioningVMIpaddress=$(az vm list-ip-addresses --resource-group=ProctorVMRG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
+    echo -e "IP Address of the provisioning VM is $provisioningVMIpaddress"
+    bash ./send_msg.sh -n  -e $recipientEmail -c $chatConnectionString -q $chatMessageQueue -m "OpenHack credentials are here: http://$provisioningVMIpaddress:2018/teamfiles.zip with zip password $zipPassword"
+fi
 
 echo "############ END OF TEAM PROVISION ############"

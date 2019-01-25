@@ -2,39 +2,51 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "azureUserName": {
+        "spUserName": {
             "type": "string",
             "metadata": {
-                "description": "Username for the Azure account."
+                "description": "Username for the service principal account."
             }
         },
-        "azurePassword": {
+        "spPassword": {
             "type": "string",
             "metadata": {
-                "description": "Password for the Azure account."
+                "description": "Password for the service principal account."
+            }
+        },
+        "spTenant": {
+            "type": "string",
+            "metadata": {
+                "description": "Tenant ID of the service principal account."
+            }
+        },
+        "spAppId": {
+            "type": "string",
+            "metadata": {
+                "description": "Application ID of the service principal account."
             }
         },
         "recipientEmail": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "null",
             "metadata": {
-                "description": "recipient email addess for notification"
+                "description": "recipient email address for notification"
             }
         },
         "ChatConnectionString": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "null",
             "metadata": {
                 "description": "The connection string to servicebus for sending the credentials at the end of the deployment"
             }
         },
         "ChatMessageQueue": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "null",
             "metadata": {
                 "description": "The servicebus queue where the credentials will be send to"
             }
-        },       
+        },    
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -70,8 +82,10 @@
         }
     },
     "variables": {
-        "azureUserName": "[parameters('azureUserName')]",
-        "azurePassword": "[parameters('azurePassword')]",
+        "azureUserName": "[parameters('spUserName')]",
+        "azurePassword": "[parameters('spPassword')]",
+        "azureTenant": "[parameters('spTenant')]",
+        "azureAppId": "[parameters('spAppId')]",
         "recipientEmail":"[parameters('recipientEmail')]",
         "ChatConnectionString" :"[parameters('ChatConnectionString')]",
         "ChatMessageQueue":"[parameters('ChatMessageQueue')]",
@@ -227,9 +241,15 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
                     ],
-                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'))]"
+                    "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'), ' ', variables('azureAppId') )]"
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "zipPassword": {
+          "type": "string",
+          "value": "The password of the zip file"
+        }
+      }
 }

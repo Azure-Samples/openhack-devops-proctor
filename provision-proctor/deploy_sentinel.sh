@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # If no team is specified it will read the entries in the kvstore and deploy sentinel for the successfull ones
 # If a team is specified it will deploy sentinel only for this one
 
-usage() { echo "Usage: deploy_sentinel.sh -p <proctorEnvironmentName> -n <teamName - Optional> -f credentials.csv -y <localEnv - Optional>" 1>&2; exit 1; }
+usage() { echo "Usage: deploy_sentinel.sh -p <proctorEnvironmentName> -n <teamName - Optional> -f credentials.csv -y <localEnv - Optional> -k <kubeconfig_file>" 1>&2; exit 1; }
 
 declare -a keys
 declare registryName=""
@@ -18,10 +18,13 @@ declare csvFile=""
 declare localEnv="no"
 
 # Initialize parameters specified from command line
-while getopts ":f:p:n:y:" arg; do
+while getopts ":f:k:p:n:y:" arg; do
     case "${arg}" in
         f)
             csvFile=${OPTARG}
+        ;;
+        k)
+            kubeconfig_file=${OPTARG}
         ;;
         p)  
             proctorEnvName=${OPTARG}
@@ -41,6 +44,13 @@ if [[ -z "$proctorEnvName" ]]; then
     read proctorEnvName
     [[ "${proctorEnvName:?}" ]]
 fi
+
+if [[ -z "$kubeconfig_file" ]]; then
+    echo "Enter the path of the kubeconfig file of the monitoring cluster"
+    read kubeconfig_file
+    [[ "${kubeconfig_file:?}" ]]
+fi
+
 
 chartPath="../leaderboard/sentinel/helm"
 echo -e "\nhelm install ... from: " $chartPath
@@ -101,11 +111,14 @@ for team in $teamList; do
         if [[ " ${keys[@]} " =~ "endpoint" ]]; then
             teamEndPoint=$(kvstore get $team endpoint)
             echo "Deploying monitoring for $team at http://$teamEndPoint"
-            helm install $chartPath --name $team --set image.repository=$TAG,teams.endpointUrl="http://$teamEndPoint",teams.apiUrl=$apiUrl,teams.name=$team
+            (helm --kubeconfig $kubeconfig_file install $chartPath --name $team --set image.repository=$TAG,teams.endpointUrl="http://$teamEndPoint",teams.apiUrl=$apiUrl,teams.name=$team) || true
         fi
     fi
 done
 
+# Collecting the status of the deployment
+helm --kubeconfig $kubeconfig_file ls 
 
+echo "############ END OF SENTINEL DEPLOYMENT ############"
 
 

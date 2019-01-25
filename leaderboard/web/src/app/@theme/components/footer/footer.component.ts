@@ -8,7 +8,6 @@ import { Component } from '@angular/core';
     <div class="socials">
       <a href="https://github.com/Azure-Samples/openhack-devops-proctor/tree/master/leaderboard/web" \
       target="_blank" class="ion ion-social-github"></a>
-      <a href="#" target="_blank" class="ion ion-social-twitter"></a>
     </div>
   `,
 })

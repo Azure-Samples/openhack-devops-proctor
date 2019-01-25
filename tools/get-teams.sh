@@ -4,9 +4,9 @@
 # You need to provide the CSV file with all the credentials of the Azure subscriptions from the classroom management portal and a private / public SSH keypair that will be used to access the provisioning VMs
 # The error log file is where will be logged the informations regarding the failed deployments. If not provided, it defaults to error.log. 
 
-usage() { echo "Usage: getteams.sh -c <credentials.csv> -k <ssh_private_key> -p <ssh_public_key> -l <errorlog_file> " 1>&2; exit 1; }
+usage() { echo "Usage: getteams.sh -c <credentials.csv> -k <ssh_private_key> -p <ssh_public_key> -f <errorlog_file> " 1>&2; exit 1; }
 
-while getopts ":c:k:l:p:" arg; do
+while getopts ":c:f:k:p:" arg; do
     case "${arg}" in
         c)
             csvFile=${OPTARG}
@@ -14,7 +14,7 @@ while getopts ":c:k:l:p:" arg; do
         k)
             ID_RSA_PRIVATE=${OPTARG}
         ;;
-        l)
+        f)
             ERROR_FILE=${OPTARG}
         ;;
         p)
@@ -25,7 +25,11 @@ done
 
 declare ZIP_FILES=0
 
-if ! [[ -x "$(gunip --version)" ]]; then
+testzip () {
+    zip --version >/dev/null
+}
+
+if ! testzip; then
     echo -e "zip is not installed, you will have to package the files manually.\nRun the following command on Ubuntu: sudo apt-get install zip\nDo you want to continue? (yes|no)"
     read INSTALL_ZIP 
     if [[ "$INSTALL_ZIP" != "y" && "$INSTALL_ZIP" != "yes"  ]]; then 
@@ -44,12 +48,15 @@ fi
 if [[ -z "$ID_RSA_PRIVATE" ]]; then
     echo "No private key provided, will generate a new pair devops_openhack_key"
     # Create a new rsa key - leaving the prompt to avoid overwritting existing keys.
-    ssh-keygen -t rsa -C "DevOps OpenHack" -f devops_openhack_key -P ""
+    KEY_DIR=~/devopsohkeys
+    mkdir -p ${KEY_DIR}
+    ID_RSA_PRIVATE=${KEY_DIR}/devops_openhack_key
+    ID_RSA_PUBLIC=${KEY_DIR}/devops_openhack_key.pub
+
+    ssh-keygen -t rsa -C "DevOps OpenHack" -f ${ID_RSA_PRIVATE} -P ""
     if [ $? -ne 0 ]; then
         echo "[ERROR] Creating the ssh keypair for the proctorVM failed "
     fi
-    ID_RSA_PRIVATE="./devops_openhack_key"
-    ID_RSA_PUBLIC="./devops_openhack_key.pub"
     echo "Keys have been generated"
 else
     if [[ -z "$ID_RSA_PUBLIC" ]]; then
@@ -94,7 +101,8 @@ do
                 echo "Resetting public key to ProctorVM "
                 az vm user update --resource-group=ProctorVMRG --name=proctorVM --username azureuser --ssh-key-value $ID_RSA_PUBLIC
             else
-                echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid"
+                echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid - Exiting ..."
+                exit 1
             fi
 
             scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/team_env/* ./$teamAAD/
@@ -150,7 +158,7 @@ EOF
 done
 
 # Packaging the results
-if [[ $ZIP_FILES]]; then
+if [[ $ZIP_FILES ]]; then
     zip -r teamfiles.zip OTA*
     echo "Data from the teams deployment are in teamfiles.zip"
 fi
