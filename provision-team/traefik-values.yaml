@@ -9,7 +9,7 @@ memoryRequest: 20Mi
 # Default 100m
 cpuLimit: 200m
 # Default 30Mi
-memoryLimit: 100Mi
+memoryLimit: 200Mi
 debug:
   enabled: false
 deploymentStrategy:
