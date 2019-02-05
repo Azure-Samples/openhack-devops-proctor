@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script deploys the monitoring infrastructire of the DevOps OpenHack.
+# This script deploys the monitoring infrastructure of the DevOps OpenHack.
 # You need to provide the 
 #  
 
