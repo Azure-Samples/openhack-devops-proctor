@@ -6,7 +6,7 @@ Have the Azure CLI installed (tested with version 2.0.49) and the username and p
 
 ## Usage
 
-Open a shell promt in the `provision-vm` directory and run the follwing commands
+Open a shell prompt in the `provision-vm` directory and run the following commands
 
 1. Login to the azure subscription using your credentials
 
