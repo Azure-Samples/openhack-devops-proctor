@@ -1,10 +1,11 @@
 #!/bin/bash
 # This script verifies the successfull deployment of the resources needed for the DevOps OpenHack.
+# You need to provide the CSV file with all the credentials of the Azure subscriptions from the classroom management portal and a private / public SSH keypair that will be used to access the provisioning VMs
 # The error log file is where will be logged the informations regarding the failed deployments. If not provided, it defaults to error.log. 
 
 usage() { echo "Usage: getteams.sh -f <errorlog_file> -u <service principal username> -f < service principal password> -x < service principal tenant>" 1>&2; exit 1; }
 
-while getopts ":f:u:x:t:" arg; do
+while getopts ":f:k:p:u:x:t:" arg; do
     case "${arg}" in
         f)
             ERROR_FILE=${OPTARG}
