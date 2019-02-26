@@ -12,7 +12,9 @@ TEAMNAME=$5
 RECIPIENTEMAIL=$6
 CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
-#GITBRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+TENANTID=$9
+APPID=${10}
+#GITBRANCH=
 
 echo "############### Adding package respositories ###############"
 # Get the Microsoft signing key 
@@ -31,13 +33,13 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 
-echo "############### Installing Helm v2.11.0 ###############"
-sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.11.0-linux-amd64.tar.gz
+echo "############### Installing Helm v2.12.2 ###############"
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.12.2-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.12.2-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.5/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.7/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
@@ -45,7 +47,7 @@ echo "############### Installing Packages ###############"
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.1 jq git zip azure-cli=2.0.49-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.0.49-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
@@ -64,6 +66,9 @@ echo azure-cli hold | sudo dpkg --set-selections
 
 #Add user to docker usergroup
 sudo usermod -aG docker azureuser
+
+#Holding walinuxagent before upgrade
+sudo apt-mark hold walinuxagent
 sudo apt-get upgrade -y
 
 #Set environement variables
@@ -81,11 +86,19 @@ echo "Team Name: $TEAMNAME"
 echo "Recipient email: $RECIPIENTEMAIL"
 echo "ChatConnectionString= $CHATCONNECTIONSTRING"
 echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
+echo "Tenant is $TENANTID"
+echo "AppId is $APPID"
 
 # Running the provisioning of the team environment
-az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
+
+if [[ -z "$TENANTID" ]]; then
+    az login --username=$AZUREUSERNAME --password=$AZUREPASSWORD
+else
+    az login --service-principal --username=$AZUREUSERNAME --password=$AZUREPASSWORD --tenant=$TENANTID
+fi 
+
 
 # Launching the team provisioning in background
-sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE">teamdeploy.out &
+sudo PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore nohup ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID" -a "$APPID">teamdeploy.out &
 
 echo "############### End of custom script ###############"

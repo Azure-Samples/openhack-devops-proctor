@@ -6,16 +6,22 @@ IFS=$'\n\t'
 # -o: prevents errors in a pipeline from being masked
 # IFS new value is less likely to cause confusing bugs when looping arrays or arguments (e.g. $@)
 
-usage() { echo "Usage: provision_aks.sh -i <subscriptionId> -g <resourceGroupName> -c <clusterName> -l <resourceGroupLocation>" 1>&2; exit 1; }
+usage() { echo "Usage: provision_aks.sh -a <appId> -n <appName> -p <appPassword> -i <subscriptionId> -g <resourceGroupName> -c <clusterName> -l <resourceGroupLocation>" 1>&2; exit 1; }
 
 declare subscriptionId=""
 declare resourceGroupName=""
 declare clusterName=""
 declare resourceGroupLocation=""
+declare appId=""
+declare appName=""
+declare appPassword=""
 
 # Initialize parameters specified from command line
-while getopts ":i:g:c:l:" arg; do
+while getopts ":a:i:g:c:l:n:p:" arg; do
     case "${arg}" in
+        a)
+            appId=${OPTARG}
+        ;;
         i)
             subscriptionId=${OPTARG}
         ;;
@@ -27,6 +33,12 @@ while getopts ":i:g:c:l:" arg; do
         ;;
         l)
             resourceGroupLocation=${OPTARG}
+        ;;
+        n)
+            appName=${OPTARG}
+        ;;
+        p)
+            appPassword=${OPTARG}
         ;;
     esac
 done
@@ -74,11 +86,20 @@ fi
 
 teamName=${resourceGroupName:0:-2}
 
-echo "Creating ServicePrincipal for AKS Cluster.."
-export SP_JSON=`az ad sp create-for-rbac --role="Contributor"`
-export SP_NAME=`echo $SP_JSON | jq -r '.name'`
-export SP_PASS=`echo $SP_JSON | jq -r '.password'`
-export SP_ID=`echo $SP_JSON | jq -r '.appId'`
+# Create SPN if not provided
+if [ -z "${appName}" ] || [ -z "${appId}" ] || [ -z "${appPassword}" ]; then
+    echo "One service principal value is missing\n Creating ServicePrincipal for AKS Cluster.."
+    export SP_JSON=`az ad sp create-for-rbac --role="Contributor"`
+    export SP_NAME=`echo $SP_JSON | jq -r '.name'`
+    export SP_PASS=`echo $SP_JSON | jq -r '.password'`
+    export SP_ID=`echo $SP_JSON | jq -r '.appId'`
+else
+    echo "Using provided Service Principal for AKS Cluster"
+    export SP_NAME=`echo $appName`
+    export SP_PASS=`echo $appPassword`
+    export SP_ID=`echo $appId`
+fi
+
 echo "Service Principal Name: " $SP_NAME
 echo "Service Principal Password: " $SP_PASS
 echo "Service Principal Id: " $SP_ID
@@ -97,7 +118,7 @@ kvstore set ${teamName} ACR_URI $ACR_ID
 echo "Granting Service Princpal " $SP_NAME " access to ACR " $teamName"acr" "..."
 (
     set -x
-    az role assignment create --assignee $SP_ID --role Reader --scope $ACR_ID
+    az role assignment create --assignee $SP_ID --role acrpull --scope $ACR_ID
 )
 
 if [ $? == 0 ];
@@ -108,7 +129,7 @@ fi
 echo "Creating AKS Cluster..."
 (
     set -x
-    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.11.5 --service-principal $SP_ID --client-secret $SP_PASS
+    az aks create -g $resourceGroupName -n $clusterName -l $resourceGroupLocation --node-count 3 --generate-ssh-keys -k 1.11.7 --service-principal $SP_ID --client-secret $SP_PASS
 )
 
 if [ $? == 0 ];

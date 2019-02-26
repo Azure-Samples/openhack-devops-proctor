@@ -100,10 +100,12 @@ cat "../provision-team/traefik-values.yaml" \
     | sed "s/locationreplace/$resourceGroupLocation/g" \
     | tee $relativeSaveLocation"/traefik$teamName.yaml"
 
-echo -e "\n\nInstalling Traefik Ingress controller ..."
+echo -e "\n\nWaiting 15 seconds and installing Traefik Ingress controller ..."
 
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
+
+sleep 15
 
 helm version 
 

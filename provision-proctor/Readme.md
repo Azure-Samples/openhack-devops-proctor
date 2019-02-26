@@ -23,4 +23,4 @@ Identify and reserve a specific subscription in your classroom to deploy the mon
 
 6. Identify the _proctorEnvironmentName_. It is the first 18 characters of the monitoring resource group. For example if the monitoring resource group is named _monitoring2qy26600rg_ the proctorEnvironmentName is _monitoring2qy26600_.
 
-7. Provision the monitoring agent _Sentinel_ using the following command: `bash ./deploy_sentinel.sh -p <proctorEnvironmentName> -f credentials.csv > deploysentinel.log`
+7. Provision the monitoring agent _Sentinel_ using the following command: `bash ./deploy_sentinel.sh -p <proctorEnvironmentName> -f credentials.csv -k ~/.kube/config > deploysentinel.log`
