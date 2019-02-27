@@ -40,7 +40,7 @@ The deployment will first deploy and configure a virtual machine using the ```..
 
 If needed for troubleshooting purposes, the logs of the ```setup.sh``` script are located in ```/home/azureuser/openhack-devops-procotor/provision-team/teamdeploy.out```
 
-**Note:** The ARM Template has been designed for one deployment in a given subscription. Other scenarios are at your own risk.
+**Note:** The ARM template has been designed for one deployment in a given subscription. Other scenarios are at your own risk.
 
 The full deployment takes about 45 minutes to complete. The deployment of the ARM template will complete before the provisioning of the team environment has completed.
 
