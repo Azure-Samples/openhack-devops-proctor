@@ -59,8 +59,10 @@ RUN echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 RUN git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 # RUN chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
-##### TODO This line will be removed before the PR merged
+##### TODO This line will be removed before the PR merged 
+WORKDIR /home/azureuser/openhack-devops-proctor
 RUN git checkout -b refactor/provisionvm origin/refactor/provisionvm
+WORKDIR ${home}
 
 ############### Install kvstore ###############
 RUN install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
