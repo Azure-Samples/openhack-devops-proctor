@@ -28,18 +28,18 @@ fi
 
 # Copy the kubeconfig file
 kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
-sudo cp /root/.kube/config /home/azureuser/www/kubeconfig
-sudo cp /root/.kube/config $kubeconfiglocation
+cp /root/.kube/config /home/azureuser/www/kubeconfig
+cp /root/.kube/config $kubeconfiglocation
 echo "Copied the kubeconfig file to $kubeconfiglocation"
 
 kvstore set $teamName kubeconfig $kubeconfiglocation
 kvstore set $teamName zippassword $password
 
 # Setup files to serve via nginx
-sudo cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
-sudo zip -e --password ${password} /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/ohteamvalues
+cp /home/azureuser/team_env/kvstore/${teamName} /home/azureuser/www/ohteamvalues
+zip -e --password ${password} /home/azureuser/www/teamfiles.zip /home/azureuser/www/kubeconfig /home/azureuser/www/ohteamvalues
 echo "Zipped /home/azureuser/www/teamfiles.zip with password $password"
-sudo cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
+cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
 
 # Set proper ownership for the regular user after script completes
-sudo chown -R azureuser:azureuser /home/azureuser
+# chown -R azureuser:azureuser /home/azureuser
