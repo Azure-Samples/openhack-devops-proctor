@@ -120,9 +120,11 @@ if [[ $ZIP_FILES ]]; then
     echo "Data from the teams deployment are in teamfiles.zip"
 fi
 
-if [ "$errorflag"=false ]; then 
+if [ "$errorflag" = false ]; then
+    echo "Failures encountered during checking API"
     exit 1
 else
+    echo "success"
     exit 0
 fi
 
