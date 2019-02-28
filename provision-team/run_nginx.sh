@@ -10,4 +10,4 @@ if [[ ! -d "/home/azureuser/www" ]]; then
 fi 
 
 # Add nginx to the script
-sudo docker run --restart always -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/www/:/usr/share/nginx/html -p 2018:80 -d nginx
+docker run --restart always -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/www/:/usr/share/nginx/html -p 2018:80 -d nginx
