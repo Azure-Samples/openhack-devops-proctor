@@ -83,6 +83,7 @@ ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
 ENV DOCKER_HOST tcp://docker:2375
 
 COPY startup.sh .
+RUN chmod +x /home/azureuser/startup.sh
 CMD ["/bin/bash", "-c", "/home/azureuser/startup.sh"]
 
 

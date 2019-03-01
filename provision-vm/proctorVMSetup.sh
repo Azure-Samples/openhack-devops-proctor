@@ -54,6 +54,17 @@ echo "AppId is $APPID"
 
 # Launching the team provisioning in background
 
+export AZUREUSERNAME=$AZUREUSERNAME
+export AZUREPASSWORD=$AZUREPASSWORD
+export SUBID=$SUBID
+export LOCATION=$LOCATION
+export TEAMNAME=$TEAMNAME
+export RECIPIENTEMAIL=$RECIPIENTEMAIL
+export CHATCONNECTIONSTRING=$CHATCONNECTIONSTRING
+export CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE
+export TENANTID=$TENANTID
+export APPID=$APPID
+
 /bin/bash -c 'docker run -d --name docker-daemon --privileged docker:stable-dind &'
-/bin/bash -c 'docker run --link docker-daemon:docker -d -e  "AZUREUSERNAME=$AZUREUSERNAME" -e "AZUREPASSWORD=$AZUREPASSWORD" -e "SUBID=$SUBID" -e "LOCATION=$LOCATION" -e "TEAMNAME=$TEAMNAME" -e "RECIPIENTEMAIL=$RECIPIENTEMAIL" -e "CHATCONNECTIONSTRING=$CHATCONNECTIONSTRING" -e "CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE" -e "TENANTID=$TENANTID" -e "APPID=$APPID" tsuyoshiushio/proctor-container  > teamdeploy.out &'
+/bin/bash -c 'docker run --link docker-daemon:docker -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID tsuyoshiushio/proctor-container  > teamdeploy.out &'
 echo "############### End of custom script ###############"
