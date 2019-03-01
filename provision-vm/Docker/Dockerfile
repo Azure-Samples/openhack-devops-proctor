@@ -80,7 +80,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #Set environement variables
 ENV PATH $PATH:/opt/mssql-tools/bin
 ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
-ENV DOCKER_HOST tcp://docker:2375
+#ENV DOCKER_HOST tcp://docker:2375
 
 COPY startup.sh .
 RUN chmod +x /home/azureuser/startup.sh
