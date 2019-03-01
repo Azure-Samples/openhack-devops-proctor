@@ -61,7 +61,7 @@ RUN git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home
 
 ##### TODO This line will be removed before the PR merged 
 WORKDIR /home/azureuser/openhack-devops-proctor
-RUN git checkout -b refactor/provisionvm origin/refactor/provisionvm
+RUN git checkout -b refactor/provisionvm origin/refactor/nginx
 WORKDIR ${home}
 
 ############### Install kvstore ###############
@@ -81,6 +81,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 ENV PATH $PATH:/opt/mssql-tools/bin
 ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
 #ENV DOCKER_HOST tcp://docker:2375
+
+#Create nginx directory
+RUN mkdir -p /home/nginx/config
+RUN mkdir -p /home/nginx/contents
 
 COPY startup.sh .
 RUN chmod +x /home/azureuser/startup.sh

@@ -65,6 +65,10 @@ export CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE
 export TENANTID=$TENANTID
 export APPID=$APPID
 
+# nginx directory creation
+mkdir -p /home/nginx/config
+mkdir -p /home/nginx/contents
+
 # /bin/bash -c 'docker run -d --name docker-daemon --privileged docker:stable-dind &'
-/bin/bash -c 'docker run --mount '"'"'type=bind,src=/home/azureuser,dst=/home/azureuser'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID tsuyoshiushio/proctor-container &'
+/bin/bash -c 'docker run --mount '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' --mount '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID tsuyoshiushio/proctor-container &'
 echo "############### End of custom script ###############"
