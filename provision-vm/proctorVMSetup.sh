@@ -54,5 +54,5 @@ echo "AppId is $APPID"
 
 # Launching the team provisioning in background
 
-/bin/bash docker run tsuyoshiushio/proctor-container -d -e  "AZUREUSERNAME=$AZUREUSERNAME" -e "AZUREPASSWORD=$AZUREPASSWORD" -e "SUBID=$SUBID" -e "LOCATION=$LOCATION" -e "TEAMNAME=$TEAMNAME" -e "RECIPIENTEMAIL=$RECIPIENTEMAIL" -e "CHATCONNECTIONSTRING=$CHATCONNECTIONSTRING" -e "CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE" -e "TENANTID=$TENANTID" -e "APPID=$APPID" > teamdeploy.out &
+/bin/bash -c 'docker run tsuyoshiushio/proctor-container -d -e  "AZUREUSERNAME=$AZUREUSERNAME" -e "AZUREPASSWORD=$AZUREPASSWORD" -e "SUBID=$SUBID" -e "LOCATION=$LOCATION" -e "TEAMNAME=$TEAMNAME" -e "RECIPIENTEMAIL=$RECIPIENTEMAIL" -e "CHATCONNECTIONSTRING=$CHATCONNECTIONSTRING" -e "CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE" -e "TENANTID=$TENANTID" -e "APPID=$APPID" > teamdeploy.out &'
 echo "############### End of custom script ###############"
