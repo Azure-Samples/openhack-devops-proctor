@@ -61,7 +61,7 @@ RUN git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home
 
 ##### TODO This line will be removed before the PR merged 
 WORKDIR /home/azureuser/openhack-devops-proctor
-RUN git checkout -b refactor/provisionvm origin/refactor/nginx
+RUN git checkout -b refactor/nginx origin/refactor/nginx
 WORKDIR ${home}
 
 ############### Install kvstore ###############
