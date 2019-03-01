@@ -44,10 +44,10 @@ ipaddress=$(az vm list-ip-addresses --resource-group=ProctorVMG --name=proctorVM
 echo IPADDRESS:$ipaddress
 
 location=$(az group show -n ProctorVMG --query location | tr -d '"')
-date=$(date '+%d/%m/%Y_%H:%M:%S')
+date=$(date '+%d/%m/%Y')
 
 if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    teamAAD=$location-$date
+    teamAAD=$USERNAME
     echo TEAM:$teamAAD
     if [[ ! -d "$teamAAD" ]]; then
     mkdir -p $teamAAD
