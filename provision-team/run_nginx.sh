@@ -9,5 +9,7 @@ if [[ ! -d "/home/azureuser/www" ]]; then
     mkdir -p /home/azureuser/www
 fi 
 
+cp -R /home/azureuser/openhack-devops-proctor/provision-team/nginx/* /home/nginx/config
+
 # Add nginx to the script
-docker run --restart always -v /home/azureuser/openhack-devops-proctor/provision-team/nginx/:/etc/nginx/conf.d/ -v /home/azureuser/www/:/usr/share/nginx/html -p 2018:80 -d nginx
+docker run --restart always -v /home/nginx/config/:/etc/nginx/conf.d/ -v /home/nginx/contents/:/usr/share/nginx/html -p 2018:80 -d nginx

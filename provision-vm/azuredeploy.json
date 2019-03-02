@@ -239,7 +239,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/refactor/provisionvm/provision-vm/proctorVMSetup.sh"
+                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/refactor/nginx/provision-vm/proctorVMSetup.sh"
                     ],
                     "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'), ' ', variables('azureAppId') )]"
                 }

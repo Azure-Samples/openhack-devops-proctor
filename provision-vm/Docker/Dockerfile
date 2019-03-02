@@ -55,19 +55,6 @@ ENV LC_ALL en_US.UTF-8
 RUN touch /home/azureuser/.bashrc
 RUN echo 'export PATH=$PATH:/opt/mssql-tools/bin' >> /home/azureuser/.bashrc
 
-############### Pulling Openhack-tools from Github ###############
-RUN git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
-# RUN chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
-
-##### TODO This line will be removed before the PR merged 
-WORKDIR /home/azureuser/openhack-devops-proctor
-RUN git checkout -b refactor/provisionvm origin/refactor/provisionvm
-WORKDIR ${home}
-
-############### Install kvstore ###############
-RUN install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
-RUN echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
-
 RUN echo azure-cli hold | dpkg --set-selections
 
 #Add user to docker usergroup
@@ -80,7 +67,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #Set environement variables
 ENV PATH $PATH:/opt/mssql-tools/bin
 ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
-ENV DOCKER_HOST tcp://docker:2375
+#ENV DOCKER_HOST tcp://docker:2375
+
+#Create nginx directory
+RUN mkdir -p /home/nginx/config
+RUN mkdir -p /home/nginx/contents
 
 COPY startup.sh .
 RUN chmod +x /home/azureuser/startup.sh
