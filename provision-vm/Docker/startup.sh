@@ -12,6 +12,19 @@ echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
 echo "Tenant is $TENANTID"
 echo "AppId is $APPID"
 
+############### Pulling Openhack-tools from Github ###############
+git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+# RUN chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
+
+##### TODO This line will be removed before the PR merged 
+cd /home/azureuser/openhack-devops-proctor
+git checkout -b refactor/nginx origin/refactor/nginx
+cd /home/azureuser
+
+############### Install kvstore ###############
+install -b /home/azureuser/openhack-devops-proctor/provision-team/kvstore.sh /usr/local/bin/kvstore
+echo 'export KVSTORE_DIR=/home/azureuser/team_env/kvstore' >> /home/azureuser/.bashrc
+
 cd /home/azureuser/openhack-devops-proctor/provision-team
 
 # Running the provisioning of the team environment
