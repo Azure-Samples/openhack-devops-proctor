@@ -41,7 +41,7 @@ zip -e --password ${password} /home/azureuser/www/teamfiles.zip /home/azureuser/
 echo "Zipped /home/azureuser/www/teamfiles.zip with password $password"
 cp /home/azureuser/openhack-devops-proctor/provision-team/nginx/index.html /home/azureuser/www/index.html
 
-cp -R /home/azureuser/www/ /home/nginx/contents
+cp -R /home/azureuser/www/* /home/nginx/contents
 
 # Set proper ownership for the regular user after script completes
 # chown -R azureuser:azureuser /home/azureuser
