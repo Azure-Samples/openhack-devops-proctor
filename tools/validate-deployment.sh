@@ -47,11 +47,13 @@ location=$(az group show -n ProctorVMG --query location | tr -d '"')
 date=$(date '+%d/%m/%Y')
 
 if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    teamAAD=$USERNAME
+    teamAAD=$location
     echo TEAM:$teamAAD
+    
     if [[ ! -d "$teamAAD" ]]; then
     mkdir -p $teamAAD
     fi
+    
     # Changing the SSH key if asked 
     if [[ -n "$ID_RSA_PUBLIC" ]]; then
         echo "Resetting public key to ProctorVM "
@@ -60,7 +62,7 @@ if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid - Exiting ..."
     fi
 
-    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/team_env/* ./$teamAAD/
+    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/logs/* ./$teamAAD/
     if [ $? -ne 0 ]; then
         echo "[ERROR] Getting team_env directory failed" >> $ERROR_FILE
     fi
