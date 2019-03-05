@@ -12,9 +12,7 @@ For getting started, create a docker daemon using the docker image. For experime
 Currently only support manual deployment for testing.
 
 ```
-$ docker run -d --name some-docker --privileged docker:stable-dind
 $ docker run --link some-docker:docker -it proctorvm /bin/bash
-root@531ed021c2c5:/home/azureuser# export DOCKER_HOST='tcp://docker:2375'
 root@531ed021c2c5:/home/azureuser# export AZUREUSERNAME=YOUR_SERVICE_PRINICPAL_NAME
 root@531ed021c2c5:/home/azureuser# export AZUREPASSWORD=YOUR_SERVICE_PRINICPAL_PASSWORD
 root@531ed021c2c5:/home/azureuser# export SUBID=YOUR_SUBSCRIPTION_ID
