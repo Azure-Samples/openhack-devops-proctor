@@ -47,7 +47,7 @@ location=$(az group show -n ProctorVMG --query location | tr -d '"')
 date=$(date '+%d/%m/%Y')
 
 if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    teamAAD=$location
+    teamAAD=$location-$date
     echo TEAM:$teamAAD
     
     if [[ ! -d "$teamAAD" ]]; then
