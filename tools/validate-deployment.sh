@@ -66,10 +66,23 @@ if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     if [ $? -ne 0 ]; then
         echo "[ERROR] Getting team_env directory failed" >> $ERROR_FILE
     fi
+
+    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/nginx/contents/* ./$teamAAD/
+    if [ $? -ne 0 ]; then
+        echo "[ERROR] Getting kubeconfig directory failed" >> $ERROR_FILE
+    fi
+
+    # Getting kubeconfig value.
+    ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF 
+    sudo chown azureuser:azureuser /home/nginx/contents/kubeconfig;
+
+EOF
+
     # Getting stderr and stdout from custom script extension.
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
         sudo cp /var/lib/waagent/custom-script/download/0/stderr .;
         sudo chown azureuser:azureuser ./stderr;
+
 EOF
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stderr ./$teamAAD/
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
