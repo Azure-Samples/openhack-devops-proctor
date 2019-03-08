@@ -44,14 +44,16 @@ ipaddress=$(az vm list-ip-addresses --resource-group=ProctorVMG --name=proctorVM
 echo IPADDRESS:$ipaddress
 
 location=$(az group show -n ProctorVMG --query location | tr -d '"')
-date=$(date '+%d/%m/%Y_%H:%M:%S')
+date=$(date '+%d/%m/%Y')
 
 if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     teamAAD=$location-$date
     echo TEAM:$teamAAD
+    
     if [[ ! -d "$teamAAD" ]]; then
     mkdir -p $teamAAD
     fi
+    
     # Changing the SSH key if asked 
     if [[ -n "$ID_RSA_PUBLIC" ]]; then
         echo "Resetting public key to ProctorVM "
@@ -60,14 +62,27 @@ if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid - Exiting ..."
     fi
 
-    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/team_env/* ./$teamAAD/
+    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/logs/* ./$teamAAD/
     if [ $? -ne 0 ]; then
         echo "[ERROR] Getting team_env directory failed" >> $ERROR_FILE
     fi
+
+    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/nginx/contents/* ./$teamAAD/
+    if [ $? -ne 0 ]; then
+        echo "[ERROR] Getting kubeconfig directory failed" >> $ERROR_FILE
+    fi
+
+    # Getting kubeconfig value.
+    ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF 
+    sudo chown azureuser:azureuser /home/nginx/contents/kubeconfig;
+
+EOF
+
     # Getting stderr and stdout from custom script extension.
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
         sudo cp /var/lib/waagent/custom-script/download/0/stderr .;
         sudo chown azureuser:azureuser ./stderr;
+
 EOF
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stderr ./$teamAAD/
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
@@ -77,7 +92,7 @@ EOF
     errorflag=true
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stdout ./$teamAAD/
     # Getting deployment logs 
-    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:/home/azureuser/openhack-devops-proctor/provision-team/teamdeploy.out ./$teamAAD/
+    scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:/home/azureuser/logs/teamdeploy.out ./$teamAAD/
     if [ $? -ne 0 ]; then
         echo "[ERROR] Getting teamdeploy.out file failed for subscription $subid, portal username $portalUserName, AAD $teamAAD, VM IP is $ipaddress" >> $ERROR_FILE
         errorflag=false
