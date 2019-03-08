@@ -35,6 +35,5 @@ else
     az login --service-principal --username=$AZUREUSERNAME --password=$AZUREPASSWORD --tenant=$TENANTID
 fi 
 
-
 # Launching the team provisioning in background
-PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID" -a "$APPID"
+PATH=$PATH:/opt/mssql-tools/bin KVSTORE_DIR=/home/azureuser/team_env/kvstore ./setup.sh -i $SUBID -l $LOCATION -n $TEAMNAME -u "$AZUREUSERNAME" -p "$AZUREPASSWORD" -r "$RECIPIENTEMAIL" -c "$CHATCONNECTIONSTRING" -q "$CHATMESSAGEQUEUE" -t "$TENANTID" -a "$APPID" 2>&1 | tee -a /home/azureuser/logs/teamdeploy.out 

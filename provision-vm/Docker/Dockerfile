@@ -73,6 +73,9 @@ ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
 RUN mkdir -p /home/nginx/config
 RUN mkdir -p /home/nginx/contents
 
+#Create mount point for logs
+RUN mkdir -p /home/azureuser/logs
+
 COPY startup.sh .
 RUN chmod +x /home/azureuser/startup.sh
 CMD ["/bin/bash", "-c", "/home/azureuser/startup.sh"]
