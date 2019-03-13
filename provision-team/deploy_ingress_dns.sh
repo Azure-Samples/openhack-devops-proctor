@@ -120,9 +120,9 @@ APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" |
 echo "Apiserver is: " $APISERVER
 
 # Prodution POD
-helm install --name team-ingress ./traefik -f traefik.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="${DNS_LABEL}" --debug
+helm install --name team-ingress ./traefik -f traefik-values.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="${DNS_LABEL}" --debug
 #Staging POD
-helm install --name team-ingress ./traefik -f traefik.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="stage${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="stage${DNS_LABEL}" --debug
+helm install --name team-ingress ./traefik -f traefik-values.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="stage${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="stage${DNS_LABEL}" --debug
 
 echo "Waiting for public IP:"
 time=0
