@@ -43,6 +43,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.0.49-1~xenial
 RUN DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
+RUN DEBIAN_FRONTEND=noninteractive apt-get install vim -y
 
 ############### Locale Settings ###############
 
@@ -67,7 +68,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 #Set environement variables
 ENV PATH $PATH:/opt/mssql-tools/bin
 ENV KVSTORE_DIR /home/azureuser/team_env/kvstore
-#ENV DOCKER_HOST tcp://docker:2375
 
 #Create nginx directory
 RUN mkdir -p /home/nginx/config

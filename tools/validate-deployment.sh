@@ -3,9 +3,9 @@
 # You need to provide the CSV file with all the credentials of the Azure subscriptions from the classroom management portal and a private / public SSH keypair that will be used to access the provisioning VMs
 # The error log file is where will be logged the informations regarding the failed deployments. If not provided, it defaults to error.log. 
 
-usage() { echo "Usage: validate-deployment.sh -f <errorlog_file> -u <service principal username> -x < service principal password> -t < service principal tenant>" 1>&2; exit 1; }
+usage() { echo "Usage: validate-deployment.sh -g < resource_group_name > -f <errorlog_file> -u <service_principal_username> -x < service_principal_password> -t < service_principal_tenant>" 1>&2; exit 1; }
 
-while getopts ":f:u:x:t:" arg; do
+while getopts ":f:g:t:u:x:" arg; do
     case "${arg}" in
         f)
             ERROR_FILE=${OPTARG}
@@ -18,6 +18,9 @@ while getopts ":f:u:x:t:" arg; do
         ;;
         t)
             TENANT=${OPTARG}
+        ;;
+        g)
+            RESOURCE_GROUP=${OPTARG}
         ;;
     esac
 done
@@ -40,15 +43,15 @@ touch $ERROR_FILE
 
 az login --service-principal -u $USERNAME -p $PASSWORD --tenant $TENANT
 
-ipaddress=$(az vm list-ip-addresses --resource-group=ProctorVMG --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
+ipaddress=$(az vm list-ip-addresses --resource-group=${RESOURCE_GROUP} --name=proctorVM --query "[].virtualMachine.network.publicIpAddresses[].ipAddress" -otsv)
 echo IPADDRESS:$ipaddress
 
-location=$(az group show -n ProctorVMG --query location | tr -d '"')
-date=$(date '+%d/%m/%Y')
+location=$(az group show -n ${RESOURCE_GROUP} --query location | tr -d '"')
+date=$(date '+%Y-%m-%d')
 
 if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-    teamAAD=$location-$date
-    echo TEAM:$teamAAD
+    teamAAD=teamFiles
+    echo TEAM:${teamAAD}
     
     if [[ ! -d "$teamAAD" ]]; then
     mkdir -p $teamAAD
@@ -57,9 +60,9 @@ if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     # Changing the SSH key if asked 
     if [[ -n "$ID_RSA_PUBLIC" ]]; then
         echo "Resetting public key to ProctorVM "
-        az vm user update --resource-group=ProctorVMG --name=proctorVM --username azureuser --ssh-key-value $ID_RSA_PUBLIC
+        az vm user update --resource-group=${RESOURCE_GROUP} --name=proctorVM --username azureuser --ssh-key-value $ID_RSA_PUBLIC
     else
-        echo "[ERROR] Public key missing when resetting key for ProctorVM for $teamAAD - Subscription $subid - Exiting ..."
+        echo "[ERROR] Public key missing when resetting key for ProctorVM - Subscription $subid - Exiting ..."
     fi
 
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/logs/* ./$teamAAD/
@@ -67,30 +70,35 @@ if [[ $ipaddress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         echo "[ERROR] Getting team_env directory failed" >> $ERROR_FILE
     fi
 
+    # Changing the permissions of the kubeconfig file
+    ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF 
+    sudo chmod 644 /home/nginx/contents/kubeconfig;
+EOF
+
+    # Getting the files related to the team environment
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/nginx/contents/* ./$teamAAD/
     if [ $? -ne 0 ]; then
         echo "[ERROR] Getting kubeconfig directory failed" >> $ERROR_FILE
     fi
 
-    # Getting kubeconfig value.
-    ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF 
-    sudo chown azureuser:azureuser /home/nginx/contents/kubeconfig;
-
-EOF
-
     # Getting stderr and stdout from custom script extension.
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
         sudo cp /var/lib/waagent/custom-script/download/0/stderr .;
         sudo chown azureuser:azureuser ./stderr;
-
 EOF
+
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stderr ./$teamAAD/
     ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF
         sudo cp /var/lib/waagent/custom-script/download/0/stdout .;
         sudo chown azureuser:azureuser ./stdout;
 EOF
+
     errorflag=true
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stdout ./$teamAAD/
+
+    timestamp=$(date)
+    echo "${timestamp} - Getting the deployment logs"
+
     # Getting deployment logs 
     scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:/home/azureuser/logs/teamdeploy.out ./$teamAAD/
     if [ $? -ne 0 ]; then
