@@ -95,7 +95,7 @@ echo "tiller upgrade complete."
 # helm repo update
 
 # echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
-DASHBOARD_URL="$teamName.$resourceGroupLocation.cloudapp.azure.com"
+DASHBOARD_URL="akstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com"
 DNS_LABEL="akstraefik$teamName"
 
 # cat "${0%/*}/traefik-values.yaml" \
