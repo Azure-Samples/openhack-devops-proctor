@@ -55,6 +55,6 @@ mkdir $relativeSaveLocation
 pushd $relativeSaveLocation;
 
 #clone the repository
-git clone $githubRepository 1> /dev/null
+git clone --branch refactor/bg-refactor-rg $githubRepository 1> /dev/null
 
 echo "Git clone completed."
