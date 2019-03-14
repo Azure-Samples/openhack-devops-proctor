@@ -274,7 +274,11 @@ bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServe
 dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
+apiUrl='http://'$dnsURL'/api/sentinel'
+echo -e "API URL for "${teamName}" is:\n"$apiUrl
+
 kvstore set ${teamName}${teamNumber} endpoint ${dnsURL}
+kvstore set ${teamName}${teamNumber} apiUrl ${apiUrl}
 
 echo "9-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
@@ -299,6 +303,17 @@ bash ./deploy_jenkins.sh -g ${resourceGroupTeam} -l ${resourceGroupLocation} -p 
 
 echo "16-Check services (# bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber})"
 bash ./service_check.sh -d ${dnsURL} -n ${teamName}${teamNumber}
+
+# Sentinel
+
+echo "17-Build and deploy Sentinel API to AKS (bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupTeam -t 'sentinel-api' -d $dnsURL -g $registryName)"
+bash ./build_deploy_sentinel_api.sh -b Release -r $resourceGroupTeam -t 'sentinel-api' -d $dnsURL -g $registryName
+
+echo "18-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGroupTeam -g $registryName -l $resourceGroupLocation -a $apiUrl)"
+bash ./build_sentinel.sh -r $resourceGroupTeam -g $registryName -l $resourceGroupLocation -a $apiUrl
+
+echo "19-Deploy sentinel to AKS"
+bash ./deploy_sentinel.sh -p ${proctorName}${proctorNumber} 
 
 echo "17-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber} -p $zipPassword

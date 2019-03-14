@@ -106,11 +106,17 @@ kubectl apply -f $relativeSaveLocation"/sql-secret-$teamName.yaml" -n simulator
 #Create firewall rule to run schema create
 az sql server firewall-rule create -n allow-create-schema -g $resourceGroupName -s $sqlServer --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.254
 
-#Create schema in db
+#Create schema for MyDriving in db
 sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./MYDrivingDB.sql -e
 
-#Add Sample data
+#Add Sample data for MyDriving
 bash ./sql_data_init.sh -s $sqlServerFQDN -u $sqlServerUsername -p $sqlPassword -d $sqlDBName
+
+#Create schema for Leaderboard in db
+sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./CreateLeaderboardDb.sql -e
+
+#Initialize Db for Leaderboard
+sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i ./InitLeaderboard.sql -e
 
 #Remove firewall rule
 az sql server firewall-rule delete -n allow-create-schema -g $resourceGroupName -s $sqlServer
