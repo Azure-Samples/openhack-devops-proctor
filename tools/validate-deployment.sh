@@ -3,7 +3,7 @@
 # You need to provide the CSV file with all the credentials of the Azure subscriptions from the classroom management portal and a private / public SSH keypair that will be used to access the provisioning VMs
 # The error log file is where will be logged the informations regarding the failed deployments. If not provided, it defaults to error.log. 
 
-usage() { echo "Usage: validate-deployment.sh -f <errorlog_file> -u <service principal username> -x < service principal password> -t < service principal tenant>" 1>&2; exit 1; }
+usage() { echo "Usage: validate-deployment.sh -g < resource_group_name > -f <errorlog_file> -u <service_principal_username> -x < service_principal_password> -t < service_principal_tenant>" 1>&2; exit 1; }
 
 while getopts ":f:g:t:u:x:" arg; do
     case "${arg}" in
