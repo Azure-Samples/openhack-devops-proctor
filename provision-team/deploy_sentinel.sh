@@ -6,14 +6,15 @@ IFS=$'\n\t'
 # If no team is specified it will read the entries in the kvstore and deploy sentinel for the successfull ones
 # If a team is specified it will deploy sentinel only for this one
 
-usage() { echo "Usage: deploy_sentinel.sh -n <teamName> -a <apiUrl> -d <dnsUrl> " 1>&2; exit 1; }
+usage() { echo "Usage: deploy_sentinel.sh -n <teamName> -a <apiUrl> -d <dnsUrl> -g <registry name>" 1>&2; exit 1; }
 
 declare apiUrl=""
 declare teamName=""
 declare dnsUrl=""
+declare registryName=""
 
 # Initialize parameters specified from command line
-while getopts ":n:a:d:" arg; do
+while getopts ":n:a:d:g:" arg; do
     case "${arg}" in
         n)
             teamName=${OPTARG}
@@ -24,6 +25,9 @@ while getopts ":n:a:d:" arg; do
         d)
             dnsUrl=${OPTARG}
         ;;        
+        g)
+            registryName=${OPTARG}
+        ;;     
     esac
 done
 shift $((OPTIND-1))
