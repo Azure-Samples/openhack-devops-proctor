@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # If no team is specified it will read the entries in the kvstore and deploy sentinel for the successfull ones
 # If a team is specified it will deploy sentinel only for this one
 
-usage() { echo "Usage: deploy_sentinel.sh -n <teamName> -d <dnsUrl> " 1>&2; exit 1; }
+usage() { echo "Usage: deploy_sentinel.sh -n <teamName> -a <apiUrl> -d <dnsUrl> " 1>&2; exit 1; }
 
 declare apiUrl=""
 declare teamName=""
