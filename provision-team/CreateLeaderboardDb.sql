@@ -3,7 +3,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE leaderboard.dbo.LogMessages (
+CREATE TABLE dbo.LogMessages (
 	Id nvarchar(128) NOT NULL,
 	TeamName nvarchar(50) NOT NULL,
 	EndpointUri nvarchar(512) NOT NULL,
@@ -15,15 +15,15 @@ CREATE TABLE leaderboard.dbo.LogMessages (
 
 GO
 
-ALTER TABLE leaderboard.dbo.LogMessages ADD CONSTRAINT LogMessages_PK PRIMARY KEY (TeamName, EndpointUri, CreatedDate, [Type])
+ALTER TABLE dbo.LogMessages ADD CONSTRAINT LogMessages_PK PRIMARY KEY (TeamName, EndpointUri, CreatedDate, [Type])
 
 GO
 
-CREATE INDEX LogMessages_TimeSlice_IDX ON leaderboard.dbo.LogMessages (TimeSlice)
+CREATE INDEX LogMessages_TimeSlice_IDX ON dbo.LogMessages (TimeSlice)
 
 GO
 
-CREATE TABLE leaderboard.dbo.Teams (
+CREATE TABLE dbo.Teams (
 	Id nvarchar(128) NOT NULL,
 	TeamName nvarchar(50) NOT NULL,
 	DownTimeMinutes int NOT NULL,
@@ -33,16 +33,16 @@ CREATE TABLE leaderboard.dbo.Teams (
 
 GO
 
-ALTER TABLE leaderboard.dbo.Teams ADD CONSTRAINT Teams_PK PRIMARY KEY (Id)
+ALTER TABLE dbo.Teams ADD CONSTRAINT Teams_PK PRIMARY KEY (Id)
 
 GO
 
 
-CREATE UNIQUE INDEX Teams_TeamName_IDX ON leaderboard.dbo.Teams (TeamName)
+CREATE UNIQUE INDEX Teams_TeamName_IDX ON dbo.Teams (TeamName)
 
 GO
 
-CREATE TABLE leaderboard.dbo.ChallengeDefinitions (
+CREATE TABLE dbo.ChallengeDefinitions (
     Id nvarchar(128) NOT NULL,
 	Name nvarchar(100) NOT NULL,
 	MaxPoints int NOT NULL,
@@ -52,15 +52,15 @@ CREATE TABLE leaderboard.dbo.ChallengeDefinitions (
 
 GO
 
-ALTER TABLE leaderboard.dbo.ChallengeDefinitions ADD CONSTRAINT ChallengeDefinitions_PK PRIMARY KEY (Id)
+ALTER TABLE dbo.ChallengeDefinitions ADD CONSTRAINT ChallengeDefinitions_PK PRIMARY KEY (Id)
 
 GO
 
-CREATE INDEX ChallengeDefinitions_Name_IDX ON leaderboard.dbo.ChallengeDefinitions (Name)
+CREATE INDEX ChallengeDefinitions_Name_IDX ON dbo.ChallengeDefinitions (Name)
 
 GO
 
-CREATE TABLE leaderboard.dbo.Challenges (
+CREATE TABLE dbo.Challenges (
     Id nvarchar(128) NOT NULL,
 	TeamId nvarchar(128) NOT NULL,
 	ChallengeDefinitionId nvarchar(128) NOT NULL,
@@ -73,27 +73,27 @@ CREATE TABLE leaderboard.dbo.Challenges (
 
 GO
 
-ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT Challenges_PK PRIMARY KEY (Id,TeamId,ChallengeDefinitionId)
+ALTER TABLE dbo.Challenges ADD CONSTRAINT Challenges_PK PRIMARY KEY (Id,TeamId,ChallengeDefinitionId)
 
 GO
 
-CREATE INDEX Challenges_StartEndDateTime_IDX ON leaderboard.dbo.Challenges (StartDateTime,EndDateTime)
+CREATE INDEX Challenges_StartEndDateTime_IDX ON dbo.Challenges (StartDateTime,EndDateTime)
 
 GO
 
-ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT FK_Challenges_Team FOREIGN KEY (TeamId) REFERENCES leaderboard.dbo.Teams (Id)
+ALTER TABLE dbo.Challenges ADD CONSTRAINT FK_Challenges_Team FOREIGN KEY (TeamId) REFERENCES dbo.Teams (Id)
 
 GO
 
-ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT FK_Challenges_ChallengeDefinition FOREIGN KEY (ChallengeDefinitionId) REFERENCES leaderboard.dbo.ChallengeDefinitions (Id)
+ALTER TABLE dbo.Challenges ADD CONSTRAINT FK_Challenges_ChallengeDefinition FOREIGN KEY (ChallengeDefinitionId) REFERENCES dbo.ChallengeDefinitions (Id)
 
 GO
 
-ALTER TABLE leaderboard.dbo.Challenges ADD CONSTRAINT DF_Challenges_IsCompleted DEFAULT 0 FOR IsCompleted
+ALTER TABLE dbo.Challenges ADD CONSTRAINT DF_Challenges_IsCompleted DEFAULT 0 FOR IsCompleted
 
 GO
 
-CREATE TABLE leaderboard.dbo.ServiceStatus (
+CREATE TABLE dbo.ServiceStatus (
 	TeamId nvarchar(128) NOT NULL,
 	ServiceType int NOT NULL,
 	Status nvarchar(12) NOT NULL,
@@ -101,11 +101,11 @@ CREATE TABLE leaderboard.dbo.ServiceStatus (
 
 GO
 
-ALTER TABLE leaderboard.dbo.ServiceStatus ADD CONSTRAINT ServiceStatus_PK PRIMARY KEY (TeamId,ServiceType)
+ALTER TABLE dbo.ServiceStatus ADD CONSTRAINT ServiceStatus_PK PRIMARY KEY (TeamId,ServiceType)
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetRoleClaims(
+CREATE TABLE dbo.AspNetRoleClaims(
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[RoleId] [nvarchar](128) NOT NULL,
 	[ClaimType] [nvarchar](max) NULL,
@@ -118,7 +118,7 @@ CREATE TABLE leaderboard.dbo.AspNetRoleClaims(
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetRoles (
+CREATE TABLE dbo.AspNetRoles (
 	Id nvarchar(128) NOT NULL,
 	Name nvarchar(256),
 	NormalizedName nvarchar(256),
@@ -127,11 +127,11 @@ CREATE TABLE leaderboard.dbo.AspNetRoles (
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetRoles ADD CONSTRAINT PK_AspNetRoles PRIMARY KEY (Id)
+ALTER TABLE dbo.AspNetRoles ADD CONSTRAINT PK_AspNetRoles PRIMARY KEY (Id)
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetUserClaims(
+CREATE TABLE dbo.AspNetUserClaims(
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[UserId] [nvarchar](128) NOT NULL,
 	[ClaimType] [nvarchar](max) NULL,
@@ -144,7 +144,7 @@ CREATE TABLE leaderboard.dbo.AspNetUserClaims(
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetUserLogins(
+CREATE TABLE dbo.AspNetUserLogins(
 	[LoginProvider] [nvarchar](450) NOT NULL,
 	[ProviderKey] [nvarchar](450) NOT NULL,
 	[ProviderDisplayName] [nvarchar](max) NULL,
@@ -158,7 +158,7 @@ CREATE TABLE leaderboard.dbo.AspNetUserLogins(
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetUserRoles(
+CREATE TABLE dbo.AspNetUserRoles(
 	[UserId] [nvarchar](128) NOT NULL,
 	[RoleId] [nvarchar](128) NOT NULL,
  CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY CLUSTERED
@@ -170,7 +170,7 @@ CREATE TABLE leaderboard.dbo.AspNetUserRoles(
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetUsers (
+CREATE TABLE dbo.AspNetUsers (
 	Id nvarchar(128) NOT NULL,
 	UserName nvarchar(256),
 	NormalizedUserName nvarchar(256),
@@ -192,11 +192,11 @@ CREATE TABLE leaderboard.dbo.AspNetUsers (
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUsers ADD CONSTRAINT PK_AspNetUsers PRIMARY KEY (Id)
+ALTER TABLE dbo.AspNetUsers ADD CONSTRAINT PK_AspNetUsers PRIMARY KEY (Id)
 
 GO
 
-CREATE TABLE leaderboard.dbo.AspNetUserTokens(
+CREATE TABLE dbo.AspNetUserTokens(
 	[UserId] [nvarchar](128) NOT NULL,
 	[LoginProvider] [nvarchar](450) NOT NULL,
 	[Name] [nvarchar](450) NOT NULL,
@@ -211,65 +211,65 @@ CREATE TABLE leaderboard.dbo.AspNetUserTokens(
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetRoleClaims  WITH CHECK ADD  CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
-REFERENCES leaderboard.dbo.AspNetRoles(Id)
+ALTER TABLE dbo.AspNetRoleClaims  WITH CHECK ADD  CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
+REFERENCES dbo.AspNetRoles(Id)
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetRoleClaims CHECK CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId]
+ALTER TABLE dbo.AspNetRoleClaims CHECK CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId]
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserClaims WITH CHECK ADD  CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY([UserId])
-REFERENCES leaderboard.dbo.AspNetUsers (Id)
+ALTER TABLE dbo.AspNetUserClaims WITH CHECK ADD  CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES dbo.AspNetUsers (Id)
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserClaims CHECK CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId]
+ALTER TABLE dbo.AspNetUserClaims CHECK CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId]
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserLogins  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY([UserId])
-REFERENCES leaderboard.dbo.AspNetUsers(Id)
+ALTER TABLE dbo.AspNetUserLogins  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES dbo.AspNetUsers(Id)
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserLogins CHECK CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId]
+ALTER TABLE dbo.AspNetUserLogins CHECK CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId]
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserRoles  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
-REFERENCES leaderboard.dbo.AspNetRoles(Id)
+ALTER TABLE dbo.AspNetUserRoles  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
+REFERENCES dbo.AspNetRoles(Id)
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserRoles CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId]
+ALTER TABLE dbo.AspNetUserRoles CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId]
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserRoles  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY([UserId])
-REFERENCES leaderboard.dbo.AspNetUsers ([Id])
+ALTER TABLE dbo.AspNetUserRoles  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES dbo.AspNetUsers ([Id])
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserRoles CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId]
+ALTER TABLE dbo.AspNetUserRoles CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId]
 
 GO
 
-CREATE INDEX AspNetUsers_NormalizedUserName_IDX ON leaderboard.dbo.AspNetUsers (NormalizedUserName)
-CREATE INDEX AspNetUsers_NormalizedEmail_IDX ON leaderboard.dbo.AspNetUsers (NormalizedEmail)
+CREATE INDEX AspNetUsers_NormalizedUserName_IDX ON dbo.AspNetUsers (NormalizedUserName)
+CREATE INDEX AspNetUsers_NormalizedEmail_IDX ON dbo.AspNetUsers (NormalizedEmail)
 
-ALTER TABLE leaderboard.dbo.AspNetUserTokens WITH CHECK ADD  CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY([UserId])
-REFERENCES leaderboard.dbo.AspNetUsers ([Id])
+ALTER TABLE dbo.AspNetUserTokens WITH CHECK ADD  CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES dbo.AspNetUsers ([Id])
 ON DELETE CASCADE
 
 GO
 
-ALTER TABLE leaderboard.dbo.AspNetUserTokens CHECK CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId]
+ALTER TABLE dbo.AspNetUserTokens CHECK CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId]
 
 GO
