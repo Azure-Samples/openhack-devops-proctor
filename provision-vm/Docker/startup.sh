@@ -18,7 +18,8 @@ git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azu
 
 ##### TODO This line will be removed before the PR merged 
 cd /home/azureuser/openhack-devops-proctor
-git checkout -b refactor/nginx origin/refactor/nginx
+# In case you want to test for branch, use this line.
+# git checkout -b refactor/movesentinel origin/refactor/movesentinel
 cd /home/azureuser
 
 ############### Install kvstore ###############
