@@ -313,7 +313,7 @@ echo "18-Build sentinel and push to ACR (bash ./build_sentinel.sh -r $resourceGr
 bash ./build_sentinel.sh -r $resourceGroupTeam -g $registryName -l $resourceGroupLocation -a $apiUrl
 
 echo "19-Deploy sentinel to AKS (bash ./deploy_sentinel.sh -n ${teamName}${teamNumber} -a $apiUrl -d $dnsURL -g $registryName)"
-bash ./deploy_sentinel.sh -n ${teamName}${teamNumber} -a $apiUrl -d $dnsURL -g $registryName
+bash ./deploy_sentinel.sh -r $resourceGroupTeam -n ${teamName}${teamNumber} -a $apiUrl -d $dnsURL -g $registryName
 
 echo "17-Clean the working environment"
 bash ./cleanup_environment.sh -t ${teamName}${teamNumber} -p $zipPassword
