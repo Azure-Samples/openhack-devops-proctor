@@ -1,5 +1,0 @@
-leaderboard backend successfully deployed
-
-kubectl logs YOUR_POD_NAME will show you the logs
-
-Happy leaderboard backend service
