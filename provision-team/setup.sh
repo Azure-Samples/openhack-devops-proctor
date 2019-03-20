@@ -275,6 +275,7 @@ dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.a
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
 
 kvstore set ${teamName}${teamNumber} endpoint ${dnsURL}
+kvstore set ${teamName}${teamNumber} staging_endpoint 'stage'${dnsURL}
 
 echo "9-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
