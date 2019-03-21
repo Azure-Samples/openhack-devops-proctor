@@ -257,13 +257,13 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_rel
 wget -q -O - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
 
-# Get the Docker GPG key 
+# Get the Docker GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg 2>&1 | sudo apt-key add -
 
 # Add Docker source
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get update 
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
 
 #install openjdk8
 sudo apt-get install openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk --yes
@@ -291,7 +291,7 @@ retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
 plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents blueocean credentials-binding git ghprb kubernetes pipeline-github-lib workflow-job azure-credentials docker-plugin)
 for plugin in "${plugins[@]}"; do
-  (run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy") || true 
+  (run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy") || true
 done
 
 #allow anonymous read access
@@ -490,7 +490,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 # Kubectl
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.7/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.11.8/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
