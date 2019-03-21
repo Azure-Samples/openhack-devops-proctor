@@ -272,10 +272,12 @@ bash ./configure_sql.sh -s ./test_fetch_build -g $resourceGroupTeam -u $sqlServe
 
 # Save the public DNS address to be provisioned in the helm charts for each service
 dnsURL='akstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
+dnsURLstage='stageakstraefik'${teamName}${teamNumber}'.'$resourceGroupLocation'.cloudapp.azure.com'
 echo -e "DNS URL for "${teamName}" is:\n"$dnsURL
+echo -e "Staging DNS URL for "${teamName}" is:\n"$dnsURLstage
 
 kvstore set ${teamName}${teamNumber} endpoint ${dnsURL}
-kvstore set ${teamName}${teamNumber} staging_endpoint 'stage'${dnsURL}
+kvstore set ${teamName}${teamNumber} staging_endpoint ${dnsURLstage}
 
 echo "9-Build and deploy POI API to AKS  (bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName)"
 bash ./build_deploy_poi.sh -s ./test_fetch_build -b Release -r $resourceGroupTeam -t 'api-poi' -d $dnsURL -n ${teamName}${teamNumber} -g $registryName
