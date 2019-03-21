@@ -42,5 +42,5 @@ while($true) {
     $output = '{0} | {1}' -f($timestamp, $R.StatusCode)
   }
   Write-Output $output
-  Start-Sleep -Seconds 3
+  Start-Sleep -Seconds 1
 }
