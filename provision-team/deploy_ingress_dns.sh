@@ -54,19 +54,19 @@ echo -e "adding RBAC ServiceAccount and ClusterRoleBinding for tiller\n\n"
 kubectl create serviceaccount --namespace kube-system tillersa
 if [ $? -ne 0 ]; then
     echo "[ERROR] Creation of tillersa failed"
-    exit 1 
+    exit 1
 fi
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tillersa
 if [ $? -ne 0 ]; then
     echo "[ERROR] Creation of the tiller-cluster-rule failed"
-    exit 1 
+    exit 1
 fi
 
 kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 if [ $? -ne 0 ]; then
     echo "[ERROR] Creation of dashboard-admin failed"
-    exit 1 
+    exit 1
 fi
 
 echo "Upgrading tiller (helm server) to match client version."
@@ -74,7 +74,7 @@ echo "Upgrading tiller (helm server) to match client version."
 helm init --upgrade --service-account tillersa
 if [ $? -ne 0 ]; then
     echo "[ERROR] The helm init command failed"
-    exit 1 
+    exit 1
 fi
 
 count=0
@@ -94,11 +94,14 @@ echo "tiller upgrade complete."
 # echo "Updating information of available charts locally from chart repositories"
 # helm repo update
 
-echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
-cat "${0%/*}/traefik-values.yaml" \
-    | sed "s/akstraefikreplaceme/akstraefik$teamName/g" \
-    | sed "s/locationreplace/$resourceGroupLocation/g" \
-    | tee $relativeSaveLocation"/traefik$teamName.yaml"
+# echo -e "\nUpdate the Traefik Ingress DNS name configuration ..."
+DASHBOARD_URL="akstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com"
+DNS_LABEL="akstraefik$teamName"
+
+# cat "${0%/*}/traefik-values.yaml" \
+#     | sed "s/akstraefikreplaceme/akstraefik$teamName/g" \
+#     | sed "s/locationreplace/$resourceGroupLocation/g" \
+#     | tee $relativeSaveLocation"/traefik$teamName.yaml"
 
 time=0
 while true; do
@@ -116,7 +119,10 @@ sleep 15
 APISERVER=$(kubectl config view --minify=true | grep server | cut -f 2- -d ":" | tr -d " ")
 echo "Apiserver is: " $APISERVER
 
-helm install --name team-ingress ./traefik -f $relativeSaveLocation"/traefik$teamName.yaml" --set kubernetes.endpoint="${APISERVER}" --debug
+# Prodution POD
+helm install --name team-ingress ./traefik -f traefik-values.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="${DNS_LABEL}" --debug
+#Staging POD
+helm install --name team-ingress-stage ./traefik -f traefik-values.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="stage${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="stage${DNS_LABEL}" --debug
 
 echo "Waiting for public IP:"
 time=0
