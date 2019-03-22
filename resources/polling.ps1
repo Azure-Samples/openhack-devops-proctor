@@ -1,26 +1,26 @@
 ﻿<#
 
 .SYNOPSIS
-    Healthcheck the Uri and display the result. 
+    Healthcheck the Uri and display the result.
 
 .DESCRIPTION
     The polling.ps1 display the helthcheck result for each second. You will see the format
-    [Timestamp] | [StatusCode] | [Uri] 
+    [Timestamp] | [StatusCode] | [Uri]
 
 .PARAMETER Uri
     The target uri for checking the status
 
-.PARAMETER hasUri
-    If $true, it omits the output of the Uri
+.PARAMETER displayUri
+    If $true, it displays the Uri in output
 
 .EXAMPLE
-PS > .\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor -hasUri $true
-.\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor -hasUri $true
+PS > .\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor -displayUri $true
+.\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor -displayUri $true
 21/03/2019 14:21:17 | 200 | https://github.com/Azure-Samples/openhack-devops-proctor
 21/03/2019 14:21:21 | 200 | https://github.com/Azure-Samples/openhack-devops-proctor
 
 .EXAMPLE
-PS > .\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor 
+PS > .\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor
 21/03/2019 14:21:55 | 200
 21/03/2019 14:21:58 | 200
 
@@ -28,17 +28,17 @@ PS > .\polling.ps1 -Uri https://github.com/Azure-Samples/openhack-devops-proctor
 
 Param(
     [string] [Parameter(Mandatory=$true)] $Uri,
-    [boolean] [Parameter(Mandatory=$false)] $hasUri
+    [boolean] [Parameter(Mandatory=$false)] $displayUri
     )
 
 while($true) {
   $R = Invoke-WebRequest -URI $Uri
-  $timestamp = Get-Date 
+  $timestamp = Get-Date
   $output = ""
-  if ($hasUri) {
+  if ($displayUri) {
     $output = $output = '{0} | {1} | {2}' -f($timestamp, $R.StatusCode, $Uri)
   } else {
-    
+
     $output = '{0} | {1}' -f($timestamp, $R.StatusCode)
   }
   Write-Output $output
