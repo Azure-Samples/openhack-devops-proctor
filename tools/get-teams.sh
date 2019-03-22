@@ -105,9 +105,9 @@ do
                 exit 1
             fi
 
-            scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/azureuser/team_env/* ./$teamAAD/
+            scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/nginx/contents/* ./$teamAAD/
             if [ $? -ne 0 ]; then
-                echo "[ERROR] Getting team_env directory failed" >> $ERROR_FILE
+                echo "[ERROR] Getting the files for the team failed" >> $ERROR_FILE
             fi
 
             # Getting stderr and stdout from custom script extension.
@@ -124,7 +124,7 @@ EOF
             scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:./stdout ./$teamAAD/
 
             # Getting deployment logs 
-            scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:/home/azureuser/openhack-devops-proctor/provision-team/teamdeploy.out ./$teamAAD/
+            scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress:/home/azureuser/logs/teamdeploy.out ./$teamAAD/
             if [ $? -ne 0 ]; then
                 echo "[ERROR] Getting teamdeploy.out file failed for subscription $subid, portal username $portalUserName, AAD $teamAAD, VM IP is $ipaddress" >> $ERROR_FILE
             fi
