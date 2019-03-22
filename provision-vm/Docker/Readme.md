@@ -1,9 +1,6 @@
 # Docker support for provision vm
 
-We have migrated the provision environment from Ubuntu VM to a doocker container to solve the problems below:
-
-* Deployment fails because of the upgrade of the apt packages.
-* You can deploy only from Ubuntu environment.
+We have migrated the provision environment from Ubuntu VM to a docker container.
 
 # Get Started
 
