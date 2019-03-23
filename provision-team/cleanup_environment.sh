@@ -24,11 +24,12 @@ fi
 # create a www directory
 if [[ ! -d "/home/azureuser/www" ]]; then
     mkdir -p /home/azureuser/www
-fi 
+fi
 
 # Copy the kubeconfig file
 kubeconfiglocation="/home/azureuser/team_env/$teamName/kubeconfig-$teamName"
 cp /root/.kube/config /home/azureuser/www/kubeconfig
+chmod 644 /home/azureuser/www/kubeconfig
 cp /root/.kube/config $kubeconfiglocation
 echo "Copied the kubeconfig file to $kubeconfiglocation"
 
