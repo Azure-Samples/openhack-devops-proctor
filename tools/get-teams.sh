@@ -96,7 +96,7 @@ do
                 mkdir -p $teamAAD
             fi
 
-            # Changing the SSH key if asked 
+            # Changing the SSH key
             if [[ -n "$ID_RSA_PUBLIC" ]]; then
                 echo "Resetting public key to ProctorVM "
                 az vm user update --resource-group=ProctorVMRG --name=proctorVM --username azureuser --ssh-key-value $ID_RSA_PUBLIC
@@ -105,9 +105,13 @@ do
                 exit 1
             fi
 
+            # Changing the permissions of the kubeconfig file
+            ssh -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE azureuser@$ipaddress "bash -s" << EOF 
+            sudo chmod 644 /home/nginx/contents/kubeconfig;
+EOF
             scp -o StrictHostKeyChecking=no -i $ID_RSA_PRIVATE -r azureuser@$ipaddress:/home/nginx/contents/* ./$teamAAD/
             if [ $? -ne 0 ]; then
-                echo "[ERROR] Getting the files for the team failed" >> $ERROR_FILE
+                echo "[ERROR] At least one files of the team $teamAAD could not be copied" >> $ERROR_FILE
             fi
 
             # Getting stderr and stdout from custom script extension.
