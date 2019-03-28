@@ -34,11 +34,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-commo
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io
 
 #Add user to docker usergroup
+sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y unscd 
 sudo usermod -aG docker azureuser
 
 #Holding walinuxagent before upgrade
-sudo apt-mark hold walinuxagent
-sudo apt-get upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-mark hold walinuxagent
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
 echo "############### Azure credentials ###############"
 echo "UserName: $AZUREUSERNAME"
