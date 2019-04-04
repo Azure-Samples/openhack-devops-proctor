@@ -28,7 +28,7 @@ helm upgrade api-poi . --set green.enabled=true,green.tag=123 --reuse-values
 The following command will expose the `green` environment to be the production environment (you can also use `blue`). The selected environment will be accessible via the production endpoint.
 
 ```
-helm upgrade api-poi . productionSlot=green --reuse-values
+helm upgrade api-poi . --set productionSlot=green --reuse-values
 ```
 
 ## Delete an environment
