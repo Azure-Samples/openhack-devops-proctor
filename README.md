@@ -25,9 +25,7 @@ The first step is to create a virtual machine which has the necessary software i
 
 ### High-Level Installation Flow
 
-1. [Deploy a team environment](./provision-vm) using the Azure Resource Manager template.
-2. [Create a Proctor Environment](./provision-proctor) using the Azure Resource Manager template.
-3. [Deploy Sentinel to monitor the team environment](./provision-proctor) using the deploy_sentinel script on the proctor VM.
+ [Deploy a team environment](./provision-vm) using the Azure Resource Manager template.
 
 ## Resources
 
