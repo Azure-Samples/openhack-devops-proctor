@@ -36,5 +36,5 @@ helm upgrade api-poi . --set productionSlot=green --reuse-values
 The following command will destroy the pods of the green environment, you can replace green with blue (green and blue are the only accepted values in the chart provided)
 
 ```
-helm upgrade api-poi . --set green.enabled=false
+helm upgrade api-poi . --set green.enabled=false --reuse-values
 ```
