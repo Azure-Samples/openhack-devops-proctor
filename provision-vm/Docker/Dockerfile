@@ -40,7 +40,7 @@ RUN mv ./kubectl /usr/local/bin/kubectl
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.0.49-1~xenial
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.0.66-1~xenial
 RUN DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 RUN DEBIAN_FRONTEND=noninteractive apt-get install vim -y
