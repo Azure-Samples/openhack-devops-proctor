@@ -14,7 +14,7 @@ CHATCONNECTIONSTRING=$7
 CHATMESSAGEQUEUE=$8
 TENANTID=$9
 APPID=${10}
-#GITBRANCH=
+GITBRANCH=${11}
 
 echo "############### Adding package respositories ###############"
 # Get the Docker GPG key
@@ -52,6 +52,7 @@ echo "ChatConnectionString= $CHATCONNECTIONSTRING"
 echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
 echo "Tenant is $TENANTID"
 echo "AppId is $APPID"
+echo "Git Branch is $GITBRANCH"
 
 # Launching the team provisioning in background
 
@@ -65,6 +66,7 @@ export CHATCONNECTIONSTRING=$CHATCONNECTIONSTRING
 export CHATMESSAGEQUEUE=$CHATMESSAGEQUEUE
 export TENANTID=$TENANTID
 export APPID=$APPID
+export GITBRANCH=$GITBRANCH
 
 # nginx directory creation
 mkdir -p /home/nginx/config
@@ -74,5 +76,5 @@ mkdir -p /home/nginx/contents
 mkdir -p /home/azureuser/logs
 
 # /bin/bash -c 'docker run -d --name docker-daemon --privileged docker:stable-dind &'
-/bin/bash -c 'docker run --mount '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' --mount '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' --mount '"'"'type=bind,src=/home/azureuser/logs,dst=/home/azureuser/logs'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID devopsoh/proctor-container &'
+/bin/bash -c 'docker run -v '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' --mount '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' --mount '"'"'type=bind,src=/home/azureuser/logs,dst=/home/azureuser/logs'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID -e GITBRANCH devopsoh/proctor-container &'
 #echo "############### End of custom script ###############"
