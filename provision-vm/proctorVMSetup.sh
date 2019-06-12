@@ -34,7 +34,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-commo
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io
 
 #Add user to docker usergroup
-sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y unscd 
+sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y unscd
 sudo usermod -aG docker azureuser
 
 #Holding walinuxagent before upgrade
