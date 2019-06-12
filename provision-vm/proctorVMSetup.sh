@@ -76,5 +76,5 @@ mkdir -p /home/nginx/contents
 mkdir -p /home/azureuser/logs
 
 # /bin/bash -c 'docker run -d --name docker-daemon --privileged docker:stable-dind &'
-#/bin/bash -c 'docker run -v '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' --mount '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' --mount '"'"'type=bind,src=/home/azureuser/logs,dst=/home/azureuser/logs'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID -e GITBRANCH devopsoh/proctor-container &'
+/bin/bash -c 'docker run -v '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' --mount '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' --mount '"'"'type=bind,src=/home/azureuser/logs,dst=/home/azureuser/logs'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID -e GITBRANCH devopsoh/proctor-container &'
 #echo "############### End of custom script ###############"
