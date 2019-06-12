@@ -114,7 +114,8 @@
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
         "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-        "gitBranch": "[parameters('gitBranch')]"
+        "gitBranch": "[parameters('gitBranch')]",
+        "gitUri": "[concat('https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/',variables('gitBranch'),'/provision-vm/proctorVMSetup.sh')]"
     },
     "resources": [
         {
@@ -247,7 +248,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh"
+                        "[variables('gitUri')]"
                     ],
                     "commandToExecute": "[concat('sh proctorVMSetup.sh', ' ', variables('azureUserName'), ' ', variables('singleQuote'), variables('azurePassword'), variables('singleQuote'), ' ', subscription().subscriptionId, ' ', resourceGroup().location, ' ', variables('teamName'), ' ', variables('recipientEmail'), ' ', variables('singleQuote'), variables('ChatConnectionString'), variables('singleQuote'), ' ', variables('singleQuote'), variables('ChatMessageQueue'), variables('singleQuote'), ' ', variables('azureTenant'), ' ', variables('azureAppId'), ' ', variables('gitBranch') )]"
                 }
