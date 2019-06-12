@@ -10,7 +10,6 @@ declare subscriptionId=""
 declare resourceGroupLocation=""
 declare teamName=""
 declare teamNumber=""
-declare azcliVerifiedVersion="2.0.43"
 declare azureUserName=""
 declare azurePassword=""
 declare recipientEmail=""
@@ -79,47 +78,6 @@ if [ ! $? == 0 ]; then
     exit 1
 fi
 
-# Check if az is installed and that we can install it
-#type -p az
-#if [[ ! $? == 0 ]]; then
-#    # is az is not present we need to install it
-#    echo "The script need the az command line to be installed\n"
-#    echo "https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest"
-#    exit 1
-#else
-#    currentCliVersion=$(echo "$(az --version)" | sed -ne 's/azure-cli (\(.*\))/\1/p' )
-#    if [ $currentCliVersion != $azcliVersion ]; then
-#       echo "Error current az cli version $currentCliVersion does not match expected version $azcliVerifiedVersion"
-#       exit 1
-#    fi
-#fi
-#
-##Prompt for parameters is some required parameters are missing
-#if [[ -z "$subscriptionId" ]]; then
-#    echo "Your subscription ID can be looked up with the CLI using: az account show --out json "
-#    echo "Enter your subscription ID:"
-#    read subscriptionId
-#    [[ "${subscriptionId:?}" ]]
-#fi
-#
-#if [[ -z "$resourceGroupLocation" ]]; then
-#    echo "If creating a *new* resource group, you need to set a location "
-#    echo "You can lookup locations with the CLI using: az account list-locations "
-#
-#    echo "Enter resource group location:"
-#    read resourceGroupLocation
-#fi
-#
-#if [[ -z "$teamName" ]]; then
-#    echo "Enter a team name to be used in app provisioning:"
-#    read teamName
-#fi
-#
-#if [ -z "$subscriptionId" ] || [ -z "$resourceGroupLocation" ] || [ -z "$teamName" ] ; then
-#    echo "Parameter missing..."
-#    usage
-#fi
-#
 randomChar() {
     s=abcdefghijklmnopqrstuvxwyz0123456789
     p=$(( $RANDOM % 36))
