@@ -11,12 +11,12 @@ echo "ChatConnectionString= $CHATCONNECTIONSTRING"
 echo "ChatConnectionQueue= $CHATMESSAGEQUEUE"
 echo "Tenant is $TENANTID"
 echo "AppId is $APPID"
+echo "Git Branch is $GITBRANCH"
 
 ############### Pulling Openhack-tools from Github ###############
-git clone https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
+git clone -b $GITBRANCH https://github.com/Azure-Samples/openhack-devops-proctor.git /home/azureuser/openhack-devops-proctor
 # RUN chown azureuser:azureuser -R /home/azureuser/openhack-devops-proctor/.
 
-##### TODO This line will be removed before the PR merged
 cd /home/azureuser/openhack-devops-proctor
 cd /home/azureuser
 
