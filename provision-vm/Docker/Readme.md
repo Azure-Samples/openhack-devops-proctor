@@ -19,6 +19,7 @@ root@531ed021c2c5:/home/azureuser# export CHATCONNECTIONSTRING=null
 root@531ed021c2c5:/home/azureuser# export CHATMESSAGEQUEUE=null
 root@531ed021c2c5:/home/azureuser# export TENANTID=YOUR_TENANT_ID
 root@531ed021c2c5:/home/azureuser# export APPID=YOUR_SERVICE_PRINICPAL_APP_ID
+root@531ed021c2c5:/home/azureuser# export GITBRANCH=master
 root@531ed021c2c5:/home/azureuser# chmod +x ./startup.sh
-root@531ed021c2c5:/home/azureuser# ./start.sh
+root@531ed021c2c5:/home/azureuser# ./startup.sh
 ```
