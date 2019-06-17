@@ -80,15 +80,15 @@ STAGE_INGRESS_IP=$(kubectl get svc team-ingress-stage-traefik -o jsonpath='{.sta
 # Get the name of the SQL server
 sqlServer=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerName -o tsv --query value)
 
+echo -e "\n\nAdding SQL Server Firewall rule to allow $INGRESS_IP."
+
 # Add firewall rule to allow APIs to connect to SQL server database
 az sql server firewall-rule create -n allow-k8s-ingress -g $resourceGroupName -s $sqlServer --start-ip-address $INGRESS_IP --end-ip-address $INGRESS_IP
 
-echo -e "\n\nSQL Server Firewall rule added to allow $INGRESS_IP."
+echo -e "\n\nAdding SQL Server Firewall rule to allow staging $STAGE_INGRESS_IP."
 
 # Add firewall rule to allow staging APIs to connect to SQL server database
 az sql server firewall-rule create -n allow-k8s-ingress-stage -g $resourceGroupName -s $sqlServer --start-ip-address $STAGE_INGRESS_IP --end-ip-address $STAGE_INGRESS_IP
-
-echo -e "\n\nSQL Server Firewall rule added to allow staging $STAGE_INGRESS_IP."
 
 # Get the values to update the SQL Server secrets yaml file and create it on the cluster
 sqlServerFQDN=$(az keyvault secret show --vault-name $keyVaultName --name sqlServerFQDN -o tsv --query value)
