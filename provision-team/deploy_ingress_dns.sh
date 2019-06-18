@@ -124,7 +124,8 @@ helm install --name team-ingress ./traefik -f traefik-values.yaml --set kubernet
 #Staging POD
 helm install --name team-ingress-stage ./traefik -f traefik-values.yaml --set kubernetes.endpoint="${APISERVER}",dashboard.domain="stage${DASHBOARD_URL}",service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="stage${DNS_LABEL}" --debug
 
-echo "Waiting for public IP:"
+#Wait for Prod IP
+echo "Waiting for PROD public IP:"
 time=0
 while true; do
         INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -137,6 +138,24 @@ done
 INGRESS_IP=$(kubectl get svc team-ingress-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 DNS_HOSTNAME=akstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com
-echo -e "\n\nExternal DNS hostname is https://"$DNS_HOSTNAME "which maps to IP " $INGRESS_IP
+echo -e "\n\nExternal PROD DNS hostname is https://"$DNS_HOSTNAME "which maps to IP " $INGRESS_IP
 
 kvstore set ${teamName} ingressIp ${INGRESS_IP}
+
+#Wait for Staging IP
+echo "Waiting for Staging public IP:"
+time=0
+while true; do
+        STAGE_INGRESS_IP=$(kubectl get svc team-ingress-stage-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        if [[ "${STAGE_INGRESS_IP}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then break; fi
+        sleep 10
+        time=$(($time+10))
+        echo $time "seconds waiting"
+done
+
+STAGE_INGRESS_IP=$(kubectl get svc team-ingress-stage-traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+STAGE_DNS_HOSTNAME=stageakstraefik$teamName.$resourceGroupLocation.cloudapp.azure.com
+echo -e "\n\nExternal STAGING DNS hostname is https://"$STAGE_DNS_HOSTNAME "which maps to IP " $STAGE_INGRESS_IP
+
+kvstore set ${teamName} stageIngressIp ${STAGE_INGRESS_IP}
