@@ -8,7 +8,7 @@ For getting started, create a docker daemon using the docker image. For experime
 If you want to run the container locally:
 
 ```
-$ docker run -v '"'"'type=bind,src=/home/nginx/config,dst=/home/nginx/config'"'"' -v '"'"'type=bind,src=/home/nginx/contents,dst=/home/nginx/contents'"'"' -v '"'"'type=bind,src=/home/azureuser/logs,dst=/home/azureuser/logs'"'"' -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID devopsoh/proctor-container
+$ docker run -v /home/nginx/config:/home/nginx/config -v /home/nginx/contents:/home/nginx/contents -v /home/azureuser/logs:/home/azureuser/logs -v /var/run/docker.sock:/var/run/docker.sock -d -e  AZUREUSERNAME -e AZUREPASSWORD -e SUBID -e LOCATION -e TEAMNAME -e RECIPIENTEMAIL -e CHATCONNECTIONSTRING -e CHATMESSAGEQUEUE -e TENANTID -e APPID -e GITBRANCH devopsoh/proctor-container
 root@531ed021c2c5:/home/azureuser# export AZUREUSERNAME=YOUR_SERVICE_PRINICPAL_NAME
 root@531ed021c2c5:/home/azureuser# export AZUREPASSWORD=YOUR_SERVICE_PRINICPAL_PASSWORD
 root@531ed021c2c5:/home/azureuser# export SUBID=YOUR_SUBSCRIPTION_ID
