@@ -4,24 +4,28 @@
     "parameters": {
         "spUserName": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "Username for the service principal account."
             }
         },
         "spPassword": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "Password for the service principal account."
             }
         },
         "spTenant": {
             "type": "string",
+            "defaultValue": "noSP",
             "metadata": {
                 "description": "Tenant ID of the service principal account."
             }
         },
         "spAppId": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "Application ID of the service principal account."
             }
