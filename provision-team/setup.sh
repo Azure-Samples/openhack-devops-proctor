@@ -141,7 +141,7 @@ echo "=========================================="
 echo "Username: $azureUserName"
 echo "Password: $azurePassword"
 
-if [[ "$tenantId" === "noSP" ]]; then
+if [[ "$tenantId" == "noSP" ]]; then
     echo "Command will be az login --username=$azureUserName --password=$azurePassword"
     az login --username=$azureUserName --password=$azurePassword
 else
