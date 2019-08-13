@@ -9,9 +9,9 @@ During the course of an OpenHack, the initial deployment of the chart has alread
 > NOTE: Adjust the names with the ones corresponding to your environment.
 
 ```
-export $TAG="openhackch63acr.azurecr.io/devopsoh/api-poi"
-export $BASE_URI="http://akstraefikopenhackch63.eastus.cloudapp.azure.com"
-export $dnsUrl="akstraefikopenhackch63.eastus.cloudapp.azure.com"
+export TAG="openhackch63acr.azurecr.io/devopsoh/api-poi"
+export BASE_URI="http://akstraefikopenhackch63.eastus.cloudapp.azure.com"
+export dnsUrl="akstraefikopenhackch63.eastus.cloudapp.azure.com"
 helm install . --name api-poi --set repository.image=$TAG,env.webServerBaseUri=$BASE_URI,ingress.rules.endpoint.host=$dnsUrl
 ```
 
