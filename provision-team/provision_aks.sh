@@ -107,6 +107,10 @@ kvstore set ${teamName} SPName ${SP_NAME}
 kvstore set ${teamName} SPPass ${SP_PASS}
 kvstore set ${teamName} SPID ${SP_ID}
 
+echo "Going to sleep for 30 seconds"
+
+sleep 30
+
 echo "Retrieving Registry ID..."
 
 ACR_ID="$(az acr show -n ${teamName}acr -g $resourceGroupName --query "id" --output tsv)"
