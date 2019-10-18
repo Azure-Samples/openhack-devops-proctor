@@ -485,7 +485,7 @@ sudo service jenkins restart
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
 echo "############### Installing Packages ###############"
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.0.75-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.0.72-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 echo "############### Installing kubectl ###############"
