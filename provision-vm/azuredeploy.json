@@ -90,6 +90,13 @@
           "metadata": {
               "description": "The git branch which will be used to provision the team environments from the devopsoh-proctor repository."
           }
+        },
+        "dnsNameForPublicIP": {
+          "type": "string",
+          "defaultValue": "proctorvmpublicip",
+          "metadata": {
+              "description": "The public DNS name of the proctor VM."
+          }
         }
     },
     "variables": {
@@ -111,7 +118,7 @@
         "storageAccountType": "Premium_LRS",
         "StorageAccountName": "[concat('procvm',uniquestring(resourceGroup().id))]",
         "singleQuote": "'",
-        "publicIPAddressName": "proctorVMPublicIP",
+        "publicIPAddressName": "[parameters('dnsNameForPublicIP')]",
         "publicIPAddressType": "Dynamic",
         "vmName": "proctorVM",
         "virtualNetworkName": "proctorVMVNET",
