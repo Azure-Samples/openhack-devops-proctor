@@ -19,6 +19,7 @@ Open a shell prompt in the `provision-vm` directory and run the following comman
     az ad sp create-for-rbac -n "http://DevOpsOHSP" --role owner
     ```
 
+    The "owner" role is required. "contributor" role wouldn't not. As such, make sure that you have adequote permission to generate this service principal.
     Take note of the following:
         `appId`
         `password`
