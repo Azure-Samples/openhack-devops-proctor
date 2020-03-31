@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
@@ -14,17 +15,17 @@ namespace TripViewer.Controllers
 {
     public class TripController : Controller
     {
-        private readonly TripViewerConfiguration _envvars;
+        private readonly IConfiguration Configuration;
 
-        public TripController(IOptions<TripViewerConfiguration> EnvVars)
+        public TripController(IConfiguration configuration)
         {
-            _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
+            Configuration = configuration;
         }
         [HttpGet]
         public IActionResult Index()
         {
-            var teamendpoint = _envvars.TRIPS_ROOT_URL;
-            var bingMapsKey = _envvars.BING_MAPS_KEY;
+            var teamendpoint = Configuration.GetValue<string>("TRIPS_ROOT_URL");
+            var bingMapsKey = Configuration.GetValue<string>("BING_MAPS_KEY");
 
             //Get trips
             TripStore t = new TripStore(teamendpoint);
@@ -44,7 +45,7 @@ namespace TripViewer.Controllers
 
         public PartialViewResult RenderMap()
         {
-            var teamendpoint = _envvars.TRIPS_ROOT_URL;
+            var teamendpoint = Configuration.GetValue<string>("TRIPS_ROOT_URL");
             //Get trips
             TripStore t = new TripStore(teamendpoint);
             List<Trip> trips = t.GetItemsAsync().Result;

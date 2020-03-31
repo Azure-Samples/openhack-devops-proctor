@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
@@ -13,17 +14,17 @@ namespace TripViewer.Controllers
 {
     public class UserProfileController : Controller
     {
-        private readonly TripViewerConfiguration _envvars;
+        private readonly IConfiguration Configuration;
 
-        public UserProfileController(IOptions<TripViewerConfiguration> EnvVars)
+        public UserProfileController(IConfiguration configuration)
         {
-            _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
+            Configuration = configuration;
         }
 
         // GET: UserProfile
         public ActionResult Index()
         {
-            var teamendpoint = _envvars.USER_ROOT_URL;
+            var teamendpoint = Configuration.GetValue<string>("USER_ROOT_URL");
             UserStore up = new UserStore(teamendpoint);
             List<User> userColl = up.GetItemsAsync().Result;
             var user = userColl[0];

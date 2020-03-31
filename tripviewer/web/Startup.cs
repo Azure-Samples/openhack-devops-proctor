@@ -17,20 +17,13 @@ namespace TripViewer
             // Set up configuration sources.
             this.HostingEnvironment = env;
             this.Configuration = configuration;
-
-
-
         }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddOptions();
-            var _envars =
-              Configuration.GetSection("EnvVars");
-            services.Configure<TripViewerConfiguration>(_envars);
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
