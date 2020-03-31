@@ -4,15 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using TripViewer.Models;
+using TripViewer.Utility;
 
 namespace TripViewer.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly TripViewerConfiguration _envvars;
+        public HomeController(IOptions<TripViewerConfiguration> EnvVars)
+        {
+            _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
+        }
         public IActionResult Index()
         {
-            return View();
+            return View(_envvars);
         }
 
         public IActionResult About()

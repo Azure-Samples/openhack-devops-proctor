@@ -23,7 +23,7 @@ namespace TripViewer.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            var teamendpoint = _envvars.TRIPS_ROOT_URL;
             var bingMapsKey = _envvars.BING_MAPS_KEY;
 
             //Get trips
@@ -44,7 +44,7 @@ namespace TripViewer.Controllers
 
         public PartialViewResult RenderMap()
         {
-            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            var teamendpoint = _envvars.TRIPS_ROOT_URL;
             //Get trips
             TripStore t = new TripStore(teamendpoint);
             List<Trip> trips = t.GetItemsAsync().Result;

@@ -23,7 +23,7 @@ namespace TripViewer.Controllers
         // GET: UserProfile
         public ActionResult Index()
         {
-            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
+            var teamendpoint = _envvars.USER_ROOT_URL;
             UserStore up = new UserStore(teamendpoint);
             List<User> userColl = up.GetItemsAsync().Result;
             var user = userColl[0];

@@ -9,26 +9,28 @@ namespace TripViewer
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public IHostingEnvironment HostingEnvironment { get; private set; }
+        public IConfiguration Configuration { get; private set; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             // Set up configuration sources.
-            var builder = new ConfigurationBuilder()
-           .AddEnvironmentVariables()
-           .SetBasePath(env.ContentRootPath);
+            this.HostingEnvironment = env;
+            this.Configuration = configuration;
 
-           
-            Configuration = builder.Build();
+
+
         }
 
-        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             
             services.AddOptions();
-
-            services.Configure<TripViewerConfiguration>(Configuration);
+            var _envars =
+              Configuration.GetSection("EnvVars");
+            services.Configure<TripViewerConfiguration>(_envars);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
