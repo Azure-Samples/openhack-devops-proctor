@@ -24,8 +24,9 @@ namespace TripViewer.Controllers
         // GET: UserProfile
         public ActionResult Index()
         {
+            //"http://akstraefikopenhackefh3.eastus.cloudapp.azure.com"; 
             var teamendpoint = Configuration.GetValue<string>("USER_ROOT_URL");
-            UserStore up = new UserStore(teamendpoint);
+            UserStore up = new UserStore(teamendpoint, Configuration);
             List<User> userColl = up.GetItemsAsync().Result;
             var user = userColl[0];
             user.ProfilePictureUri = $"https://cdn4.iconfinder.com/data/icons/danger-soft/512/people_user_business_web_man_person_social-512.png";

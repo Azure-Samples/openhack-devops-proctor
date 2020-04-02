@@ -1,5 +1,6 @@
 ﻿namespace Simulator.DataStore.Stores
 {
+    using Microsoft.Extensions.Configuration;
     using Simulator.DataObjects;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -7,14 +8,17 @@
 
     public class UserStore : BaseStore//, IBaseStore<User>
     {
-        public UserStore(string EndPoint)
+        private readonly IConfiguration Configuration;
+        public UserStore(string EndPoint, IConfiguration configuration)
         {
             base.InitializeStore(EndPoint);
+            Configuration = configuration;
 
         }
         public async Task<User> GetItemAsync(string id)
         {
             User user = null;
+          //  var baseUrl = Configuration.GetValue<string>("USER_ROOT_URL");
             HttpResponseMessage response = await Client.GetAsync($"/api/user/{id}");
             if (response.IsSuccessStatusCode)
             {
@@ -27,6 +31,7 @@
         public async Task<List<User>> GetItemsAsync()
         {
             List<User> users = null;
+           // var baseUrl = Configuration.GetValue<string>("USER_ROOT_URL");
             HttpResponseMessage response = await Client.GetAsync("api/user/");
             if (response.IsSuccessStatusCode)
             {
