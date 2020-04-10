@@ -1,48 +1,37 @@
-# Team Infrastructure script
+# DevOps OpenHack Deployment
 
-## Description
+To initiate a deployment, download both the ARM template (`azuredeploy.json`) and the bash script (`deploy.sh`) to the same directory in a bash shell.
 
-This script is used to install the Openhack team environment for the DevOps OpenHack.  This script will deploy all the necessary resources and configure the environment for a team to participate in the OpenHack.
+> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already.
 
-## Pre-requisites
+## Execute Deployment
 
-The required pre-requisites for installing a team environment are installed as part of proctor VM Setup.  The [setup script](https://raw.githubusercontent.com/Azure-Samples/openhack-devops-proctor/master/provision-vm/proctorVMSetup.sh) lists all pre-reqs along with required versions.
+To execute a deployment, you can run deploy.sh with a single parameter (`-l` for location). *e.g.* To deploy into `eastus`:
 
-## Usage
-
-    `nohup ./setup.sh -i <subscriptionId> -l <resourceGroupLocation> -n <teamName> -e <teamNumber> ><teamName><teamNumber>.out &`
-
-**NOTE: You must login against the target subscription, if you have not already done so using the azure cli, prior to executing the setup script for a team.**
-
-### Parameters
-
-- SubscriptionId - id of the subscription to deploy the team infrastructure to
-- resourceGroupLocation - Azure region to deploy to.  **_Must be a region that supports ACR, AKS, and KeyVault._**
-- teamName - name of the team.  This value is used for the base name of all of the resources provisioned in Azure.  **_Must be all lowercase alphanumeric characters_**
-- teamNumber (optional) - specific number for a team to provision.  If this is not specified, a random (3 character + 1 number) will be auto-generated.
-
-An example command to provision with a random team number:
-
-`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh >devopoh-random.out &`
-
-An example command to provision with a specific team number:
-
-`nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsoh -e 1 >devopsoh1.out &`
-
-**Important** - The specific team number format should be used when provisioning an event with sequential numbers starting at 1 in order for the sentinels in the proctor environment to work properly. For example:
-
-```bash
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 1 >devopsohseawa1.out &
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 2 >devopsohseawa2.out &
-nohup ./setup.sh -i <subscriptionId> -l eastus -n devopsohseawa -e 3 >devopsohseawa3.out &
+```sh
+bash deploy.sh -l eastus
 ```
 
-The `nohup` command prevents the long running script (`setup.sh`) from being aborted when you exit the shell or logout.
-The `&` indicates to run the script in the background to not block your current session.
+> Note: Some Azure services are not available in all locations. A list of known locations will need to be built out over time.
 
-The standard out of the script is written to the file indicated after the sign `>`.
-Use the `tail` command to from the same path where you ran the setup script to monitor in real time what is written to the file:
+## Requirements
 
-```bash
-tail -f devopsoh1.out
-```
+### Software requirements
+
+The current deployment stack requires the following tooling and versions:
+
+- Azure CLI v2.3.0 (or higher) ([Installation instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli))
+- sqlcmd v17.5.0001.2 Linux (or higher) ([Installaton instructions](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools))
+    - bcp
+- dig v9.10.3 (or higher)
+
+### Azure resource requirements
+
+| Azure resource           | Pricing tier/SKU       | Purpose                                 |
+| ------------------------ | ---------------------- | --------------------------------------- |
+| Azure SQL Database       | Standard S3: 100 DTUs  | mydrivingDB                             |
+| Azure Container Registry | Basic                  | Private container registry              |
+| Azure Container Instance | 1 CPU core/1.5 GiB RAM | Jenkins container                       |
+| Azure Key Vault          | Standard               | Key vault for database secrets          |
+| App Service Plan         | Standard S2            | App Service Plan for all Azure Web Apps |
+| Azure Container Instance | 1 CPU core/1.5 GiB RAM | Simulator                               |
