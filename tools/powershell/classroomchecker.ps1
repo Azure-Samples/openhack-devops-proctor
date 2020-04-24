@@ -28,11 +28,13 @@ Param (
     [String]
     $LabCredentialsFilePath = "credentials.csv",
 
+    [Parameter(Mandatory=$false)]
+    [String]
+    $OutputFilePath = "classroom_checkresults.csv",
+
     [switch]
     $Force
 )
-
-$OutputFilePath = "classroom_checkresults.csv"
 
 if (-Not (Test-Path $LabCredentialsFilePath -PathType Leaf)) {
   Write-Error -Message "Unable to find CSV at the path provided." -Category InvalidData
