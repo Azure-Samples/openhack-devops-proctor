@@ -25,6 +25,12 @@ The current deployment stack requires the following tooling and versions:
     - bcp
 - dig v9.10.3 (or higher)
 
+### Azure permissions
+
+- You must be a Contributor or an Owner on the subscription where you would like to deploy.
+
+    > **Note**: If you are using a custom role, you must have `write` permissions to create all the resources required for this OpenHack.
+
 ### Azure resource requirements
 
 | Azure resource           | Pricing tier/SKU       | Purpose                                 |
