@@ -13,10 +13,10 @@ From the lab view, click the List Credentials button, and then export the CSV.
 This script will take the path of that script as in input and use the credentials to enumerate all of the subscriptions within it.
 
 .EXAMPLE
-./classroomchecker.ps1 -LabCredentialsFilePath $env:HOMEPATH\Downloads\credentials.csv
+./get-teams.ps1 -LabCredentialsFilePath $env:HOMEPATH\Downloads\credentials.csv
 
 .NOTES
-This script should only run at least two hours after you have initiated the lab. Running it prior to that will certainly lead to results which lead you to believe the lab has not provisioned successfully, when in fact it is probably just still spinning up.
+This script should only be run at one hour after you have initiated the lab. Running it prior to that will certainly lead to results which lead you to believe the lab has not provisioned successfully, when in fact it is probably just still spinning up.
 
 .LINK
 https://github.com/Azure-Samples/openhack-devops-proctor/
