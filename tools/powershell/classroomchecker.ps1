@@ -1,4 +1,4 @@
-﻿<#
+<#
 
 .SYNOPSIS
 This script can be used to check the status of a classroom after is has been started in the Cloud Sandbox. 
@@ -26,196 +26,102 @@ https://github.com/Azure-Samples/openhack-devops-proctor/
 Param (
     [Parameter(Mandatory=$false)]
     [String]
-    $ResourceGroupNamePrefix = "MC_openhack",
+    $LabCredentialsFilePath = "credentials.csv",
 
-    [Parameter(Mandatory=$false)]
-    [String]
-    $LabCredentialsFilePath = "$PSScriptRoot\credentials.csv",
-
-    [Parameter(Mandatory=$false)]
-    [bool]
-    $CheckStageEndpoint = $false
+    [switch]
+    $Force
 )
 
-if (Test-Path $LabCredentialsFilePath -PathType Leaf) {
-    $csv = Import-Csv -Path $LabCredentialsFilePath -Header "PortalUsername","PortalPassword","AzureSubscriptionId","AzureDisplayName","AzureUsername","AzurePassword" | ? AzureUserName -like "hacker*" | Sort-Object AzureSubscriptionId -Unique
+$OutputFilePath = "classroom_checkresults.csv"
 
-    $outputCSVPath = "$env:HOMEPATH\Downloads\classscheckresults.csv"
+if (-Not (Test-Path $LabCredentialsFilePath -PathType Leaf)) {
+  Write-Error -Message "Unable to find CSV at the path provided." -Category InvalidData
+}
 
-    if (Test-Path $outputCSVPath -PathType Leaf) {
-        $userResponse = Read-Host "Found previous output. Would you like to delete it? (y/n)?"
+$InputFile = Import-Csv -Path $LabCredentialsFilePath -Header "PortalUsername","PortalPassword","AzureSubscriptionId","AzureDisplayName","AzureUsername","AzurePassword"
 
-        if ($userResponse.ToLower() -eq "y") {
-            Remove-Item -Path $outputCSVPath
-        }
+if (Test-Path $OutputFilePath -PathType Leaf) {
+  if ($Force) {
+    Remove-Item -Path $OutputFilePath
+  } else {
+    $_ = Read-Host "Found previous output. Would you like to delete it? (y/n)?"
+
+    if ($_.ToLower() -eq "y") {
+        Remove-Item -Path $OutputFilePath
     }
+  }
+}
 
-    Write-Host "Storing validation results at $outputCSVPath" -ForegroundColor Green
+Write-Host "Storing validation results at $OutputFilePath" -ForegroundColor Green
 
-    if (!(Test-Path $outputCSVPath -PathType Leaf)) {
-        Add-Content -Path $outputCSVPath -Value '"SiteFound","POIFound","TripsFound","UserFound","UserJavaFound","AzureUsername","AzurePassword","SubscriptionId","FQDN","TenantURL"'
-    }
+Add-Content -Path $OutputFilePath -Value '"SiteFound","POIFound","TripsFound","UserFound","UserJavaFound","TripViewerUrl","AzureUsername","AzurePassword","SubscriptionId","TenantURL"'
 
-    for ($i = 0; $i -lt $csv.Count; $i++) {
-        $record = $csv[$i]
-        $labUsername = $record.AzureUsername
-        $labPassword = $record.AzurePassword
+for ($i = 0; $i -lt $InputFile.Count; $i++) {
+  $_ = $InputFile[$i]
 
-        if ($labUsername -ne "Azure UserName" -and $labPassword -ne "Azure Password") {
-            $subscriptionId = $record.AzureSubscriptionId
+  if ($_.AzureUsername -eq "Azure UserName" -and $_.AzurePassword -eq "Azure Password") {
+    continue;
+  }
 
-            Write-Host "Processing record for $labUsername"
+  $PortalUsername = $_.PortalUsername
+  $PortalPassword = $_.PortalPassword
+  $AzureUsername = $_.AzureUsername
+  $AzurePassword = $_.AzurePassword
+  $AzureSubscriptionId = $_.AzureSubscriptionId
+  $AzureDisplayName = $_.AzureDisplayName
 
-            $secpasswd = ConvertTo-SecureString $labPassword -AsPlainText -Force
-            $labPScred = New-Object System.Management.Automation.PSCredential ($labUsername, $secpasswd)
+  $AzureSecurePassword = ConvertTo-SecureString $AzurePassword -AsPlainText -Force
+  $Credential = New-Object System.Management.Automation.PSCredential ($AzureUsername, $AzureSecurePassword)
+  $TenantDomain = $AzureUsername.Split("@")[1]
+  $TenantUrl = "https://portal.azure.com/$TenantDomain"
 
-            Connect-AzAccount -Credential $labPScred -Subscription $subscriptionId
+  Write-Host "Processing record for $AzureUsername" -ForegroundColor Yellow
 
-            $resourceGroups = Get-AzResourceGroup
+  $Account = Connect-AzAccount -Credential $Credential -Subscription $AzureSubscriptionId
 
-            foreach ($resourceGroup in $resourceGroups) {
-                if ($resourceGroup.ResourceGroupName -like "$($ResourceGroupNamePrefix)*") {
-                    $pips = Get-AzResource -ResourceGroupName $resourceGroup.ResourceGroupName -ResourceType "Microsoft.Network/publicIPAddresses"
+  $ResourceGroup = Get-AzResourceGroup | Where ResourceGroupName -like openhack* | Select-Object -first 1
+  $ResourceGroupName = $ResourceGroup.ResourceGroupName
+  $TeamName = $ResourceGroupName -Replace ".{2}$"
 
-                    foreach ($pip in $pips) {
-                        $pipResource = Get-AzPublicIpAddress -ResourceGroupName $resourceGroup.ResourceGroupName -Name $pip.ResourceName
+  $RowToAppend = '"True",'
 
-                        $fqdn = $pipResource.DnsSettings.Fqdn
+  $_poi = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)poi" }
+  $_trips = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)trips" }
+  $_userprofile = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)userprofile" }
+  $_userjava = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)userjava" }
+  $_tripviewer = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)tripviewer" }
 
-                        $likeClause = "akstraefikopenhack*"
+  $_status = wget "http://$($_poi.DefaultHostName)/api/healthcheck/poi" | % {$_.StatusCode}
+  if ($_status -eq 200) {
+    $RowToAppend += '"True",'
+  } else {
+    $RowToAppend += '"False",'
+  }
 
-                        if ($CheckStageEndpoint) {
-                            $likeClause = "stageakstraefikopenhack*"
-                        }
+  $_status = wget "http://$($_trips.DefaultHostName)/api/healthcheck/trips" | % {$_.StatusCode}
+  if ($_status -eq 200) {
+    $RowToAppend += '"True",'
+  } else {
+    $RowToAppend += '"False",'
+  }
 
-                        if ($fqdn -like $likeClause) {
-                            $pingCount = 1
-                            $siteFound = $false
-                            while (!$siteFound -and $pingCount -le 5) {
-                                try {
-                                    Write-Host "Checking $fqdn ($pingCount)..." -ForegroundColor Yellow
-                                    $pingCount++
+  $_status = wget "http://$($_userprofile.DefaultHostName)/api/healthcheck/user" | % {$_.StatusCode}
+  if ($_status -eq 200) {
+    $RowToAppend += '"True",'
+  } else {
+    $RowToAppend += '"False",'
+  }
 
-                                    $response = Invoke-WebRequest -Uri "http://$fqdn" -TimeoutSec 10 -UseBasicParsing -ErrorAction Stop
-                                    if ($response.StatusCode -eq 200) {
-                                        Write-Host "`tFound host $fqdn" -ForegroundColor Green
-                                        $siteFound = $true;
-                                    }
-                                } catch {}
+  $_status = wget "http://$($_userjava.DefaultHostName)/api/healthcheck/user-java" | % {$_.StatusCode}
+  if ($_status -eq 200) {
+    $RowToAppend += '"True",'
+  } else {
+    $RowToAppend += '"False",'
+  }
 
-                                Start-Sleep 2
-                            }
+  $RowToAppend += "`"http://$($_tripviewer.DefaultHostName)`",`"$PortalUsername`",`"$PortalPassword`",`"$AzureSubscriptionId`",`"$TenantUrl`""
 
-                            $tenantURL = "https://portal.azure.com/" + $labUsername.Split("@")[1]
+  Add-Content -Path $OutputFilePath -Value $RowToAppend
 
-                            $poiFound = $false
-                            $tripsFound = $false
-                            $userFound = $false
-                            $userJavaFound = $false
-
-                            if (!$siteFound -and !$CheckStageEndpoint) {
-                                Write-Host "Unable to verfiy site at $fqdn" -ForegroundColor Yellow
-                                Write-Host "`tManually verify the subscription at $tenantURL" -ForegroundColor Yellow
-                            } else {
-                                $apiPOI = $fqdn + "/api/healthcheck/poi"
-
-                                $pingCount = 1
-                                
-                                while (!$poiFound -and $pingCount -le 5) {
-                                    try {
-                                        Write-Host "Checking $apiPOI ($pingCount)..." -ForegroundColor Yellow
-                                        $pingCount++
-
-                                        $response = Invoke-WebRequest -Uri "http://$apiPOI" -TimeoutSec 10 -UseBasicParsing -ErrorAction Stop
-                                        if ($response.StatusCode -eq 200) {
-                                            Write-Host "`tFound host $apiPOI" -ForegroundColor Green
-                                            $poiFound = $true;
-                                        }
-                                    } catch {}
-
-                                    Start-Sleep 2
-                                }
-
-                                $apiTrips = $fqdn + "/api/healthcheck/trips"
-
-                                $pingCount = 1
-                                
-                                while (!$tripsFound -and $pingCount -le 5) {
-                                    try {
-                                        Write-Host "Checking $apiTrips ($pingCount)..." -ForegroundColor Yellow
-                                        $pingCount++
-
-                                        $response = Invoke-WebRequest -Uri "http://$apiTrips" -TimeoutSec 10 -UseBasicParsing -ErrorAction Stop
-                                        if ($response.StatusCode -eq 200) {
-                                            Write-Host "`tFound host $apiTrips" -ForegroundColor Green
-                                            $tripsFound = $true;
-                                        }
-                                    } catch {}
-
-                                    Start-Sleep 2
-                                }
-
-                                $apiUser = $fqdn + "/api/healthcheck/user"
-
-                                $pingCount = 1
-                                
-                                while (!$userFound -and $pingCount -le 5) {
-                                    try {
-                                        Write-Host "Checking $apiUser ($pingCount)..." -ForegroundColor Yellow
-                                        $pingCount++
-
-                                        $response = Invoke-WebRequest -Uri "http://$apiUser" -TimeoutSec 10 -UseBasicParsing -ErrorAction Stop
-                                        if ($response.StatusCode -eq 200) {
-                                            Write-Host "`tFound host $apiUser" -ForegroundColor Green
-                                            $userFound = $true;
-                                        }
-                                    } catch {}
-
-                                    Start-Sleep 2
-                                }
-
-                                $apiUserJava = $fqdn + "/api/healthcheck/user-java"
-
-                                $pingCount = 1
-                                
-                                while (!$userJavaFound -and $pingCount -le 5) {
-                                    try {
-                                        Write-Host "Checking $apiUserJava ($pingCount)..." -ForegroundColor Yellow
-                                        $pingCount++
-
-                                        $response = Invoke-WebRequest -Uri "http://$apiUserJava" -TimeoutSec 10 -UseBasicParsing -ErrorAction Stop
-                                        if ($response.StatusCode -eq 200) {
-                                            Write-Host "`tFound host $apiUserJava" -ForegroundColor Green
-                                            $userJavaFound = $true;
-                                        }
-                                    } catch {}
-
-                                    Start-Sleep 2
-                                }
-                            }
-
-                            $outputString = '"' + $siteFound + '",'
-                            $outputString += '"' + $poiFound + '",'
-                            $outputString += '"' + $tripsFound + '",'
-                            $outputString += '"' + $userFound + '",'
-                            $outputString += '"' + $userJavaFound + '",'
-                            $outputString += '"' + $labUsername + '",'
-                            $outputString += '"' + $labPassword + '",'
-                            $outputString += '"' + $subscriptionId + '",'
-                            $outputString += '"' + "http://$fqdn" + '",'
-                            $outputString += '"' + $tenantURL + '"'
-
-                            Add-Content -Path $outputCSVPath -Value $outputString
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-            Disconnect-AzAccount -Username $labUsername
-        }
-    }
-} else {
-    Write-Error -Message "Unable to find CSV at the path provided." -Category InvalidData
+  Write-Host "Done for $AzureUsername"
 }
