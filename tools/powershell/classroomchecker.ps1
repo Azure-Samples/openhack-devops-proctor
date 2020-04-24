@@ -38,7 +38,7 @@ if (-Not (Test-Path $LabCredentialsFilePath -PathType Leaf)) {
   Write-Error -Message "Unable to find CSV at the path provided." -Category InvalidData
 }
 
-$InputFile = Import-Csv -Path $LabCredentialsFilePath -Header "PortalUsername","PortalPassword","AzureSubscriptionId","AzureDisplayName","AzureUsername","AzurePassword"
+$InputFile = @(Import-Csv -Path $LabCredentialsFilePath -Header "PortalUsername","PortalPassword","AzureSubscriptionId","AzureDisplayName","AzureUsername","AzurePassword" | Where-Object AzureUserName -like "hacker*" | Sort-Object AzureSubscriptionId -Unique)
 
 if (Test-Path $OutputFilePath -PathType Leaf) {
   if ($Force) {
@@ -79,7 +79,7 @@ for ($i = 0; $i -lt $InputFile.Count; $i++) {
 
   $Account = Connect-AzAccount -Credential $Credential -Subscription $AzureSubscriptionId
 
-  $ResourceGroup = Get-AzResourceGroup | Where ResourceGroupName -like openhack* | Select-Object -first 1
+  $ResourceGroup = Get-AzResourceGroup | Where-Object ResourceGroupName -like "openhack*" | Select-Object -first 1
   $ResourceGroupName = $ResourceGroup.ResourceGroupName
   $TeamName = $ResourceGroupName -Replace ".{2}$"
 
@@ -91,28 +91,28 @@ for ($i = 0; $i -lt $InputFile.Count; $i++) {
   $_userjava = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)userjava" }
   $_tripviewer = Get-AzWebApp -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq "$($TeamName)tripviewer" }
 
-  $_status = wget "http://$($_poi.DefaultHostName)/api/healthcheck/poi" | % {$_.StatusCode}
+  $_status = Invoke-WebRequest "http://$($_poi.DefaultHostName)/api/healthcheck/poi" | % {$_.StatusCode}
   if ($_status -eq 200) {
     $RowToAppend += '"True",'
   } else {
     $RowToAppend += '"False",'
   }
 
-  $_status = wget "http://$($_trips.DefaultHostName)/api/healthcheck/trips" | % {$_.StatusCode}
+  $_status = Invoke-WebRequest "http://$($_trips.DefaultHostName)/api/healthcheck/trips" | % {$_.StatusCode}
   if ($_status -eq 200) {
     $RowToAppend += '"True",'
   } else {
     $RowToAppend += '"False",'
   }
 
-  $_status = wget "http://$($_userprofile.DefaultHostName)/api/healthcheck/user" | % {$_.StatusCode}
+  $_status = Invoke-WebRequest "http://$($_userprofile.DefaultHostName)/api/healthcheck/user" | % {$_.StatusCode}
   if ($_status -eq 200) {
     $RowToAppend += '"True",'
   } else {
     $RowToAppend += '"False",'
   }
 
-  $_status = wget "http://$($_userjava.DefaultHostName)/api/healthcheck/user-java" | % {$_.StatusCode}
+  $_status = Invoke-WebRequest "http://$($_userjava.DefaultHostName)/api/healthcheck/user-java" | % {$_.StatusCode}
   if ($_status -eq 200) {
     $RowToAppend += '"True",'
   } else {
