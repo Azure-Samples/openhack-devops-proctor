@@ -23,6 +23,9 @@ RUN update-locale LANG=en_US.UTF-8
 # install dig (dnstools)
 RUN apt-get update && apt-get -y install dnsutils
 
+# install git
+RUN apt-get update && apt-get -y install git
+
 # install azure cli
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
