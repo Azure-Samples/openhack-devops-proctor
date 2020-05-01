@@ -34,10 +34,10 @@ An optional container deployment is available if you wish to create your environ
     docker build -f Dockerfile . -t devopsohdeploy:latest
     ```
 
-2. Run the container, replacing the tokens `<AZURE_USERNAME>` and `<AZURE_PASSWORD>` with a username and password that have the required permissions.
+2. Run the container, replacing the tokens `<AZURE_USERNAME>`, `<AZURE_PASSWORD>`, and `<LOCATION>` with a username and password that have the required permissions and a location which can accommodate the required resources.
 
     ```sh
-    docker run -i -t devopsohdeploy:latest /bin/bash -c "export PATH="$PATH:/opt/mssql-tools/bin" && cd /deploy && bash deploy.sh -l eastus -u '<AZURE_USERNAME>' -p '<AZURE_PASSWORD>'"
+    docker run -i -t devopsohdeploy:latest /bin/bash -c "export PATH="$PATH:/opt/mssql-tools/bin" && cd /deploy && bash deploy.sh -l <LOCATION> -u '<AZURE_USERNAME>' -p '<AZURE_PASSWORD>'"
     ```
 
 ## Requirements
