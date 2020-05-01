@@ -50,6 +50,7 @@ The current deployment stack requires the following tooling and versions:
 - sqlcmd v17.5.0001.2 Linux (or higher) ([Installaton instructions](https://docs.microsoft.com/sql/linux/sql-server-linux-setup-tools))
     - bcp
 - dig v9.10.3 (or higher)
+- git
 
 ### Azure permissions
 

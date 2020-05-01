@@ -67,6 +67,9 @@ elif ! [ -x "$(command -v bcp)" ]; then
 elif ! [ -x "$(command -v dig)" ]; then
   echo "Error: dig is not installed." 2>&1
   exit 1 
+elif ! [ -x "$(command -v git)" ]; then
+  echo "Error: git is not installed." 2>&1
+  exit 1 
 fi
 
 randomChar() {
