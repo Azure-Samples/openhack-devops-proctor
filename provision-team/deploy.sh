@@ -216,7 +216,7 @@ cd "$GITOHPROCTORDIRPATH/simulator"
 az acr build --image devopsoh/simulator:latest --registry $ACRNAME --file Dockerfile .
 
 echo "Creating Key Vault..."
-az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCEGROUPLOCATION
+az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCEGROUPLOCATION --enable-soft-delete true
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLUSER" --value $SQL_USERNAME
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLPASSWORD" --value $SQL_PASSWORD
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLSERVER" --value $SQLFQDN
