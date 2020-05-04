@@ -13,7 +13,7 @@ From the lab view, click the List Credentials button, and then export the CSV.
 This script will take the path of that script as in input and use the credentials to enumerate all of the subscriptions within it.
 
 .EXAMPLE
-./get-teams.ps1 -LabCredentialsFilePath $env:HOMEPATH\Downloads\credentials.csv
+./validate-deployment.ps1 -LabCredentialsFilePath $env:HOMEPATH\Downloads\credentials.csv
 
 .NOTES
 This script should only be run at one hour after you have initiated the lab. Running it prior to that will certainly lead to results which lead you to believe the lab has not provisioned successfully, when in fact it is probably just still spinning up.
