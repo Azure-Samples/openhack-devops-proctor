@@ -39,7 +39,10 @@ while read PortalUsername PortalPassword AzureSubscriptionId AzureDisplayName Az
 do
   if [[ $PortalUsername = *Portal* ]]
   then
-    echo "This is header, skipping..."
+    echo "This is the header, skipping..."
+  elif [[ $AzureUserName = *hacker* ]]
+  then
+    echo "This is a hacker user, skipping..."
   else
     echo "PortalUsername $PortalUsername"
     echo "PortalPassword $PortalPassword"
