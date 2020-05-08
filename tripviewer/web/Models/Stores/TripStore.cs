@@ -7,7 +7,9 @@
 
     public class TripStore : BaseStore//, IBaseStore<Trip>
     {
-        public TripStore(string EndPoint)
+
+
+        public TripStore(IHttpClientFactory clientFactory, string EndPoint) : base(clientFactory)
         {
             base.InitializeStore(EndPoint);
         }

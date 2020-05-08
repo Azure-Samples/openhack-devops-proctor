@@ -16,16 +16,20 @@ namespace DeviceSim.Controllers
         private TripPointStore tripPointStore;
         private PoiStore poiStore;
         private UserStore userStore;
-        private string endPoint;
+        private string userApiEndPoint;
+        private string poiApiEndPoint;
+        private string tripsApiEndPoint;
         private DateTime dateTime;
 
-        public ApiTripController(DBConnectionInfo dBConnectionInfo, string apiEndPoint) : base(dBConnectionInfo)
+        public ApiTripController(DBConnectionInfo dBConnectionInfo, string UserApiEndPoint,string PoiApiEndPoint, string TripsApiEndPoint ) : base(dBConnectionInfo)
         {
-            endPoint = apiEndPoint;
-            tripStore = new TripStore(endPoint);
-            tripPointStore = new TripPointStore(endPoint);
-            poiStore = new PoiStore(endPoint);
-            userStore = new UserStore(endPoint);
+            userApiEndPoint = UserApiEndPoint;
+            poiApiEndPoint = PoiApiEndPoint;
+            tripsApiEndPoint = TripsApiEndPoint;
+            tripStore = new TripStore(tripsApiEndPoint);
+            tripPointStore = new TripPointStore(tripsApiEndPoint);
+            poiStore = new PoiStore(poiApiEndPoint);
+            userStore = new UserStore(userApiEndPoint);
         }
 
         public async Task CreateTrip()
