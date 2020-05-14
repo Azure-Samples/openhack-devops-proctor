@@ -3,26 +3,31 @@
 declare -i duration=1
 declare hasTimestamp=""
 declare hasUrl=""
+declare runLoop=""
 declare endpoint
 
 usage() {
     cat <<END
-    polling.sh [-t] [-i] [-h] endpoint
+    polling.sh [-t] [-i] [-l] [-h] endpoint
     
     Report the health status of the endpoint
     -t: include timestamp
     -i: include Uri for the format
+    -l: run in the loop
     -h: help
 END
 }
 
-while getopts "tih" opt; do
+while getopts "tilh" opt; do
     case $opt in
     t)
         hasTimestamp=true
         ;;
     i)
         hasUrl=true
+        ;;
+    l)
+        runLoop=true
         ;;
     h)
         usage
@@ -70,6 +75,12 @@ while [[ true ]]; do
     if [[ -n $hasUrl ]]; then
         return="${return} | ${endpoint}"
     fi
-    echo ${return}
-    sleep $duration
+
+    if [[ -z $runLoop ]]; then
+        echo ${return}
+        exit 0
+    else
+        echo ${return}
+        sleep $duration
+    fi
 done
