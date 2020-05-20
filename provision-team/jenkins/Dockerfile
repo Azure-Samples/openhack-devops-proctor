@@ -17,3 +17,5 @@ RUN echo "Starting installation of Jenkins Plugins" \
     && echo "Done"
 
 COPY ./default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
+
+EXPOSE 8080
