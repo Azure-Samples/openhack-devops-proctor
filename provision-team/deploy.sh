@@ -10,9 +10,10 @@ declare RGSUFFIX=""
 declare ACRNAME=""
 declare -r GITOHTEAMURI="https://github.com/Azure-Samples/openhack-devops-team.git"
 declare -r GITOHTEAMDIRNAME="openhack-devops-team"
-# declare -r GITOHPROCTORURI="https://github.com/Azure-Samples/openhack-devops-proctor.git"
-declare -r GITOHPROCTORURI="https://github.com/AndrewConniff/openhack-devops-proctor.git"
+declare GITOHTEAMBRANCH="origin/openhack_refresh"
+declare -r GITOHPROCTORURI="https://github.com/Azure-Samples/openhack-devops-proctor.git"
 declare -r GITOHPROCTORDIRNAME="openhack-devops-proctor"
+declare GITOHPROCTORBRANCH="origin/openhack_refresh"
 declare -r SQL_USERNAME="demousersa"
 declare -r SQL_PASSWORD="demo@pass123"
 declare -r DATABASENAME="mydrivingDB"
@@ -22,7 +23,7 @@ declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GG
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
-declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <SUFFIX> -u <USERNAME> -p <PASSWORD>]"
+declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -170,14 +171,25 @@ echo "Full tempoary directory is $FULLTEMPDIRPATH..."
 
 cd $TEMPDIRNAME
 
+echo "Cloning $GITOHTEAMURI"
 git clone $GITOHTEAMURI
+
+GITOHTEAMDIRPATH="$FULLTEMPDIRPATH/$GITOHTEAMDIRNAME"
+
+cd $GITOHTEAMDIRPATH
+echo "Switching to branch $GITOHTEAMBRANCH..."
+git checkout $GITOHTEAMBRANCH
 
 cd $FULLTEMPDIRPATH
 
+echo "Cloning $GITOHPROCTORURI"
 git clone $GITOHPROCTORURI
 
 GITOHPROCTORDIRPATH="$FULLTEMPDIRPATH/$GITOHPROCTORDIRNAME"
-GITOHTEAMDIRPATH="$FULLTEMPDIRPATH/$GITOHTEAMDIRNAME"
+
+cd $GITOHPROCTORDIRPATH
+echo "Switching to branch $GITOHPROCTORBRANCH..."
+git checkout $GITOHPROCTORBRANCH
 
 # BUILD POI
 echo "Building API-POI image..."
