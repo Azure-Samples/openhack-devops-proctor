@@ -89,15 +89,6 @@ randomCharUpper() {
     echo -n ${s:$p:1}
 }
 
-echo "Checking for Jenkins deployment files"
-if [[ ! -d "${PWD}/jenkins" ]]; then
-    echo "Directory ${PWD}/jenkins does not exist. Deployment cannot proceed." 2>&1; exit 1;
-fi
-
-if [[ ! -f "${PWD}/jenkins/Dockerfile" ]]; then
-    echo "Jenkins deployment files do not exist on your filesystem." 2>&1; exit 1;
-fi
-
 if [ ${#RGSUFFIX} -eq 0 ]; then
     RGSUFFIX="$(randomChar;randomChar;randomChar;randomNum;randomChar;randomChar;randomChar;randomNum;)"
 fi
@@ -444,8 +435,6 @@ az sql server firewall-rule delete \
     --resource-group $RGNAME \
     --server "openhack${RGSUFFIX}sql" \
     --name $SQLFWRULENAME
-    
-cd $FULLCURRENTPATH
 
 echo "Deploying simulator container..."
 az container create \
@@ -461,8 +450,8 @@ az container create \
 
 # BUILD JENKINS
 echo "Building JENKINS image..."
-echo "Changing directory to $FULLCURRENTPATH/jenkins..."
-cd "$FULLCURRENTPATH/jenkins"
+echo "Changing directory to $GITOHPROCTORDIRPATH/provision-team/jenkins..."
+cd "$GITOHPROCTORDIRPATH/provision-team/jenkins"
 az acr build --image devopsoh/jenkins:latest --registry $ACRNAME --file Dockerfile --build-arg JENKINS_USERNAME=${JENKINS_USERNAME} --build-arg JENKINS_PASSWORD=${JENKINS_PASSWORD} .
 
 # DEPLOY JENKINS TO ACI
