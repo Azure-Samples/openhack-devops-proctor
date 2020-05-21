@@ -195,37 +195,124 @@ git checkout $GITOHPROCTORBRANCH
 echo "Building API-POI image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/poi/web..."
 cd "$GITOHTEAMDIRPATH/apis/poi/web"
-az acr build --image "devopsoh/api-poi:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+REPOPRESENT=""
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'api-poi')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository api-poi not found. Creating repository (run $c)"
+        az acr build --image "devopsoh/api-poi:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository api-poi found!"
+		break
+	fi
+done
 
 # BUILD TRIPS
 echo "Building API-TRIPS image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/trips..."
 cd "$GITOHTEAMDIRPATH/apis/trips"
-az acr build --image "devopsoh/api-trips:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'api-trips')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository api-trips not found. Creating repository (run $c)"
+        az acr build --image "devopsoh/api-trips:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository api-trips found!"
+		break
+	fi
+done
 
 # BUILD USER-JAVA
 echo "Building API-USER-JAVA image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/user-java..."
 cd "$GITOHTEAMDIRPATH/apis/user-java"
-az acr build --image "devopsoh/api-user-java:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'api-user-java')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository api-user-java not found. Creating repository (run $c)"
+        az acr build --image "devopsoh/api-user-java:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository api-user-java found!"
+		break
+	fi
+done
 
 # BUILD USERPROFILE
 echo "Building API-USERPROFILE image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/userprofile..."
 cd "$GITOHTEAMDIRPATH/apis/userprofile"
-az acr build --image "devopsoh/api-userprofile:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'api-userprofile')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository api-userprofile not found. Creating repository (run $c)"
+        az acr build --image "devopsoh/api-userprofile:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository api-userprofile found!"
+		break
+	fi
+done
 
 # BUILD TripViewer
 echo "Building Tripviewer image..."
 echo "Changing directory to $GITOHPROCTORDIRPATH/tripviewer..."
 cd "$GITOHPROCTORDIRPATH/tripviewer"
-az acr build --image devopsoh/tripviewer:latest --registry $ACRNAME --file Dockerfile .
+
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'tripviewer')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository tripviewer not found. Creating repository (run $c)"
+        az acr build --image devopsoh/tripviewer:latest --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository tripviewer found!"
+		break
+	fi
+done
 
 # BUILD Simulator
 echo "Building Simulator image..."
 echo "Changing directory to $GITOHPROCTORDIRPATH/simulator..."
 cd "$GITOHPROCTORDIRPATH/simulator"
-az acr build --image devopsoh/simulator:latest --registry $ACRNAME --file Dockerfile .
+
+for (( c=1; c<=5; c++ ))
+do  
+	REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'simulator')]" -o tsv)
+	echo "REPOPRESENT: $REPOPRESENT"
+	if [ -z $REPOPRESENT ]; then
+		echo "Repository simulator not found. Creating repository (run $c)"
+        az acr build --image devopsoh/simulator:latest --registry $ACRNAME --file Dockerfile .
+        sleep 10
+	else
+		echo "Repository simulator found!"
+		break
+	fi
+done
+
+# Final sanity check for repositories being present
+REPOSITORYCOUNT=$(az acr repository list --name $ACRNAME --query "[length(@)]" -o tsv)
+if [ $REPOSITORYCOUNT -eq 6 ]; then 
+    echo "All repositories built successfully!"
+else 
+    echo "All Azure Container Registry repositories not found." 2>&1; exit 1;
+fi
 
 echo "Creating Key Vault..."
 az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCEGROUPLOCATION --enable-soft-delete true
