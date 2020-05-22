@@ -1,14 +1,22 @@
 ﻿@model TripViewer.Utility.TripViewerConfiguration
 @{
     ViewData["Title"] = "Home Page";
+    //Swagger Endpoints
     var urlUser = Model.USER_ROOT_URL + "/api/docs/user";
     var urlUserJava = Model.USER_JAVA_ROOT_URL + "/api/docs/user-java";
     var urlTrips = Model.TRIPS_ROOT_URL + "/api/json/swagger.json"; //old swagger ui route /api/docs/trips 
     var urlPoi = Model.POI_ROOT_URL + "/api/docs/poi";
+    //Healthcheck EndPoints
     var hcUser = Model.USER_ROOT_URL + "/api/healthcheck/user";
     var hcUserJava = Model.USER_JAVA_ROOT_URL + "/api/healthcheck/user-java";
     var hcTrips = Model.TRIPS_ROOT_URL + "/api/healthcheck/trips";
     var hcPoi = Model.POI_ROOT_URL + "/api/healthcheck/poi";
+    //Version EndPoints
+    var vUser = Model.USER_ROOT_URL + "/api/version/user";
+    var vUserJava = Model.USER_JAVA_ROOT_URL + "/api/version/user-java";
+    var vTrips = Model.TRIPS_ROOT_URL + "/api/version/trips";
+    var vPoi = Model.POI_ROOT_URL + "/api/version/poi";
+
 }
 <h2>DevOps Openhack Team Resources</h2>
 <p>
@@ -46,6 +54,21 @@
     </li>
     <li>
         <a href="@urlPoi" title="POI API swagger docs">POI API (dotnet)</a>
+    </li>
+</ul>
+<p>Current Production Version:</p>
+<ul>
+    <li>
+        <a href="@vUser" title="User Profile Node API version">User Profile API (Node.js) version</a>
+    </li>
+    <li>
+        <a href="@vUserJava" title="User Java API version">User API (Java) version</a>
+    </li>
+    <li>
+        <a href="@vTrips" title="Trips API version">Trips API (Golang) version</a>
+    </li>
+    <li>
+        <a href="@vPoi" title="POI API version">POI API (dotnet) version</a>
     </li>
 </ul>
 <div id="UserProfileInfo">
