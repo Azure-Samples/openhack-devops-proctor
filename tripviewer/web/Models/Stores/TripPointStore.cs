@@ -1,5 +1,5 @@
 ﻿namespace Simulator.DataStore.Stores
-{ 
+{
     using Simulator.DataObjects;
     using System;
     using System.Collections.Generic;
