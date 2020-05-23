@@ -3,7 +3,7 @@ namespace Simulator.DataObjects
     using Newtonsoft.Json;
     using System;
 
-    public partial class Poi //: BaseDataObject
+    public partial class Poi
     {
         [JsonProperty("tripId")]
         public Guid TripId { get; set; }

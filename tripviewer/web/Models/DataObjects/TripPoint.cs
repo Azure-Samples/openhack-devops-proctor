@@ -4,7 +4,7 @@ namespace Simulator.DataObjects
 
     using System;
 
-    public partial class TripPoint//: BaseDataObject
+    public partial class TripPoint
     {
         [JsonProperty("Id")]
         public string Id { get; set; }
