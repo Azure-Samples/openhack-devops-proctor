@@ -99,7 +99,7 @@ submitACRBuild() {
         echo "REPOPRESENT: $REPOPRESENT"
         if [ -z $REPOPRESENT ]; then
             echo "Repository $1 not found. Creating repository (run $c)"
-            az acr build --image "devopsoh/${1}:${2}" --registry $ACRNAME --file Dockerfile .
+            az acr build --image "devopsoh/${1}:${2}" --registry $ACRNAME --build-arg build_version=$2 --file Dockerfile .
             sleep 10
         else
             echo "Repository $1 found!"
