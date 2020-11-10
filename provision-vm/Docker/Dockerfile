@@ -32,7 +32,7 @@ RUN tar -zxvf helm-v2.14.3-linux-amd64.tar.gz
 RUN mv linux-amd64/helm /usr/local/bin/helm
 
 ############### Installing kubectl ###############
-RUN curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.10/bin/linux/amd64/kubectl
+RUN curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.11/bin/linux/amd64/kubectl
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 
