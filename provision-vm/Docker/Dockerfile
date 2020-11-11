@@ -27,12 +27,12 @@ RUN add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/ubuntu/1
 RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 
 ############### Installing Helm ###############
-RUN curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
-RUN tar -zxvf helm-v2.14.3-linux-amd64.tar.gz
+RUN curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.17.0-linux-amd64.tar.gz
+RUN tar -zxvf helm-v2.17.0-linux-amd64.tar.gz
 RUN mv linux-amd64/helm /usr/local/bin/helm
 
 ############### Installing kubectl ###############
-RUN curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.10/bin/linux/amd64/kubectl
+RUN curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.11/bin/linux/amd64/kubectl
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 
@@ -40,7 +40,7 @@ RUN mv ./kubectl /usr/local/bin/kubectl
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.0.71-1~xenial
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y dotnet-sdk-2.2 jq git zip azure-cli=2.14.1-1~xenial
 RUN DEBIAN_FRONTEND=noninteractive ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 RUN DEBIAN_FRONTEND=noninteractive apt-get install vim -y

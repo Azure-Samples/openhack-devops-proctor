@@ -485,17 +485,17 @@ sudo service jenkins restart
 retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
 
 echo "############### Installing Packages ###############"
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.0.71-1~xenial
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq git zip azure-cli=2.14.1-1~xenial
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce
 
 echo "############### Installing kubectl ###############"
-curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.10/bin/linux/amd64/kubectl
+curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.11/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
-echo "############### Installing Helm v2.14.3 ###############"
-sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.14.3-linux-amd64.tar.gz
+echo "############### Installing Helm v2.17.0 ###############"
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.17.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.17.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 # Configure accessusermod -aG docker azureuser
