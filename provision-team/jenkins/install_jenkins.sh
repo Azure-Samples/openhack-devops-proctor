@@ -493,9 +493,9 @@ curl -s -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.11/b
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 
-echo "############### Installing Helm v2.14.3 ###############"
-sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
-sudo tar -zxvf helm-v2.14.3-linux-amd64.tar.gz
+echo "############### Installing Helm v2.17.0 ###############"
+sudo curl -s -O https://storage.googleapis.com/kubernetes-helm/helm-v2.17.0-linux-amd64.tar.gz
+sudo tar -zxvf helm-v2.17.0-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 # Configure accessusermod -aG docker azureuser
