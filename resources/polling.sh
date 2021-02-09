@@ -43,7 +43,7 @@ fi
 
 healthcheck() {
     declare url=$1
-    result=$(curl -i $url 2>/dev/null | grep HTTP/1.1)
+    result=$(curl -i $url 2>/dev/null | grep HTTP/2)
     echo $result
 }
 
@@ -53,7 +53,7 @@ while [[ true ]]; do
    if [[ -z $result ]]; then 
       status="N/A"
    else
-      status=${result:9:3}
+      status=${result:7:3}
    fi 
    timestamp=$(date "+%Y%m%d-%H%M%S")
    if [[ -z $hasUrl ]]; then
