@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.237
+FROM jenkins/jenkins:lts
 
 ARG JENKINS_USERNAME=demouser
 ARG JENKINS_PASSWORD=demo@pass123
