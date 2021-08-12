@@ -43,7 +43,7 @@ fi
 
 healthcheck() {
     declare url=$1
-    result=$(curl -i $url 2>/dev/null | grep HTTP/1.1)
+    result=$(curl --http2 -i $url 2>/dev/null | grep "HTTP/[12][12\.]*")
     echo $result
 }
 
