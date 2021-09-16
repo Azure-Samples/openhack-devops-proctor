@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Simulator.DataObjects;
 using Simulator.DataStore.Stores;
@@ -13,18 +15,21 @@ namespace TripViewer.Controllers
 {
     public class UserProfileController : Controller
     {
-        private readonly TripViewerConfiguration _envvars;
+        private readonly IConfiguration Configuration;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public UserProfileController(IOptions<TripViewerConfiguration> EnvVars)
+        public UserProfileController(IConfiguration configuration, IHttpClientFactory clientFactory)
         {
-            _envvars = EnvVars.Value ?? throw new ArgumentNullException(nameof(EnvVars));
+            Configuration = configuration;
+            _clientFactory = clientFactory;
         }
 
         // GET: UserProfile
         public ActionResult Index()
         {
-            var teamendpoint = _envvars.TEAM_API_ENDPOINT;
-            UserStore up = new UserStore(teamendpoint);
+            //"http://akstraefikopenhackefh3.eastus.cloudapp.azure.com"; 
+            var teamendpoint = Configuration.GetValue<string>("USER_ROOT_URL");
+            UserStore up = new UserStore(_clientFactory, teamendpoint, Configuration);
             List<User> userColl = up.GetItemsAsync().Result;
             var user = userColl[0];
             user.ProfilePictureUri = $"https://cdn4.iconfinder.com/data/icons/danger-soft/512/people_user_business_web_man_person_social-512.png";

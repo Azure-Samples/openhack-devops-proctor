@@ -1,6 +1,0 @@
-To connect to the tripviewer pod's website on your local machine, run the following:
-
-export TRIP_POD_NAME=$(kubectl get pods -l app={{ .Values.image.label }} -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward $TRIP_POD_NAME 8081:{{.Values.image.containerPort}}
-
-Then visit http://127.0.0.1:8081 to see your application.

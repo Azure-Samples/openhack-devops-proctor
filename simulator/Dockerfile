@@ -20,6 +20,8 @@ SQL_SERVER="changeme.database.windows.net" \
 SQL_DBNAME="mydrivingDB" \
 TRIP_FREQUENCY="180000" \
 TEAM_NAME="devopsoh000test" \
-SIMULATOR_API_ENDPOINT="http://akstraefikota1961.westus2.cloudapp.azure.com"
+USER_ROOT_URL="https://openhack${RGSUFFIX}userprofile.azurewebsites.net"\
+POI_ROOT_URL="https://openhack${RGSUFFIX}poi.azurewebsites.net"\
+TRIPS_ROOT_URL="https://openhack${RGSUFFIX}trips.azurewebsites.net"
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "DeviceSim.dll"]
