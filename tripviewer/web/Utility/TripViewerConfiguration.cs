@@ -10,7 +10,10 @@ namespace TripViewer.Utility
 
     public class TripViewerConfiguration
     {
-       public string TEAM_API_ENDPOINT { get; set; }
-       public string BING_MAPS_KEY { get;set; }
+        public string BING_MAPS_KEY { get;set; }
+        public string USER_ROOT_URL { get; set; }
+        public string USER_JAVA_ROOT_URL { get; set; }
+        public string TRIPS_ROOT_URL { get; set; }
+        public string POI_ROOT_URL { get; set; }
     }
 }
