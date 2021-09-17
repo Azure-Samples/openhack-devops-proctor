@@ -5,22 +5,20 @@ languages:
 - sql
 products:
 - azure
-description: "This repo contains the code for the provisioning of the resources necessary to execute a DevOps openhack event."
+description: "This repo contains the code for the provisioning of the resources necessary to execute a DevOps OpenHack event."
 ---
 
-# DevOps Openhack Proctor Repository
+# DevOps OpenHack Proctor Repository
 
-This repo contains the code for the provisioning of the resources necessary to execute a DevOps openhack event.  The relevant code individual teams use (i.e. the APIs) to complete their challenges can be found in the [DevOps Openhack Team repository](https://github.com/Azure-Samples/openhack-devops-team/).
+This repo contains the code for the provisioning of the resources necessary to execute a DevOps OpenHack event.  The relevant code individual teams use (i.e. the APIs) to complete their challenges can be found in the [DevOps OpenHack Team repository](https://github.com/Azure-Samples/openhack-devops-team/).
 
 ## Components
 
 The components are organized by folders which contain the following:
 
-* **leaderboard** - visualizes the uptime for the teams' APIs and contains an Azure Functions API which connects to CosmosDB, Sentinel (pods to query the APIs and report status), and a web front end.
-* **provision-proctor** - code to support the provisioning of a complete proctor environment (1 needed per event).
 * **provision-team** - code to support the provisioning of a complete team environment.
-* **provision-vm** - automates the provisioning of an Ubuntu 16.04 VM used as the foundation for provisioning the team and proctor environments.
 * **simulator** - simulates traffic to the SQL database the APIs use for every team's environment.
+* **tripviewer** - the team website that your customers are using to review their driving scores and trips which are being simulated against the APIs.
 
 Go to the root of these folders to see a readme with deeper information on each component.
 
@@ -28,14 +26,13 @@ Go to the root of these folders to see a readme with deeper information on each 
 
 ### Prerequisites
 
-The first step is to create a virtual machine which has the necessary software installed required to provision the teams and proctor environments.  In order to create the VM, only the following needs to be installed
-
-* Azure PowerShell
+* Bash Shell
+* Azure CLI
 * An Azure Subscription
 
 ### High-Level Installation Flow
 
- [Deploy a team environment](./provision-vm) using the Azure Resource Manager template.
+ Deploy a team environment using the `deploy.sh` script and the guidance included in the  [provision-team](./provision-team) directory.
 
 ## Resources
 

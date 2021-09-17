@@ -15,7 +15,9 @@ namespace DeviceSim
         public static int WaitTime { get; private set; }
         public static string TeamName { get; private set; }
         public static bool UseApi { get; private set; }
-        public static string ApiEndPoint { get; private set; }
+        public static string UserApiEndPoint { get; private set; }
+        public static string PoiApiEndPoint { get; private set; }
+        public static string TripsApiEndPoint { get; private set; }
 
         #endregion Variables
 
@@ -71,7 +73,9 @@ namespace DeviceSim
             dBConnectionInfo.DBCatalog = "mydrivingDB";
             //Api Connection Information
             UseApi = Convert.ToBoolean(funcConfiguration.GetSection("USE_API").Value);
-            ApiEndPoint = funcConfiguration.GetSection("SIMULATOR_API_ENDPOINT").Value ?? ("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
+            UserApiEndPoint = funcConfiguration.GetSection("USER_ROOT_URL").Value ?? ("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
+            PoiApiEndPoint = funcConfiguration.GetSection("POI_ROOT_URL").Value ?? ("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
+            TripsApiEndPoint = funcConfiguration.GetSection("TRIPS_ROOT_URL").Value ?? ("http://akstraefikopenhackut20.eastus.cloudapp.azure.com");
             //Execution Information
             WaitTime = Convert.ToInt32(funcConfiguration.GetSection("TRIP_FREQUENCY").Value ?? ("180000"));
             TeamName = funcConfiguration.GetSection("TEAM_NAME").Value ?? ("TEAM 01");
@@ -89,7 +93,7 @@ namespace DeviceSim
                 }
                 else
                 {
-                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo, ApiEndPoint);
+                    ApiTripController CurrentTrip = new ApiTripController(dBConnectionInfo, UserApiEndPoint, PoiApiEndPoint, TripsApiEndPoint);
                     await CurrentTrip.CreateTrip();
                 }
             }
