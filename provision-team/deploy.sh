@@ -5,15 +5,15 @@ IFS=$'\n\t'
 
 declare AZURE_USERNAME=""
 declare AZURE_PASSWORD=""
-declare RESOURCEGROUPLOCATION=""
+declare RESOURCE_GROUP_LOCATION=""
 declare RGSUFFIX=""
 declare ACRNAME=""
 declare -r GITOHTEAMURI="https://github.com/Azure-Samples/openhack-devops-team.git"
 declare -r GITOHTEAMDIRNAME="openhack-devops-team"
-declare -r GITOHTEAMBRANCH="origin/openhack_refresh"
+declare -r GITOHTEAMBRANCH="origin/master"
 declare -r GITOHPROCTORURI="https://github.com/Azure-Samples/openhack-devops-proctor.git"
 declare -r GITOHPROCTORDIRNAME="openhack-devops-proctor"
-declare -r GITOHPROCTORBRANCH="origin/openhack_refresh"
+declare -r GITOHPROCTORBRANCH="origin/master"
 declare -r SQL_USERNAME="demousersa"
 declare -r SQL_PASSWORD="demo@pass123"
 declare -r DATABASENAME="mydrivingDB"
@@ -23,7 +23,7 @@ declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GG
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
-declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
+declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCE_GROUP_LOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -36,7 +36,7 @@ fi
 while getopts ":l:s:u:p:" arg; do
     case "${arg}" in
         l) # Process -l (Location)
-            RESOURCEGROUPLOCATION=${OPTARG}
+            RESOURCE_GROUP_LOCATION=${OPTARG}
         ;;
         s) # Process -s (Suffix)
             RGSUFFIX=${OPTARG}
@@ -125,9 +125,9 @@ fi
 RGEXISTS=$(az group show --name $RGNAME --query name)
 if [ ${#RGEXISTS} -eq 0 ]; then
     echo "Resource group $RGNAME was not found. Creating resource group..."
-    echo "Creating resource group $RGNAME in location $RESOURCEGROUPLOCATION"
+    echo "Creating resource group $RGNAME in location $RESOURCE_GROUP_LOCATION"
 
-    az group create --name $RGNAME --location $RESOURCEGROUPLOCATION
+    az group create --name $RGNAME --location $RESOURCE_GROUP_LOCATION
 else
     echo "Using existing resource group $RGNAME."
 fi
@@ -252,7 +252,7 @@ else
 fi
 
 echo "Creating Key Vault..."
-az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCEGROUPLOCATION --enable-soft-delete true
+az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCE_GROUP_LOCATION --enable-soft-delete true
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLUSER" --value $SQL_USERNAME
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLPASSWORD" --value $SQL_PASSWORD
 az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLSERVER" --value $SQLFQDN
