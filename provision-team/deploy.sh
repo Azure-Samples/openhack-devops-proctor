@@ -6,7 +6,7 @@ IFS=$'\n\t'
 declare AZURE_USERNAME=""
 declare AZURE_PASSWORD=""
 declare RESOURCE_GROUP_LOCATION=""
-declare RGSUFFIX=""
+declare RG_SUFFIX=""
 declare ACRNAME=""
 declare -r GITOHTEAMURI="https://github.com/Azure-Samples/openhack-devops-team.git"
 declare -r GITOHTEAMDIRNAME="openhack-devops-team"
@@ -23,7 +23,7 @@ declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GG
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
-declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCE_GROUP_LOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
+declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCE_GROUP_LOCATION> [-s <RG_SUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -39,7 +39,7 @@ while getopts ":l:s:u:p:" arg; do
             RESOURCE_GROUP_LOCATION=${OPTARG}
         ;;
         s) # Process -s (Suffix)
-            RGSUFFIX=${OPTARG}
+            RG_SUFFIX=${OPTARG}
         ;;
         u) # Process -u (Username)
             AZURE_USERNAME=${OPTARG}
@@ -108,13 +108,13 @@ submitACRBuild() {
     done
 }
 
-if [ ${#RGSUFFIX} -eq 0 ]; then
-    RGSUFFIX="$(randomChar;randomChar;randomChar;randomNum;randomChar;randomChar;randomChar;randomNum;)"
+if [ ${#RG_SUFFIX} -eq 0 ]; then
+    RG_SUFFIX="$(randomChar;randomChar;randomChar;randomNum;randomChar;randomChar;randomChar;randomNum;)"
 fi
 
-echo "Resource random suffix: "$RGSUFFIX
+echo "Resource random suffix: "$RG_SUFFIX
 
-RGNAME="openhack${RGSUFFIX}rg"
+RGNAME="openhack${RG_SUFFIX}rg"
 
 # Accommodate Cloud Sandbox startup
 if [ ${#AZURE_USERNAME} -gt 0 ] && [ ${#AZURE_PASSWORD} -gt 0 ]; then
@@ -136,7 +136,7 @@ echo "Checking basedeployment to $RGNAME..."
 RGDEPLOYMENTSTATE=$(az deployment group show --resource-group $RGNAME --name basedeployment --query properties.provisioningState -o tsv)
 if [ ${#RGDEPLOYMENTSTATE} -eq 0 ]; then
     echo "Starting deployment to $RGNAME..."
-    az deployment group create --name "basedeployment" --resource-group $RGNAME --template-file ./azuredeploy.json --parameters resourceRandomSuffix=$RGSUFFIX
+    az deployment group create --name "basedeployment" --resource-group $RGNAME --template-file ./azuredeploy.json --parameters resourceRandomSuffix=$RG_SUFFIX
 else
     echo "basedeployment already completed."
 fi
@@ -149,7 +149,7 @@ if [ ${#ACRNAME} -eq 0 ]; then
     echo "Azure Container Registry name not found." 2>&1; exit 1;
 fi
 
-APPSVCPLANNAME="openhack${RGSUFFIX}plan"
+APPSVCPLANNAME="openhack${RG_SUFFIX}plan"
 echo "Setting App Service Plan name to $APPSVCPLANNAME..."
 SQLFQDN=$(az sql server list --resource-group $RGNAME --query [].fullyQualifiedDomainName -o tsv)
 echo "Setting SQL fqdn to $SQLFQDN..."
@@ -160,16 +160,16 @@ fi
 
 echo "Setting DB firewall rule for local configuration host..."
 MYCURRENTIP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
-echo "Adding firewall rule for ${MYCURRENTIP} to openhack${RGSUFFIX}sql..."
+echo "Adding firewall rule for ${MYCURRENTIP} to openhack${RG_SUFFIX}sql..."
 az sql server firewall-rule create \
     --resource-group $RGNAME \
-    --server "openhack${RGSUFFIX}sql" \
+    --server "openhack${RG_SUFFIX}sql" \
     --name $SQLFWRULENAME \
     --start-ip-address $MYCURRENTIP \
     --end-ip-address $MYCURRENTIP
 
 # Make a temporary path for cloning from the existing git repos
-TEMPDIRNAME="temp$RGSUFFIX"
+TEMPDIRNAME="temp$RG_SUFFIX"
 
 echo "Creating temporary directory $TEMPDIRNAME..."
 mkdir $TEMPDIRNAME
@@ -252,121 +252,121 @@ else
 fi
 
 echo "Creating Key Vault..."
-az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCE_GROUP_LOCATION --enable-soft-delete true
-az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLUSER" --value $SQL_USERNAME
-az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLPASSWORD" --value $SQL_PASSWORD
-az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLSERVER" --value $SQLFQDN
-az keyvault secret set --vault-name "openhack${RGSUFFIX}kv" --name "SQLDBNAME" --value $DATABASENAME
+az keyvault create --name "openhack${RG_SUFFIX}kv" --resource-group $RGNAME --location $RESOURCE_GROUP_LOCATION --enable-soft-delete true
+az keyvault secret set --vault-name "openhack${RG_SUFFIX}kv" --name "SQLUSER" --value $SQL_USERNAME
+az keyvault secret set --vault-name "openhack${RG_SUFFIX}kv" --name "SQLPASSWORD" --value $SQL_PASSWORD
+az keyvault secret set --vault-name "openhack${RG_SUFFIX}kv" --name "SQLSERVER" --value $SQLFQDN
+az keyvault secret set --vault-name "openhack${RG_SUFFIX}kv" --name "SQLDBNAME" --value $DATABASENAME
 
-IDKVSQLUSER=$(az keyvault secret show --vault-name "openhack${RGSUFFIX}kv" --name "SQLUSER" --query id -o tsv)
+IDKVSQLUSER=$(az keyvault secret show --vault-name "openhack${RG_SUFFIX}kv" --name "SQLUSER" --query id -o tsv)
 KVSQLUSER="@Microsoft.KeyVault(SecretUri=${IDKVSQLUSER})"
-IDKVSQLPASSWORD=$(az keyvault secret show --vault-name "openhack${RGSUFFIX}kv" --name "SQLPASSWORD" --query id -o tsv)
+IDKVSQLPASSWORD=$(az keyvault secret show --vault-name "openhack${RG_SUFFIX}kv" --name "SQLPASSWORD" --query id -o tsv)
 KVSQLPASSWORD="@Microsoft.KeyVault(SecretUri=${IDKVSQLPASSWORD})"
-IDKVSQLSERVER=$(az keyvault secret show --vault-name "openhack${RGSUFFIX}kv" --name "SQLSERVER" --query id -o tsv)
+IDKVSQLSERVER=$(az keyvault secret show --vault-name "openhack${RG_SUFFIX}kv" --name "SQLSERVER" --query id -o tsv)
 KVSQLSERVER="@Microsoft.KeyVault(SecretUri=${IDKVSQLSERVER})"
-IDKVSQLDBNAME=$(az keyvault secret show --vault-name "openhack${RGSUFFIX}kv" --name "SQLDBNAME" --query id -o tsv)
+IDKVSQLDBNAME=$(az keyvault secret show --vault-name "openhack${RG_SUFFIX}kv" --name "SQLDBNAME" --query id -o tsv)
 KVSQLDBNAME="@Microsoft.KeyVault(SecretUri=${IDKVSQLDBNAME})"
 
 echo "Creating Tripviewer web app..."
-az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RGSUFFIX}tripviewer" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/tripviewer:latest"
-echo "Assigning managed identity to openhack${RGSUFFIX}tripviewer..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}tripviewer"
-IDTRIPVIEWER=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}tripviewer" --query principalId -o tsv)
+az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RG_SUFFIX}tripviewer" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/tripviewer:latest"
+echo "Assigning managed identity to openhack${RG_SUFFIX}tripviewer..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}tripviewer"
+IDTRIPVIEWER=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}tripviewer" --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDTRIPVIEWER --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDTRIPVIEWER --secret-permissions get
 echo "Setting Tripviewer app settings..."
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}tripviewer" --settings BING_MAPS_KEY=$BINGMAPSKEY
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}tripviewer" --settings USER_ROOT_URL=https://openhack${RGSUFFIX}userprofile.azurewebsites.net
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}tripviewer" --settings USER_JAVA_ROOT_URL=https://openhack${RGSUFFIX}userjava.azurewebsites.net
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}tripviewer" --settings TRIPS_ROOT_URL=https://openhack${RGSUFFIX}trips.azurewebsites.net
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}tripviewer" --settings POI_ROOT_URL=https://openhack${RGSUFFIX}poi.azurewebsites.net
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}tripviewer" --settings BING_MAPS_KEY=$BINGMAPSKEY
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}tripviewer" --settings USER_ROOT_URL=https://openhack${RG_SUFFIX}userprofile.azurewebsites.net
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}tripviewer" --settings USER_JAVA_ROOT_URL=https://openhack${RG_SUFFIX}userjava.azurewebsites.net
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}tripviewer" --settings TRIPS_ROOT_URL=https://openhack${RG_SUFFIX}trips.azurewebsites.net
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}tripviewer" --settings POI_ROOT_URL=https://openhack${RG_SUFFIX}poi.azurewebsites.net
 
 echo "Creating API-POI web app..."
-az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RGSUFFIX}poi" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-poi:${BASEIMAGETAG}"
-echo "Assigning managed identity to openhack${RGSUFFIX}poi..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}poi"
-IDPOI=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}poi" --query principalId -o tsv)
+az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RG_SUFFIX}poi" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-poi:${BASEIMAGETAG}"
+echo "Assigning managed identity to openhack${RG_SUFFIX}poi..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}poi"
+IDPOI=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}poi" --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDPOI --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDPOI --secret-permissions get
 echo "Setting POI app settings..."
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings WEBSITES_PORT=8080
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings CONTAINER_AVAILABILITY_CHECK_MODE=Off
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings SQL_USER=$KVSQLUSER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings SQL_PASSWORD=$KVSQLPASSWORD
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings SQL_SERVER=$KVSQLSERVER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}poi" --settings SQL_DBNAME=$KVSQLDBNAME
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings WEBSITES_PORT=8080
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings CONTAINER_AVAILABILITY_CHECK_MODE=Off
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings SQL_USER=$KVSQLUSER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings SQL_PASSWORD=$KVSQLPASSWORD
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings SQL_SERVER=$KVSQLSERVER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}poi" --settings SQL_DBNAME=$KVSQLDBNAME
 
 echo "Creating API-POI web app staging slot"
-az webapp deployment slot create --name "openhack${RGSUFFIX}poi" --resource-group $RGNAME --slot staging --configuration-source "openhack${RGSUFFIX}poi"
-echo "Assigning managed identity to openhack${RGSUFFIX}poi-staging..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}poi" --slot staging
-IDPOISTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}poi" --slot staging --query principalId -o tsv)
+az webapp deployment slot create --name "openhack${RG_SUFFIX}poi" --resource-group $RGNAME --slot staging --configuration-source "openhack${RG_SUFFIX}poi"
+echo "Assigning managed identity to openhack${RG_SUFFIX}poi-staging..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}poi" --slot staging
+IDPOISTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}poi" --slot staging --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDPOISTAGING --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDPOISTAGING --secret-permissions get
 
 echo "Creating API-TRIPS web app..."
-az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RGSUFFIX}trips" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-trips:${BASEIMAGETAG}"
-echo "Assigning managed identity to openhack${RGSUFFIX}trips..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}trips"
-IDTRIPS=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}trips" --query principalId -o tsv)
+az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RG_SUFFIX}trips" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-trips:${BASEIMAGETAG}"
+echo "Assigning managed identity to openhack${RG_SUFFIX}trips..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}trips"
+IDTRIPS=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}trips" --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDTRIPS --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDTRIPS --secret-permissions get
 echo "Setting TRIPS app settings..."
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}trips" --settings SQL_USER=$KVSQLUSER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}trips" --settings SQL_PASSWORD=$KVSQLPASSWORD
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}trips" --settings SQL_SERVER=$KVSQLSERVER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}trips" --settings SQL_DBNAME=$KVSQLDBNAME
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}trips" --settings SQL_USER=$KVSQLUSER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}trips" --settings SQL_PASSWORD=$KVSQLPASSWORD
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}trips" --settings SQL_SERVER=$KVSQLSERVER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}trips" --settings SQL_DBNAME=$KVSQLDBNAME
 
 echo "Creating API-TRIPS web app staging slot"
-az webapp deployment slot create --name "openhack${RGSUFFIX}trips" --resource-group $RGNAME --slot staging --configuration-source "openhack${RGSUFFIX}trips"
-echo "Assigning managed identity to openhack${RGSUFFIX}trips-staging..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}trips" --slot staging
-IDTRIPSSTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}trips" --slot staging --query principalId -o tsv)
+az webapp deployment slot create --name "openhack${RG_SUFFIX}trips" --resource-group $RGNAME --slot staging --configuration-source "openhack${RG_SUFFIX}trips"
+echo "Assigning managed identity to openhack${RG_SUFFIX}trips-staging..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}trips" --slot staging
+IDTRIPSSTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}trips" --slot staging --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDTRIPSSTAGING --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDTRIPSSTAGING --secret-permissions get
 
 echo "Creating API-USER-JAVA web app..."
-az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RGSUFFIX}userjava" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-user-java:${BASEIMAGETAG}"
-echo "Assigning managed identity to openhack${RGSUFFIX}userjava..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}userjava"
-IDUSERJAVA=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}userjava" --query principalId -o tsv)
+az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RG_SUFFIX}userjava" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-user-java:${BASEIMAGETAG}"
+echo "Assigning managed identity to openhack${RG_SUFFIX}userjava..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}userjava"
+IDUSERJAVA=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}userjava" --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDUSERJAVA --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDUSERJAVA --secret-permissions get
 echo "Setting USERJAVA app settings..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}userjava"
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userjava" --settings SQL_USER=$KVSQLUSER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userjava" --settings SQL_PASSWORD=$KVSQLPASSWORD
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userjava" --settings SQL_SERVER=$KVSQLSERVER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userjava" --settings SQL_DBNAME=$KVSQLDBNAME
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}userjava"
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userjava" --settings SQL_USER=$KVSQLUSER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userjava" --settings SQL_PASSWORD=$KVSQLPASSWORD
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userjava" --settings SQL_SERVER=$KVSQLSERVER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userjava" --settings SQL_DBNAME=$KVSQLDBNAME
 
 echo "Creating API-USER-JAVA web app staging slot"
-az webapp deployment slot create --name "openhack${RGSUFFIX}userjava" --resource-group $RGNAME --slot staging --configuration-source "openhack${RGSUFFIX}userjava"
-echo "Assigning managed identity to openhack${RGSUFFIX}userjava-staging..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}userjava" --slot staging
-IDUSERJAVASTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}userjava" --slot staging --query principalId -o tsv)
+az webapp deployment slot create --name "openhack${RG_SUFFIX}userjava" --resource-group $RGNAME --slot staging --configuration-source "openhack${RG_SUFFIX}userjava"
+echo "Assigning managed identity to openhack${RG_SUFFIX}userjava-staging..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}userjava" --slot staging
+IDUSERJAVASTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}userjava" --slot staging --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDUSERJAVASTAGING --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDUSERJAVASTAGING --secret-permissions get
 
 echo "Creating API-USERPROFILE web app..."
-az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RGSUFFIX}userprofile" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-userprofile:${BASEIMAGETAG}"
-echo "Assigning managed identity to openhack${RGSUFFIX}userprofile..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}userprofile"
-IDUSERPROFILE=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}userprofile" --query principalId -o tsv)
+az webapp create --resource-group $RGNAME --plan $APPSVCPLANNAME --name "openhack${RG_SUFFIX}userprofile" --deployment-container-image-name "${ACRNAME}.azurecr.io/devopsoh/api-userprofile:${BASEIMAGETAG}"
+echo "Assigning managed identity to openhack${RG_SUFFIX}userprofile..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}userprofile"
+IDUSERPROFILE=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}userprofile" --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDUSERPROFILE --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDUSERPROFILE --secret-permissions get
 echo "Setting USERPROFILE app settings..."
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userprofile" --settings SQL_USER=$KVSQLUSER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userprofile" --settings SQL_PASSWORD=$KVSQLPASSWORD
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userprofile" --settings SQL_SERVER=$KVSQLSERVER
-az webapp config appsettings set -g $RGNAME -n "openhack${RGSUFFIX}userprofile" --settings SQL_DBNAME=$KVSQLDBNAME
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userprofile" --settings SQL_USER=$KVSQLUSER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userprofile" --settings SQL_PASSWORD=$KVSQLPASSWORD
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userprofile" --settings SQL_SERVER=$KVSQLSERVER
+az webapp config appsettings set -g $RGNAME -n "openhack${RG_SUFFIX}userprofile" --settings SQL_DBNAME=$KVSQLDBNAME
 
 echo "Creating API-USERPROFILE web app staging slot"
-az webapp deployment slot create --name "openhack${RGSUFFIX}userprofile" --resource-group $RGNAME --slot staging --configuration-source "openhack${RGSUFFIX}userprofile"
-echo "Assigning managed identity to openhack${RGSUFFIX}userprofile-staging..."
-az webapp identity assign --resource-group $RGNAME --name "openhack${RGSUFFIX}userprofile" --slot staging
-IDUSERPROFILESTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RGSUFFIX}userprofile" --slot staging --query principalId -o tsv)
+az webapp deployment slot create --name "openhack${RG_SUFFIX}userprofile" --resource-group $RGNAME --slot staging --configuration-source "openhack${RG_SUFFIX}userprofile"
+echo "Assigning managed identity to openhack${RG_SUFFIX}userprofile-staging..."
+az webapp identity assign --resource-group $RGNAME --name "openhack${RG_SUFFIX}userprofile" --slot staging
+IDUSERPROFILESTAGING=$(az webapp identity show --resource-group $RGNAME --name "openhack${RG_SUFFIX}userprofile" --slot staging --query principalId -o tsv)
 echo "Setting Key Vault permissions..."
-az keyvault set-policy --name "openhack${RGSUFFIX}kv" --object-id $IDUSERPROFILESTAGING --secret-permissions get
+az keyvault set-policy --name "openhack${RG_SUFFIX}kv" --object-id $IDUSERPROFILESTAGING --secret-permissions get
 
 echo "Populating SQL database..."
 echo "Changing directory to $GITOHPROCTORDIRPATH/provision-team..."
@@ -376,22 +376,22 @@ sqlcmd -U $SQL_USERNAME -P $SQL_PASSWORD -S $SQLFQDN -d $DATABASENAME -i ./MYDri
 echo "Populating database with seed data..."
 bash ./sql_data_init.sh -s $SQLFQDN -u $SQL_USERNAME -p $SQL_PASSWORD -d $DATABASENAME 
 
-echo "Removing configuration host FW rule on openhack${RGSUFFIX}sql..."
+echo "Removing configuration host FW rule on openhack${RG_SUFFIX}sql..."
 az sql server firewall-rule delete \
     --resource-group $RGNAME \
-    --server "openhack${RGSUFFIX}sql" \
+    --server "openhack${RG_SUFFIX}sql" \
     --name $SQLFWRULENAME
 
 echo "Deploying simulator container..."
 az container create \
-    --name "openhack${RGSUFFIX}simulator" \
+    --name "openhack${RG_SUFFIX}simulator" \
     --resource-group $RGNAME \
     --image "${ACRNAME}.azurecr.io/devopsoh/simulator:latest" \
     --registry-login-server "${ACRNAME}.azurecr.io" \
     --registry-username $(az acr credential show --name $ACRNAME --query username -o tsv) \
     --registry-password $(az acr credential show --name $ACRNAME --query passwords[0].value -o tsv) \
-    --dns-name-label "openhack${RGSUFFIX}simulator" \
-    --environment-variables "SQL_USER"="${SQL_USERNAME}" "SQL_PASSWORD"="${SQL_PASSWORD}" "SQL_SERVER"="${SQLFQDN}" "SQL_DBNAME"="${DATABASENAME}" "TEAM_NAME"="openhack${RGSUFFIX}" "USER_ROOT_URL"="https://openhack${RGSUFFIX}userprofile.azurewebsites.net" "TRIPS_ROOT_URL"="https://openhack${RGSUFFIX}trips.azurewebsites.net" "POI_ROOT_URL"="https://openhack${RGSUFFIX}poi.azurewebsites.net" \
+    --dns-name-label "openhack${RG_SUFFIX}simulator" \
+    --environment-variables "SQL_USER"="${SQL_USERNAME}" "SQL_PASSWORD"="${SQL_PASSWORD}" "SQL_SERVER"="${SQLFQDN}" "SQL_DBNAME"="${DATABASENAME}" "TEAM_NAME"="openhack${RG_SUFFIX}" "USER_ROOT_URL"="https://openhack${RG_SUFFIX}userprofile.azurewebsites.net" "TRIPS_ROOT_URL"="https://openhack${RG_SUFFIX}trips.azurewebsites.net" "POI_ROOT_URL"="https://openhack${RG_SUFFIX}poi.azurewebsites.net" \
     --query ipAddress.fqdn
 
 # BUILD JENKINS
@@ -403,13 +403,13 @@ az acr build --image devopsoh/jenkins:latest --registry $ACRNAME --file Dockerfi
 # DEPLOY JENKINS TO ACI
 echo "Deploying jenkins container..."
 az container create \
-    --name "openhack${RGSUFFIX}jenkins" \
+    --name "openhack${RG_SUFFIX}jenkins" \
     --resource-group $RGNAME \
     --image "${ACRNAME}.azurecr.io/devopsoh/jenkins:latest" \
     --registry-login-server "${ACRNAME}.azurecr.io" \
     --registry-username $(az acr credential show --name $ACRNAME --query username -o tsv) \
     --registry-password $(az acr credential show --name $ACRNAME --query passwords[0].value -o tsv) \
-    --dns-name-label "openhack${RGSUFFIX}jenkins" \
+    --dns-name-label "openhack${RG_SUFFIX}jenkins" \
     --port 8080 \
     --query ipAddress.fqdn
 

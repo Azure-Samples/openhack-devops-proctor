@@ -10,7 +10,7 @@ description: "This repo contains the code for the provisioning of the resources 
 
 # DevOps OpenHack Proctor Repository
 
-This repo contains the code for the provisioning of the resources necessary to execute a DevOps OpenHack event.  The relevant code individual teams use (i.e. the APIs) to complete their challenges can be found in the [DevOps OpenHack Team repository](https://github.com/Azure-Samples/openhack-devops-team/).
+This repo contains the code for the provisioning of the resources necessary to execute a DevOps OpenHack event. The relevant code individual teams use (i.e. the APIs) to complete their challenges can be found in the [DevOps OpenHack Team repository](https://github.com/Azure-Samples/openhack-devops-team/).
 
 ## Components
 
@@ -27,7 +27,8 @@ Go to the root of these folders to see a readme with deeper information on each 
 ### Prerequisites
 
 * Bash Shell
-* Azure CLI
+* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* [sqlcmd & bcp](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools)
 * An Azure Subscription
 
 ### High-Level Installation Flow
