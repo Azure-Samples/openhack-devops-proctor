@@ -1,32 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using TripViewer.Models;
+using TripViewer.Utility;
 
 namespace TripViewer.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration Configuration;
+
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        {
+            _logger = logger;
+            Configuration = configuration;
+        }
+
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            TripViewerConfiguration tv = new TripViewerConfiguration
+            {
+                USER_ROOT_URL = Configuration.GetValue<string>("USER_ROOT_URL"),
+                USER_JAVA_ROOT_URL = Configuration.GetValue<string>("USER_JAVA_ROOT_URL"),
+                TRIPS_ROOT_URL = Configuration.GetValue<string>("TRIPS_ROOT_URL"),
+                POI_ROOT_URL = Configuration.GetValue<string>("POI_ROOT_URL")
+            };
+            return View(tv);
         }
 
         public IActionResult Privacy()

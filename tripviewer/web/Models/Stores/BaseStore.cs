@@ -13,12 +13,19 @@
         public string EndPoint { get; set; }
         public HttpClient Client { get; set; }
         public DateTime DateTime { get; set; }
+        private readonly IHttpClientFactory _clientFactory;
+
+        public BaseStore(IHttpClientFactory clientFactory)
+        {
+            _clientFactory = clientFactory;
+        }
 
         public Task InitializeStore(string EndPoint)
         {
-            Client = new HttpClient();
+            Client = _clientFactory.CreateClient();
             Client.BaseAddress = new Uri(EndPoint);
             Client.DefaultRequestHeaders.Accept.Clear();
+            
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             DateTime = DateTime.UtcNow;

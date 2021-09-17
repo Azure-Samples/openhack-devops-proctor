@@ -1,5 +1,5 @@
 ﻿namespace Simulator.DataStore.Stores
-{ 
+{
     using Simulator.DataObjects;
     using System;
     using System.Collections.Generic;
@@ -8,11 +8,11 @@
 
     public class TripPointStore : BaseStore//, IBaseStore<TripPoint>
     {
-
-        public TripPointStore(string EndPoint)
+        public TripPointStore(IHttpClientFactory clientFactory, string EndPoint) : base(clientFactory)
         {
             base.InitializeStore(EndPoint);
         }
+
         public async Task<TripPoint> GetItemAsync(string id)
         {
             //Deviating implemetnation because of complxity of the nested API
