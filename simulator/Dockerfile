@@ -1,8 +1,8 @@
 #Pull Base Image
-FROM microsoft/dotnet:2.1-runtime AS base
+FROM mcr.microsoft.com/dotnet/runtime:2.1-alpine AS base
 WORKDIR /app
 #Pull SDK Image to Build Solution
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM mcr.microsoft.com/dotnet/sdk:2.1-alpine AS build
 WORKDIR /src
 COPY . .
 RUN dotnet restore -nowarn:msb3202,nu1503
