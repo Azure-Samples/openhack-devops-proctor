@@ -36,7 +36,7 @@ data "azuredevops_project" "ado_project" {
 }
 
 resource "azuredevops_variable_group" "variablegroup" {
-  project_id   = azuredevops_project.ado_project.id
+  project_id   = data.azuredevops_project.ado_project.id
   name         = "tfstate"
   description  = "tfstate access data"
   allow_access = true
