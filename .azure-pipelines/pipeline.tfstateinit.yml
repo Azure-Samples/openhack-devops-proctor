@@ -6,13 +6,13 @@ pool:
 
 steps:
   - script: |
-      export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN
+      export AZDO_PERSONAL_ACCESS_TOKEN=$AZDO_PERSONAL_ACCESS_TOKEN
       export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
 
       echo ${AZDO_ORG_SERVICE_URL}
       echo ${AZDO_PERSONAL_ACCESS_TOKEN}
     env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
   - task: TerraformInstaller@0
     inputs:
       terraformVersion: 'latest'
@@ -22,10 +22,13 @@ steps:
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
       allowTelemetryCollection: false
   - task: TerraformCLI@0
+    env:
+      AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
     inputs:
       command: 'plan'
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
       environmentServiceName: 'AzureServiceConnection'
+      runAzLogin: true
       allowTelemetryCollection: false
   - task: TerraformCLI@0
     inputs:
