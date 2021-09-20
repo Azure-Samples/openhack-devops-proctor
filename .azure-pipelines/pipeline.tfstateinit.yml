@@ -13,3 +13,23 @@ steps:
       echo ${AZDO_PERSONAL_ACCESS_TOKEN}
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  - task: TerraformInstaller@0
+    inputs:
+      terraformVersion: 'latest'
+  - task: TerraformCLI@0
+    inputs:
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      allowTelemetryCollection: false
+  - task: TerraformCLI@0
+    inputs:
+      command: 'plan'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      environmentServiceName: 'AzureServiceConnection'
+      allowTelemetryCollection: false
+  - task: TerraformCLI@0
+    inputs:
+      command: 'apply'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      environmentServiceName: 'AzureServiceConnection'
+      allowTelemetryCollection: false
