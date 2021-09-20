@@ -12,6 +12,6 @@ locals {
   resource_group_name       = "${local.resources_prefix}rg"
   storage_account_name      = "${local.resources_prefix}st"
   ado_project_name          = var.ado_project_name != null ? var.ado_project_name : local._default.ado_project_name
-  ado_org_service_url       = var.ado_org_service_url != null ? var.ado_org_service_url : local._default.ado_org_service_url
-  ado_personal_access_token = var.ado_personal_access_token != null ? var.ado_personal_access_token : local._default.ado_personal_access_token
+  # ado_org_service_url       = var.ado_org_service_url != null ? var.ado_org_service_url : local._default.ado_org_service_url
+  # ado_personal_access_token = var.ado_personal_access_token != null ? var.ado_personal_access_token : local._default.ado_personal_access_token
 }
