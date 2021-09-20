@@ -17,6 +17,7 @@ steps:
 - task: TerraformCLI@0
   inputs:
     command: 'init'
+    workingDirectory: $(workDir)
     backendType: 'azurerm'
     backendServiceArm: 'AzureServiceConnection'
     backendAzureRmResourceGroupName: $(TFSTATE_RESOURCES_GROUP_NAME)
