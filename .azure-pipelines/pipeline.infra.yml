@@ -34,9 +34,10 @@ steps:
     command: 'plan'
     workingDirectory: $(workDir)
     environmentServiceName: 'AzureServiceConnection'
-    publishPlanResults: 'tfstate'
+    runAzLogin: true
     commandOptions: '-var resources_prefix=$(RESOURCES_PREFIX)'
     allowTelemetryCollection: true
+    publishPlanResults: 'tfstate'
 
 - task: TerraformCLI@0
   displayName: 'Terraform Apply'
@@ -44,5 +45,6 @@ steps:
     command: 'apply'
     workingDirectory: $(workDir)
     environmentServiceName: 'AzureServiceConnection'
+    runAzLogin: true
     commandOptions: '-var resources_prefix=$(RESOURCES_PREFIX)'
     allowTelemetryCollection: true
