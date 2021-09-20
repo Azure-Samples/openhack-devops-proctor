@@ -4,6 +4,10 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  - name: workDir
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+
 steps:
   - task: DownloadBuildArtifacts@1
     continueOnError: true
@@ -14,7 +18,7 @@ steps:
       buildVersionToDownload: 'latest'
       downloadType: 'single'
       artifactName: 'TerraformRemoteState'
-      downloadPath: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      downloadPath: $(workDir)
   - task: TerraformInstaller@0
     displayName: 'Terraform Install'
     inputs:
@@ -23,13 +27,13 @@ steps:
     displayName: 'Terraform Init'
     inputs:
       command: 'init'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      workingDirectory: $(workDir)
       allowTelemetryCollection: false
   - task: TerraformCLI@0
     displayName: 'Terraform Plan'
     inputs:
       command: 'plan'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
       allowTelemetryCollection: false
     env:
@@ -39,14 +43,14 @@ steps:
     displayName: 'Terraform Apply'
     inputs:
       command: 'apply'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
+      workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
       allowTelemetryCollection: false
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
   - script: |
-      cp $(System.DefaultWorkingDirectory)/provision-team/terraform-state/terraform.tfstate $(Build.ArtifactStagingDirectory)/terraform.tfstate
+      cp $(workDir)/terraform.tfstate $(Build.ArtifactStagingDirectory)/terraform.tfstate
     displayName: "Copy TF State to Artifacts"
   - task: PublishPipelineArtifact@1
     displayName: "Publish TF State to Artifacts"
