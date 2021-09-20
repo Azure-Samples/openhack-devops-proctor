@@ -13,14 +13,14 @@ variable "ado_project_name" {
   type        = string
   default     = null
 }
-# variable "ado_org_service_url" {
-#   description = ""
-#   type        = string
-#   default     = null
-# }
-# variable "ado_personal_access_token" {
-#   description = ""
-#   type        = string
-#   default     = null
-#   sensitive   = true
-# }
+variable "ado_org_service_url" {
+  description = ""
+  type        = string
+  default     = null
+}
+variable "ado_personal_access_token" {
+  description = ""
+  type        = string
+  default     = null
+  sensitive   = true
+}
