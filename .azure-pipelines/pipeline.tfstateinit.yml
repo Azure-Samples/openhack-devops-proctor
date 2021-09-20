@@ -59,3 +59,10 @@ steps:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'TerraformRemoteState'
       publishLocation: 'pipeline'
+  - task: DeleteFiles@1
+    displayName: "Cleanup TF State"
+    inputs:
+      SourceFolder: '$(workDir)'
+      Contents: |
+        .terraform
+        terraform.tfstate
