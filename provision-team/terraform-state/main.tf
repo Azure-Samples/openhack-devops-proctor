@@ -57,21 +57,12 @@ resource "azuredevops_variable_group" "variablegroup" {
   }
 
   variable {
-    name         = "TFSTATE_STORAGE_CONTAINER"
+    name         = "TFSTATE_STORAGE_CONTAINER_NAME"
     secret_value = azurerm_storage_container.storage_container.name
   }
 
   variable {
     name         = "TFSTATE_KEY"
-    secret_value = "terraform.tfstate"
+    secret_value = local.tfstate_key
   }
-
-
-
-
-  # variable {
-  #   name         = "STORAGE_ACCOUNT_ACCESS_KEY"
-  #   secret_value = azurerm_storage_account.storage_account.primary_access_key
-  #   is_secret    = true
-  # }
 }
