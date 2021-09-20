@@ -36,11 +36,13 @@ steps:
       command: 'plan'
       workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
+      commandOptions: "-var 'ado_project_name=$(System.TeamProject)'""
       allowTelemetryCollection: true
       publishPlanResults: 'tfstate'
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
+
   - task: TerraformCLI@0
     displayName: 'Terraform Apply'
     inputs:
@@ -51,6 +53,7 @@ steps:
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
+      
   - script: |
       cp $(workDir)/terraform.tfstate $(Build.ArtifactStagingDirectory)/terraform.tfstate
     displayName: "Copy TF State to Artifacts"
