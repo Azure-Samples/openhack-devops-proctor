@@ -6,9 +6,10 @@ pool:
 
 steps:
   - task: DownloadBuildArtifacts@1
+    continueOnError: true
     inputs:
       buildType: 'specific'
-      project: 'a6f6f315-2410-4d01-8896-f9ddbedaaacd'
+      project: $(System.TeamProjectId)
       pipeline: '16'
       buildVersionToDownload: 'latest'
       downloadType: 'single'
