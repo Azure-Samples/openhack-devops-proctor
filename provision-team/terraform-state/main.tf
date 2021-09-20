@@ -52,17 +52,17 @@ resource "azuredevops_variable_group" "variablegroup" {
   }
 
   variable {
-    name         = "TFSTATE_STORAGE_ACCOUNT_NAME"
-    secret_value = azurerm_storage_account.storage_account.name
+    name  = "TFSTATE_STORAGE_ACCOUNT_NAME"
+    value = azurerm_storage_account.storage_account.name
   }
 
   variable {
-    name         = "TFSTATE_STORAGE_CONTAINER_NAME"
-    secret_value = azurerm_storage_container.storage_container.name
+    name  = "TFSTATE_STORAGE_CONTAINER_NAME"
+    value = azurerm_storage_container.storage_container.name
   }
 
   variable {
-    name         = "TFSTATE_KEY"
-    secret_value = local.tfstate_key
+    name  = "TFSTATE_KEY"
+    value = local.tfstate_key
   }
 }
