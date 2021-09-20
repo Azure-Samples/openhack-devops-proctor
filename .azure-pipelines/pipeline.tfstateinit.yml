@@ -36,7 +36,7 @@ steps:
       command: 'plan'
       workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
-      commandOptions: "-var 'ado_project_name=$(System.TeamProject)'""
+      commandOptions: "-var 'ado_project_name=$(System.TeamProject)'"
       allowTelemetryCollection: true
       publishPlanResults: 'tfstate'
     env:
@@ -49,6 +49,7 @@ steps:
       command: 'apply'
       workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
+      commandOptions: "-var 'ado_project_name=$(System.TeamProject)'"
       allowTelemetryCollection: true
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
