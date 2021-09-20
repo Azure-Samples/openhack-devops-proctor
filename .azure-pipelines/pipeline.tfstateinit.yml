@@ -5,23 +5,18 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  # - script: |
-  #     export AZDO_PERSONAL_ACCESS_TOKEN=$AZDO_PERSONAL_ACCESS_TOKEN
-  #     export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
-
-  #     echo ${AZDO_ORG_SERVICE_URL}
-  #     echo ${AZDO_PERSONAL_ACCESS_TOKEN}
-  #   env:
-  #     AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
   - task: TerraformInstaller@0
+    displayName: 'Terraform Install'
     inputs:
       terraformVersion: 'latest'
   - task: TerraformCLI@0
+    displayName: 'Terraform Init'
     inputs:
       command: 'init'
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
       allowTelemetryCollection: false
   - task: TerraformCLI@0
+    displayName: 'Terraform Plan'
     inputs:
       command: 'plan'
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
@@ -32,6 +27,7 @@ steps:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
   - task: TerraformCLI@0
+    displayName: 'Terraform Apply'
     inputs:
       command: 'apply'
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
