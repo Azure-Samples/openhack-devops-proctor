@@ -6,6 +6,8 @@ pool:
 
 variables:
   - group: tfstate
+  - name: workDir
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform/'
 
 steps:
 - task: TerraformInstaller@0
@@ -22,3 +24,15 @@ steps:
     backendAzureRmContainerName: $(TFSTATE_STORAGE_CONTAINER_NAME)
     backendAzureRmKey: $(TFSTATE_KEY)
     allowTelemetryCollection: true
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Plan'
+  inputs:
+    command: 'plan'
+    workingDirectory: $(workDir)
+    environmentServiceName: 'AzureServiceConnection'
+    allowTelemetryCollection: true
+    publishPlanResults: 'tfstate'
+  env:
+    AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+    AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
