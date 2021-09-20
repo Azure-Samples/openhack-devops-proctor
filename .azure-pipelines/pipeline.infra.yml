@@ -35,4 +35,5 @@ steps:
     workingDirectory: $(workDir)
     environmentServiceName: 'AzureServiceConnection'
     publishPlanResults: 'tfstate'
+    commandOptions: '-var resources_prefix=$(RESOURCES_PREFIX)'
     allowTelemetryCollection: true
