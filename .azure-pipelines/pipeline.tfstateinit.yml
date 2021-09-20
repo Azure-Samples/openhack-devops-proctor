@@ -29,14 +29,15 @@ steps:
     inputs:
       command: 'init'
       workingDirectory: $(workDir)
-      allowTelemetryCollection: false
+      allowTelemetryCollection: true
   - task: TerraformCLI@0
     displayName: 'Terraform Plan'
     inputs:
       command: 'plan'
       workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
-      allowTelemetryCollection: false
+      allowTelemetryCollection: true
+      publishPlanResults: 'tfstate'
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
@@ -46,7 +47,7 @@ steps:
       command: 'apply'
       workingDirectory: $(workDir)
       environmentServiceName: 'AzureServiceConnection'
-      allowTelemetryCollection: false
+      allowTelemetryCollection: true
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
