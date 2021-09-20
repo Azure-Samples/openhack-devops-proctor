@@ -1,0 +1,15 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - script: |
+      export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN
+      export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
+
+      echo ${AZDO_ORG_SERVICE_URL}
+      echo ${AZDO_PERSONAL_ACCESS_TOKEN}
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
