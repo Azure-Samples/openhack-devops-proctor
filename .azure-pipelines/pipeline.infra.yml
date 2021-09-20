@@ -33,6 +33,3 @@ steps:
     environmentServiceName: 'AzureServiceConnection'
     allowTelemetryCollection: true
     publishPlanResults: 'tfstate'
-  env:
-    AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
-    AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
