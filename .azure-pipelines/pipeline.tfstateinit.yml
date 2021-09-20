@@ -10,7 +10,7 @@ steps:
     inputs:
       buildType: 'specific'
       project: $(System.TeamProjectId)
-      pipeline: 'tfstate'
+      pipeline: $(System.DefinitionId)
       buildVersionToDownload: 'latest'
       downloadType: 'single'
       artifactName: 'TF remote state'
