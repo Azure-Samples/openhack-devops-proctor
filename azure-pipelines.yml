@@ -1,0 +1,32 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tfstate
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformCLI@0
+  inputs:
+    command: 'init'
+    backendType: 'azurerm'
+    backendServiceArm: 'AzureServiceConnection'
+    backendAzureRmResourceGroupName: $(TFSTATE_RESOURCES_GROUP_NAME)
+    backendAzureRmStorageAccountName: $(TFSTATE_STORAGE_ACCOUNT_NAME)
+    backendAzureRmContainerName: $(TFSTATE_STORAGE_CONTAINER)
+    backendAzureRmKey: $(TFSTATE_KEY)
+    allowTelemetryCollection: true
