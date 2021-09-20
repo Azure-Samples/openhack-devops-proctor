@@ -1,7 +1,7 @@
 
 resource "null_resource" "git_team" {
   provisioner "local-exec" {
-    command = "git clone https://github.com/DariuszPorowski/openhack-devops-team.git"
+    command = "git clone https://github.com/Azure-Samples/openhack-devops-team.git"
   }
 }
 

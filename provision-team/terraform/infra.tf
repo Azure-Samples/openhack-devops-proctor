@@ -154,11 +154,11 @@ resource "azurerm_app_service" "app_service_tripviewer" {
   }
 
   app_settings = {
-    "BING_MAPS_KEY"              = local.bing_maps_key
-    "USER_ROOT_URL"              = "https://${azurerm_app_service.app_service_api-userprofile.default_site_hostname}"
-    "USER_JAVA_ROOT_URL"         = "https://${azurerm_app_service.app_service_api-user-java.default_site_hostname}"
-    "TRIPS_ROOT_URL"             = "https://${azurerm_app_service.app_service_api-trips.default_site_hostname}"
-    "POI_ROOT_URL"               = "https://${azurerm_app_service.app_service_api-poi.default_site_hostname}"
+    "BING_MAPS_KEY"      = local.bing_maps_key
+    "USER_ROOT_URL"      = "https://${azurerm_app_service.app_service_api-userprofile.default_site_hostname}"
+    "USER_JAVA_ROOT_URL" = "https://${azurerm_app_service.app_service_api-user-java.default_site_hostname}"
+    "TRIPS_ROOT_URL"     = "https://${azurerm_app_service.app_service_api-trips.default_site_hostname}"
+    "POI_ROOT_URL"       = "https://${azurerm_app_service.app_service_api-poi.default_site_hostname}"
     # "DOCKER_ENABLE_CI"           = "true"
     "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.container_registry.login_server}"
   }
@@ -212,7 +212,7 @@ resource "azurerm_app_service" "app_service_api-poi" {
     "SQL_DBNAME"                        = local.mssql_database_name
     "CONTAINER_AVAILABILITY_CHECK_MODE" = "Off"
     # "DOCKER_ENABLE_CI"                  = "true"
-    "DOCKER_REGISTRY_SERVER_URL"        = "https://${azurerm_container_registry.container_registry.login_server}"
+    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.container_registry.login_server}"
   }
 
   site_config {
@@ -263,7 +263,7 @@ resource "azurerm_app_service" "app_service_api-trips" {
     "SQL_DBNAME"                        = local.mssql_database_name
     "CONTAINER_AVAILABILITY_CHECK_MODE" = "Off"
     # "DOCKER_ENABLE_CI"                  = "true"
-    "DOCKER_REGISTRY_SERVER_URL"        = "https://${azurerm_container_registry.container_registry.login_server}"
+    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.container_registry.login_server}"
   }
 
   site_config {
@@ -314,7 +314,7 @@ resource "azurerm_app_service" "app_service_api-user-java" {
     "SQL_DBNAME"                        = local.mssql_database_name
     "CONTAINER_AVAILABILITY_CHECK_MODE" = "Off"
     # "DOCKER_ENABLE_CI"                  = "true"
-    "DOCKER_REGISTRY_SERVER_URL"        = "https://${azurerm_container_registry.container_registry.login_server}"
+    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.container_registry.login_server}"
   }
 
   site_config {
@@ -365,7 +365,7 @@ resource "azurerm_app_service" "app_service_api-userprofile" {
     "SQL_DBNAME"                        = local.mssql_database_name
     "CONTAINER_AVAILABILITY_CHECK_MODE" = "Off"
     # "DOCKER_ENABLE_CI"                  = "true"
-    "DOCKER_REGISTRY_SERVER_URL"        = "https://${azurerm_container_registry.container_registry.login_server}"
+    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.container_registry.login_server}"
   }
 
   site_config {
