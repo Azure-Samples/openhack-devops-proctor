@@ -16,6 +16,7 @@ steps:
       project: $(System.TeamProjectId)
       pipeline: $(System.DefinitionId)
       buildVersionToDownload: 'latest'
+      allowPartiallySucceededBuilds: true
       downloadType: 'single'
       artifactName: 'TerraformRemoteState'
       downloadPath: $(workDir)
