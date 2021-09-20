@@ -15,9 +15,6 @@ locals {
   team_name                                 = local.resources_prefix
   location                                  = data.azurerm_resource_group.resource_group.location
   resource_group_name                       = "${local.resources_prefix}rg"
-  storage_account_name                      = "${local.resources_prefix}st"
-  storage_account_access_key                = var.storage_account_access_key != null ? var.storage_account_access_key : local._secrets.storage_account_access_key
-  tfstate_container_name                    = var.tfstate_container_name != null ? var.tfstate_container_name : local._default.tfstate_container_name
   key_vault_name                            = "${local.resources_prefix}kv"
   container_registry_name                   = "${local.resources_prefix}cr"
   mssql_server_name                         = "${local.resources_prefix}sql"
