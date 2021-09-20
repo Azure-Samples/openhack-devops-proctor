@@ -13,7 +13,7 @@ steps:
       pipeline: $(System.DefinitionId)
       buildVersionToDownload: 'latest'
       downloadType: 'single'
-      artifactName: 'TF remote state'
+      artifactName: 'TerraformRemoteState'
       downloadPath: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
   - task: TerraformInstaller@0
     displayName: 'Terraform Install'
@@ -52,5 +52,5 @@ steps:
     displayName: "Publish TF State to Artifacts"
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
-      artifact: 'TF remote state'
+      artifact: 'TerraformRemoteState'
       publishLocation: 'pipeline'
