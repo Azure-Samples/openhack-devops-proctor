@@ -13,7 +13,7 @@ data "external" "my_ip" {
 locals {
   resources_prefix                          = var.resources_prefix != null ? var.resources_prefix : "devopsoh${random_string.uniquer.id}"
   team_name                                 = local.resources_prefix
-  location                                  = var.location != null ? var.location : local._default.location
+  location                                  = data.azurerm_resource_group.resource_group.location
   resource_group_name                       = "${local.resources_prefix}rg"
   storage_account_name                      = "${local.resources_prefix}st"
   storage_account_access_key                = var.storage_account_access_key != null ? var.storage_account_access_key : local._secrets.storage_account_access_key
