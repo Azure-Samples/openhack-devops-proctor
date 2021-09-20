@@ -5,6 +5,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+  - task: DownloadBuildArtifacts@1
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'TF remote state'
+      downloadPath: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
   - task: TerraformInstaller@0
     displayName: 'Terraform Install'
     inputs:
@@ -21,7 +27,6 @@ steps:
       command: 'plan'
       workingDirectory: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
       environmentServiceName: 'AzureServiceConnection'
-      runAzLogin: true
       allowTelemetryCollection: false
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
@@ -36,3 +41,12 @@ steps:
     env:
       AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
       AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
+  - script: |
+      cp $(System.DefaultWorkingDirectory)/provision-team/terraform-state/terraform.tfstate $(Build.ArtifactStagingDirectory)/terraform.tfstate
+    displayName: "Copy TF State to Artifacts"
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish TF State to Artifacts"
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'TF remote state'
+      publishLocation: 'pipeline'
