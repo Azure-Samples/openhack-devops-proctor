@@ -7,7 +7,10 @@ pool:
 steps:
   - task: DownloadBuildArtifacts@1
     inputs:
-      buildType: 'current'
+      buildType: 'specific'
+      project: 'a6f6f315-2410-4d01-8896-f9ddbedaaacd'
+      pipeline: '16'
+      buildVersionToDownload: 'latest'
       downloadType: 'single'
       artifactName: 'TF remote state'
       downloadPath: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state/'
