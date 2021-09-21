@@ -10,10 +10,15 @@ data "external" "my_ip" {
   program = ["/bin/bash", "${path.module}/myip.sh"]
 }
 
+data "azurerm_resource_group" "tfstate_resource_group" {
+  name = local.tfstate_resource_group_name
+}
+
 locals {
   resources_prefix                          = var.resources_prefix != null ? var.resources_prefix : "devopsoh${random_string.uniquer.id}"
   team_name                                 = local.resources_prefix
-  location                                  = data.azurerm_resource_group.resource_group.location
+  location                                  = data.azurerm_resource_group.tfstate_resource_group.location
+  tfstate_resource_group_name               = "${local.resources_prefix}staterg"
   resource_group_name                       = "${local.resources_prefix}rg"
   key_vault_name                            = "${local.resources_prefix}kv"
   container_registry_name                   = "${local.resources_prefix}cr"

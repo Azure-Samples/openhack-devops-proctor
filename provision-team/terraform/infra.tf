@@ -2,13 +2,9 @@
 ## RESOURCE GROUP                         ##
 ############################################
 
-# resource "azurerm_resource_group" "resource_group" {
-#   name     = local.resource_group_name
-#   location = local.location
-# }
-
-data "azurerm_resource_group" "resource_group" {
-  name = local.resource_group_name
+resource "azurerm_resource_group" "resource_group" {
+  name     = local.resource_group_name
+  location = local.location
 }
 
 ############################################
