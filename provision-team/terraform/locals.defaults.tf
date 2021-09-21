@@ -1,7 +1,7 @@
 
 locals {
   _default = {
-    # location               = "westus2"
+    location               = "westus2"
     base_image_tag = "changeme"
   }
   _secrets = {

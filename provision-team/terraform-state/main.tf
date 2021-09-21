@@ -47,6 +47,11 @@ resource "azuredevops_variable_group" "variablegroup" {
   }
 
   variable {
+    name  = "LOCATION"
+    value = local.location
+  }
+
+  variable {
     name  = "TFSTATE_RESOURCES_GROUP_NAME"
     value = azurerm_resource_group.resource_group.name
   }
