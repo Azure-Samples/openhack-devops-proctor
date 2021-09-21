@@ -21,27 +21,27 @@ resource "azurerm_key_vault" "key_vault" {
   sku_name = "standard"
 }
 
-resource "azurerm_key_vault_access_policy" "key_vault_access_policy_sp" {
-  key_vault_id = azurerm_key_vault.key_vault.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+# resource "azurerm_key_vault_access_policy" "key_vault_access_policy_sp" {
+#   key_vault_id = azurerm_key_vault.key_vault.id
+#   tenant_id    = data.azurerm_client_config.current.tenant_id
+#   object_id    = data.azurerm_client_config.current.object_id
 
-    certificate_permissions = [
-      "Backup", "Create", "Delete", "DeleteIssuers", "Get", "GetIssuers", "Import", "List", "ListIssuers", "ManageContacts", "ManageIssuers", "Purge", "Recover", "Restore", "SetIssuers", "Update"
-    ]
+#     certificate_permissions = [
+#       "Backup", "Create", "Delete", "DeleteIssuers", "Get", "GetIssuers", "Import", "List", "ListIssuers", "ManageContacts", "ManageIssuers", "Purge", "Recover", "Restore", "SetIssuers", "Update"
+#     ]
 
-    key_permissions = [
-      "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
-    ]
+#     key_permissions = [
+#       "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey"
+#     ]
 
-    secret_permissions = [
-      "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
-    ]
+#     secret_permissions = [
+#       "Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set"
+#     ]
 
-    storage_permissions = [
-      "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
-    ]
-}
+#     storage_permissions = [
+#       "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
+#     ]
+# }
 
 ############################################
 ## KEY VAULT SECRETS                      ##
@@ -49,7 +49,7 @@ resource "azurerm_key_vault_access_policy" "key_vault_access_policy_sp" {
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqluser" {
   depends_on = [
-    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+    # azurerm_key_vault_access_policy.key_vault_access_policy_sp
   ]
   name         = "SQLUSER"
   value        = local.mssql_server_administrator_login
@@ -58,7 +58,7 @@ resource "azurerm_key_vault_secret" "key_vault_secret_sqluser" {
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqlpassword" {
   depends_on = [
-    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+    # azurerm_key_vault_access_policy.key_vault_access_policy_sp
   ]
   name         = "SQLPASSWORD"
   value        = local.mssql_server_administrator_login_password
@@ -67,7 +67,7 @@ resource "azurerm_key_vault_secret" "key_vault_secret_sqlpassword" {
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqlserver" {
   depends_on = [
-    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+    # azurerm_key_vault_access_policy.key_vault_access_policy_sp
   ]
   name         = "SQLSERVER"
   value        = azurerm_mssql_server.mssql_server.fully_qualified_domain_name
@@ -76,7 +76,7 @@ resource "azurerm_key_vault_secret" "key_vault_secret_sqlserver" {
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqldbname" {
   depends_on = [
-    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+    # azurerm_key_vault_access_policy.key_vault_access_policy_sp
   ]
   name         = "SQLDBNAME"
   value        = local.mssql_database_name
