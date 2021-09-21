@@ -7,7 +7,7 @@ pool:
 variables:
   - group: tfstate
   - name: workDir
-    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform/'
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform'
 
 steps:
 - task: TerraformInstaller@0
