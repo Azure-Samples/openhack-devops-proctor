@@ -50,24 +50,36 @@ resource "azurerm_key_vault_access_policy" "key_vault_access_policy_sp" {
 ############################################
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqluser" {
+  depends_on = [
+    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+  ]
   name         = "SQLUSER"
   value        = local.mssql_server_administrator_login
   key_vault_id = azurerm_key_vault.key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqlpassword" {
+  depends_on = [
+    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+  ]
   name         = "SQLPASSWORD"
   value        = local.mssql_server_administrator_login_password
   key_vault_id = azurerm_key_vault.key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqlserver" {
+  depends_on = [
+    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+  ]
   name         = "SQLSERVER"
   value        = azurerm_mssql_server.mssql_server.fully_qualified_domain_name
   key_vault_id = azurerm_key_vault.key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "key_vault_secret_sqldbname" {
+  depends_on = [
+    azurerm_key_vault_access_policy.key_vault_access_policy_sp
+  ]
   name         = "SQLDBNAME"
   value        = local.mssql_database_name
   key_vault_id = azurerm_key_vault.key_vault.id
