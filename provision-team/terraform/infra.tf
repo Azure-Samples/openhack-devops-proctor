@@ -21,10 +21,12 @@ resource "azurerm_key_vault" "key_vault" {
   purge_protection_enabled    = false
 
   sku_name = "standard"
+}
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+resource "azurerm_key_vault_access_policy" "key_vault_access_policy_sp" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
 
     certificate_permissions = [
       "Backup", "Create", "Delete", "DeleteIssuers", "Get", "GetIssuers", "Import", "List", "ListIssuers", "ManageContacts", "ManageIssuers", "Purge", "Recover", "Restore", "SetIssuers", "Update"
@@ -41,7 +43,6 @@ resource "azurerm_key_vault" "key_vault" {
     storage_permissions = [
       "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
     ]
-  }
 }
 
 ############################################
