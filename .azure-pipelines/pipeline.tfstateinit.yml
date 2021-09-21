@@ -39,7 +39,7 @@ steps:
     command: 'plan'
     workingDirectory: $(workDir)
     environmentServiceName: 'AzureServiceConnection'
-    commandOptions: '-var ado_project_name=$(System.TeamProject)'
+    commandOptions: '-var="ado_project_name=$(System.TeamProject)" -out=$(workDir)/terraform.tfplan -detailed-exitcode'
     allowTelemetryCollection: true
     publishPlanResults: 'tfstate'
   env:
@@ -48,6 +48,7 @@ steps:
 
 - task: TerraformCLI@0
   displayName: 'Terraform Apply'
+  condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
   inputs:
     command: 'apply'
     workingDirectory: $(workDir)
