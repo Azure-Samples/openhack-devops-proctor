@@ -61,15 +61,16 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: provision-team/terraform-state-gh
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Download TF State from Artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: TerraformRemoteState
+    # - name: Download TF State from Artifacts
+    #   uses: actions/download-artifact@v2
+    #   with:
+    #     name: TerraformRemoteState
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -78,15 +79,15 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -var="gh_project_name=$(System.TeamProject)" -out=$(workDir)/terraform.tfplan -detailed-exitcode
+      run: terraform plan -var="gh_repo_name=$GITHUB_REPOSITORY" -out=terraform.tfplan -detailed-exitcode
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve
 
-    - name: Publish TF State to Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: TerraformRemoteState
-        path: |
-          terraform.tfstate
+    # - name: Publish TF State to Artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: TerraformRemoteState
+    #     path: |
+    #       terraform.tfstate
