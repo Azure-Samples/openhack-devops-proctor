@@ -6,7 +6,7 @@ pool:
 
 variables:
   - name: workDir
-    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state'
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state-ado'
 
 steps:
 - task: DownloadBuildArtifacts@1

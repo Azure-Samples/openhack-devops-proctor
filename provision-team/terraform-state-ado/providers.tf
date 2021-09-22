@@ -12,10 +12,8 @@ terraform {
 }
 
 provider "azuredevops" {
-  org_service_url       = var.ado_org_service_url       #"https://dev.azure.com/<your_org_name>"
-  personal_access_token = var.ado_personal_access_token #"<Personal Access Token>"
-  # export AZDO_PERSONAL_ACCESS_TOKEN=<Personal Access Token>
-  # export AZDO_ORG_SERVICE_URL=https://dev.azure.com/<Your Org Name>
+  org_service_url       = var.ado_org_service_url
+  personal_access_token = var.ado_personal_access_token
 }
 
 provider "azurerm" {
