@@ -9,5 +9,5 @@ variables:
 
 steps:
 - script: |
-    az storage blob delete-batch -s $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --pattern * --auth-mode login
+    az storage blob delete-batch --delete-snapshots --source $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --pattern * --auth-mode login
   displayName: 'Delete TF state'
