@@ -1,19 +1,13 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+- none
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  - group: tfstate
 
+steps:
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    az storage blob delete-batch -s $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --pattern * --auth-mode login
+  displayName: 'Delete TF state'
