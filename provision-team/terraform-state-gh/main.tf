@@ -38,7 +38,7 @@ resource "azurerm_role_assignment" "role_assignment_storage" {
 ############################################
 
 data "github_repository" "repo" {
-  full_name = local.gh_repo_name
+  name = local.gh_repo_name
 }
 
 resource "github_actions_secret" "actions_secret_resources_prefix" {
