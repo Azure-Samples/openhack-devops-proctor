@@ -11,7 +11,6 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'AzureServiceConnection'
-    scriptType: 'batch'
+    scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: |
-      az storage blob delete --name $(TFSTATE_KEY) --container-name $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --delete-snapshots include --auth-mode login
+    inlineScript: 'az storage blob delete --name $(TFSTATE_KEY) --container-name $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --delete-snapshots include --auth-mode login'
