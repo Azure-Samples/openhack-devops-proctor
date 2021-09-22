@@ -72,6 +72,10 @@ jobs:
     #   with:
     #     name: TerraformRemoteState
 
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
@@ -79,11 +83,15 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -var="gh_repo_name=$GITHUB_REPOSITORY" -out=terraform.tfplan -detailed-exitcode
+      run: terraform plan -var="gh_repo_name=${{ env.$GITHUB_REPOSITORY }}" -out=terraform.tfplan -detailed-exitcode
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -var="gh_repo_name=${{ env.$GITHUB_REPOSITORY }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Publish TF State to Artifacts
     #   uses: actions/upload-artifact@v2
