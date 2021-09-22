@@ -1,0 +1,51 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tfstate
+  - name: workDir
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform'
+
+steps:
+- task: TerraformInstaller@0
+  displayName: 'Terraform Install'
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Init'
+  inputs:
+    command: 'init'
+    workingDirectory: $(workDir)
+    backendType: 'azurerm'
+    backendServiceArm: 'AzureServiceConnection'
+    backendAzureRmResourceGroupName: $(TFSTATE_RESOURCES_GROUP_NAME)
+    backendAzureRmStorageAccountName: $(TFSTATE_STORAGE_ACCOUNT_NAME)
+    backendAzureRmContainerName: $(TFSTATE_STORAGE_CONTAINER_NAME)
+    backendAzureRmKey: $(TFSTATE_KEY)
+    allowTelemetryCollection: true
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Plan'
+  inputs:
+    command: 'plan'
+    workingDirectory: $(workDir)
+    environmentServiceName: 'AzureServiceConnection'
+    runAzLogin: true
+    commandOptions: '-var="resources_prefix=$(RESOURCES_PREFIX)" -var="location=$(LOCATION)" -out=$(workDir)/terraform.tfplan -detailed-exitcode'
+    allowTelemetryCollection: true
+    publishPlanResults: 'tfstate'
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Apply'
+  condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
+  inputs:
+    command: 'apply'
+    workingDirectory: $(workDir)
+    environmentServiceName: 'AzureServiceConnection'
+    runAzLogin: true
+    commandOptions: '-var="resources_prefix=$(RESOURCES_PREFIX)" -var="location=$(LOCATION)"'
+    allowTelemetryCollection: true

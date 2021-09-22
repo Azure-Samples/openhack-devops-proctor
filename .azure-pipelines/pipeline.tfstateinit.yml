@@ -1,0 +1,79 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: workDir
+    value: '$(System.DefaultWorkingDirectory)/provision-team/terraform-state'
+
+steps:
+- task: DownloadBuildArtifacts@1
+  continueOnError: true
+  inputs:
+    buildType: 'specific'
+    project: $(System.TeamProjectId)
+    pipeline: $(System.DefinitionId)
+    buildVersionToDownload: 'latest'
+    allowPartiallySucceededBuilds: true
+    downloadType: 'single'
+    artifactName: 'TerraformRemoteState'
+    downloadPath: $(workDir)
+
+- task: TerraformInstaller@0
+  displayName: 'Terraform Install'
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Init'
+  inputs:
+    command: 'init'
+    workingDirectory: $(workDir)
+    allowTelemetryCollection: true
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Plan'
+  inputs:
+    command: 'plan'
+    workingDirectory: $(workDir)
+    environmentServiceName: 'AzureServiceConnection'
+    commandOptions: '-var="ado_project_name=$(System.TeamProject)" -out=$(workDir)/terraform.tfplan -detailed-exitcode'
+    allowTelemetryCollection: true
+    publishPlanResults: 'tfstate'
+  env:
+    AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+    AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
+
+- task: TerraformCLI@0
+  displayName: 'Terraform Apply'
+  condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
+  inputs:
+    command: 'apply'
+    workingDirectory: $(workDir)
+    environmentServiceName: 'AzureServiceConnection'
+    commandOptions: '-var ado_project_name=$(System.TeamProject)'
+    allowTelemetryCollection: true
+  env:
+    AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+    AZDO_ORG_SERVICE_URL: $(System.CollectionUri)
+
+- script: |
+    cp $(workDir)/terraform.tfstate $(Build.ArtifactStagingDirectory)/terraform.tfstate
+  displayName: "Copy TF State to Artifacts"
+
+- task: PublishPipelineArtifact@1
+  displayName: "Publish TF State to Artifacts"
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'TerraformRemoteState'
+    publishLocation: 'pipeline'
+
+- task: DeleteFiles@1
+  displayName: "Cleanup TF State"
+  inputs:
+    SourceFolder: '$(workDir)'
+    Contents: |
+      .terraform
+      terraform.tfstate

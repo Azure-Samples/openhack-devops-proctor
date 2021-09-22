@@ -1,0 +1,20 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: tfstate
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Cleanup Infra & TF state'
+  inputs:
+    azureSubscription: 'AzureServiceConnection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage blob delete --name $(TFSTATE_KEY) --container-name $(TFSTATE_STORAGE_CONTAINER_NAME) --account-name $(TFSTATE_STORAGE_ACCOUNT_NAME) --delete-snapshots include --auth-mode login
+      az group delete --resource-group $(RESOURCES_PREFIX)rg --yes
+      az keyvault purge --name $(RESOURCES_PREFIX)kv
