@@ -72,9 +72,16 @@ jobs:
     #   with:
     #     name: TerraformRemoteState
 
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Login Azure
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      run: |
+        CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+        CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
+        SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
+        TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+        az login --service-principal -u "${CLIENT_ID}" -p "${CLIENT_SECRET}" --tenant "${TENANT_ID}"
+        az account set -s "${SUBSCRIPTION_ID}"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -83,7 +90,8 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -var="gh_repo_name=${{ env.GITHUB_REPOSITORY }}" -out=terraform.tfplan -detailed-exitcode
+      run: |
+        terraform plan -var="gh_repo_name=${{ env.GITHUB_REPOSITORY }}" -out=terraform.tfplan -detailed-exitcode
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
