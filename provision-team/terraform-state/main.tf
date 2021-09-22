@@ -27,6 +27,12 @@ resource "azurerm_storage_container" "storage_container" {
   container_access_type = "private"
 }
 
+resource "azurerm_role_assignment" "role_assignment_storage" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
 ############################################
 ## AZURE DEVOPS                           ##
 ############################################
