@@ -42,7 +42,7 @@
 #       with:
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-name: 'tfsetup-init'
+name: 'tfstate-init'
 
 on:
   # push:
@@ -53,7 +53,7 @@ on:
 
 jobs:
   terraform:
-    name: 'tfsetup-init'
+    name: 'tfstate-init'
     runs-on: ubuntu-latest
     # environment: production
 
