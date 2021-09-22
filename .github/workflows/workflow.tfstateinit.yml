@@ -67,7 +67,8 @@ jobs:
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}" -out=terraform.tfplan
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -86,7 +87,8 @@ jobs:
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
 
     - name: Publish TF State to Artifacts
       uses: actions/upload-artifact@v2
