@@ -102,7 +102,7 @@ jobs:
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
       
-        terraform plan -var="gh_repo_name=${GH_REPO_NAME}" -out=terraform.tfplan -detailed-exitcode
+        terraform plan -var="gh_repo_name=${GH_REPO_NAME}" -out=terraform.tfplan
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
