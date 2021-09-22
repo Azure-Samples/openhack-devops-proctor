@@ -9,8 +9,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
-    using System.Web.Http;
-
+  
     public class UserStore : BaseStore//, IBaseStore<User>
     {
         private readonly IConfiguration Configuration;
