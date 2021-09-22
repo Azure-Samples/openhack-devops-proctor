@@ -46,8 +46,7 @@ namespace TripViewer.Controllers
         // GET: UserProfile/Details/5
         public ActionResult Details(int id)
         {
-
-            return View();
+            return View(id);
         }
 
         // GET: UserProfile/Create
@@ -63,9 +62,7 @@ namespace TripViewer.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+              return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -76,7 +73,7 @@ namespace TripViewer.Controllers
         // GET: UserProfile/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(id);
         }
 
         // POST: UserProfile/Edit/5
@@ -86,9 +83,7 @@ namespace TripViewer.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+              return RedirectToAction(nameof(Index));
             }
             catch
             {
