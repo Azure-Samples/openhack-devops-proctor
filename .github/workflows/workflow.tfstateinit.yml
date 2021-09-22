@@ -100,8 +100,9 @@ jobs:
         IFS='/'
         read -a strarr <<< $GITHUB_REPOSITORY
         export GITHUB_OWNER=${strarr[0]}
+        echo $GITHUB_OWNER
       
-        terraform plan -var='gh_repo_name="${strarr[1]}"' -out=terraform.tfplan -detailed-exitcode
+        terraform plan -var="gh_repo_name=${{ env.GITHUB_REPOSITORY }}" -out=terraform.tfplan -detailed-exitcode
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -118,7 +119,7 @@ jobs:
         read -a strarr <<< $GITHUB_REPOSITORY
         export GITHUB_OWNER=${strarr[0]}
 
-        terraform apply -auto-approve -var='gh_repo_name="${strarr[1]}"'
+        terraform apply -auto-approve -var="gh_repo_name=${{ env.GITHUB_REPOSITORY }}"
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
