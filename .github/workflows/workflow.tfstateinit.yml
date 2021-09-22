@@ -93,8 +93,8 @@ jobs:
     - name: Terraform Plan
       run: |
         terraform plan -var="gh_repo_name=${{ env.GITHUB_REPOSITORY }}" -out=terraform.tfplan -detailed-exitcode
-      # env:
-      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
