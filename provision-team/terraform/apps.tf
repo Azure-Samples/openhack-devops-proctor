@@ -29,7 +29,7 @@ resource "null_resource" "docker_api-trips" {
     null_resource.git_team
   ]
   provisioner "local-exec" {
-    command = "az acr build --image devopsoh/api-trip:${local.base_image_tag} --registry ${azurerm_container_registry.container_registry.login_server} --file openhack-devops-team/apis/trips/Dockerfile openhack-devops-team/apis/trips"
+    command = "az acr build --image devopsoh/api-trips:${local.base_image_tag} --registry ${azurerm_container_registry.container_registry.login_server} --file openhack-devops-team/apis/trips/Dockerfile openhack-devops-team/apis/trips"
   }
 }
 
