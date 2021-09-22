@@ -42,7 +42,7 @@ data "github_repository" "repo" {
 }
 
 resource "github_actions_secret" "actions_secret_resources_prefix" {
-  repository      = data.github_repository.repo.id
+  repository      = data.github_repository.repo.name
   secret_name     = "RESOURCES_PREFIX"
   plaintext_value = local.resources_prefix
 }
