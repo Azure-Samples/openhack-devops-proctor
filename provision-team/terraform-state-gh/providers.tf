@@ -5,7 +5,7 @@ terraform {
       version = "2.77.0"
     }
     github = {
-      source = "integrations/github"
+      source  = "integrations/github"
       version = "4.14.0"
     }
   }
