@@ -76,7 +76,7 @@ jobs:
         export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
 
         IFS='/'
-        read -a strarr <<< $GITHUB_REPOSITORY
+        read -a strarr <<< "${GITHUB_REPOSITORY}"
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
         
@@ -91,4 +91,4 @@ jobs:
       with:
         name: TerraformRemoteState
         path: |
-          ${{ env.GITHUB_WORKSPACE }}/terraform.tfplan
+          ${GITHUB_WORKSPACE}/terraform.tfplan
