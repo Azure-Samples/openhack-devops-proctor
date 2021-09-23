@@ -33,10 +33,9 @@ jobs:
       uses: aochmann/actions-download-artifact@1.0.4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        name: TerraformRemoteState
+        name: TerraformState
         latest: true
         path: ${{ env.WORKDIR }}
-#         repo: ${{github.repository}}
 
 #     - name: Azure Login
 #       uses: Azure/login@v1
@@ -102,6 +101,6 @@ jobs:
     - name: Publish TF State to Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: TerraformRemoteState
+        name: TerraformState
         path: |
          ${{ env.WORKDIR }}/terraform.tfstate
