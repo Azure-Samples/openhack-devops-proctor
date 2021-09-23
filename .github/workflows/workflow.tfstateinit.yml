@@ -6,7 +6,7 @@ on:
   #   - main
   # pull_request:
   workflow_dispatch:
-  
+
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
 
@@ -43,6 +43,7 @@ jobs:
 #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Login Azure
+      id: azure-login
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       run: |
@@ -50,7 +51,7 @@ jobs:
         export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
         export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
         export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
-        
+
         echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
         echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
         echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
@@ -67,11 +68,6 @@ jobs:
 
     - name: Terraform Plan
       run: |
-#        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
-#        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
-#        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
-#        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
-
         IFS='/'
         read -a strarr <<< "${GITHUB_REPOSITORY}"
         export GITHUB_OWNER=${strarr[0]}
@@ -83,15 +79,14 @@ jobs:
 #        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-#        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
-#        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
-#        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
-#        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
-
         IFS='/'
         read -a strarr <<< "${GITHUB_REPOSITORY}"
         export GITHUB_OWNER=${strarr[0]}
@@ -102,6 +97,10 @@ jobs:
  #       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
 
     - name: Publish TF State to Artifacts
       uses: actions/upload-artifact@v2
