@@ -74,10 +74,8 @@ jobs:
         export GH_REPO_NAME=${strarr[1]}
         
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
-        # -out="provision-team/terraform-state-gh/terraform.tfplan"
       env:
-#        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
@@ -86,6 +84,7 @@ jobs:
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      # TODO: condition -> no run if tfplan no change
       run: |
         IFS='/'
         read -a strarr <<< "${GITHUB_REPOSITORY}"
@@ -94,8 +93,7 @@ jobs:
         
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
- #       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
@@ -108,3 +106,11 @@ jobs:
         name: TerraformState
         path: |
          ${{ env.WORKDIR }}/terraform.tfstate
+         
+    - name: Logout Azure
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az logout
+          az cache purge
+          az account clear
