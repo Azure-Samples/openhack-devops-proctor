@@ -55,20 +55,27 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
-      run: terraform init
+      run: |
+        terraform init -backend-config=storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME} -backend-config=container_name=${TFSTATE_STORAGE_CONTAINER_NAME} -backend-config=key=${TFSTATE_KEY} -backend-config=resource_group_name=${TFSTATE_RESOURCES_GROUP_NAME}
+        # -backend-config=subscription_id=${ARM_SUBSCRIPTION_ID} -backend-config=tenant_id=${ARM_TENANT_ID} -backend-config=client_id=${ARM_CLIENT_ID} -backend-config=client_secret=${ARM_CLIENT_SECRET}
+      env:
+        TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
+        TFSTATE_STORAGE_CONTAINER_NAME: ${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}
+        TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+        TFSTATE_RESOURCES_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCES_GROUP_NAME }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
 
     - name: Terraform Plan
       run: |      
         terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
       env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
-        # GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
-        # GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -76,14 +83,10 @@ jobs:
       run: |
         terraform apply -auto-approve -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
       env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
-        # GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
-        # GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
 
     - name: Logout Azure
       uses: azure/CLI@v1
