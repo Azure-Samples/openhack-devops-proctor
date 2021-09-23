@@ -67,10 +67,10 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
-        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
-        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
-        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+#        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+#        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
+#        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
+#        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
 
         IFS='/'
         read -a strarr <<< "${GITHUB_REPOSITORY}"
@@ -80,17 +80,17 @@ jobs:
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
         # -out="provision-team/terraform-state-gh/terraform.tfplan"
       env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+#        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
-        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
-        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
-        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+#        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+#        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
+#        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
+#        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
 
         IFS='/'
         read -a strarr <<< "${GITHUB_REPOSITORY}"
@@ -99,7 +99,7 @@ jobs:
         
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+ #       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.PAT }}
 
