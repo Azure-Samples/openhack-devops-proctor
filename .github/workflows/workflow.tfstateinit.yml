@@ -32,7 +32,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         name: TerraformRemoteState
         latest: true
-#         path: extract_here
+        path: provision-team/terraform-state-gh
 #         repo: ${{github.repository}}
 
     - name: Azure Login
