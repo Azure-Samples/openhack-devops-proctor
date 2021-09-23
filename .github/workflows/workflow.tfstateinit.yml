@@ -38,10 +38,10 @@ jobs:
         path: ${{ env.WORKDIR }}
 #         repo: ${{github.repository}}
 
-    - name: Azure Login
-      uses: Azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+#     - name: Azure Login
+#       uses: Azure/login@v1
+#       with:
+#         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Login Azure
       env:
