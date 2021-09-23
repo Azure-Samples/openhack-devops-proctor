@@ -1,0 +1,43 @@
+name: 'cleanup'
+
+on:
+  # push:
+  #   branches:
+  #   - main
+  # pull_request:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    # - name: Checkout
+    #   uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Cleanup Infra & TF state
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az storage blob delete --name ${TFSTATE_KEY} --container-name ${TFSTATE_STORAGE_CONTAINER_NAME} --account-name ${TFSTATE_STORAGE_ACCOUNT_NAME} --delete-snapshots include --auth-mode login
+          az group delete --resource-group ${RESOURCES_PREFIX}rg --yes
+          az keyvault purge --name ${RESOURCES_PREFIX}kv
+      env:
+        TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
+        TFSTATE_STORAGE_CONTAINER_NAME: ${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}
+        TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
+        TFSTATE_RESOURCES_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCES_GROUP_NAME }}
+        RESOURCES_PREFIX: ${{ secrets.RESOURCES_PREFIX }}
+
+    - name: Logout Azure
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az logout
+          az cache purge
+          az account clear
