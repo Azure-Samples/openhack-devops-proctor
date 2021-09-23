@@ -13,7 +13,7 @@ env:
   WORKDIR: 'provision-team/terraform-state-gh'
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.PAT }}
-  ARM_CLIENT_ID: $(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+  ARM_CLIENT_ID: $(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r ".clientId")
 
 jobs:
   tfstateinit:
