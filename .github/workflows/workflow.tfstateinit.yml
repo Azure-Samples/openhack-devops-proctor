@@ -7,10 +7,23 @@ on:
   # pull_request:
   workflow_dispatch:
 
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  issues: write
+  # discussions: write
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
-  # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.PAT }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # GITHUB_TOKEN: ${{ secrets.PAT }}
 
 jobs:
   tfstateinit:
@@ -108,7 +121,7 @@ jobs:
         name: TerraformState
         path: |
          ${{ env.WORKDIR }}/terraform.tfstate
-         
+
     - name: Logout Azure
       uses: azure/CLI@v1
       with:
