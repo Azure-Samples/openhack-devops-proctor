@@ -14,7 +14,6 @@ env:
 
 jobs:
   infra:
-    name: 'infra'
     runs-on: ubuntu-latest
 
     defaults:
