@@ -9,9 +9,11 @@ on:
 
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
+  # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.PAT }}
 
 jobs:
-  terraform:
+  tfstateinit:
     name: 'tfstate-init'
     runs-on: ubuntu-latest
 
@@ -81,8 +83,6 @@ jobs:
       run: |      
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
       env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
@@ -96,8 +96,6 @@ jobs:
       run: |
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.PAT }}
         ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}

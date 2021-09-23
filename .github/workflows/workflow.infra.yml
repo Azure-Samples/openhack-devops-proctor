@@ -1,0 +1,94 @@
+name: 'infra'
+
+on:
+  # push:
+  #   branches:
+  #   - main
+  # pull_request:
+  workflow_dispatch:
+
+env:
+  WORKDIR: 'provision-team/terraform'
+  RESOURCES_PREFIX: ${{ secrets.RESOURCES_PREFIX }}
+  LOCATION: ${{ secrets.LOCATION }}
+
+jobs:
+  infra:
+    name: 'infra'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.WORKDIR }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+#     - name: Azure Login
+#       uses: Azure/login@v1
+#       with:
+#         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login Azure
+      id: azure-login
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+          export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
+          export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
+          export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+
+          echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
+          echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
+          echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
+          echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
+
+          az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+          az account set --subscription "${ARM_SUBSCRIPTION_ID}"
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: |      
+        terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
+      env:
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.PAT }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
+        # GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
+        # GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
+
+    - name: Terraform Apply
+      # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      # TODO: condition -> no run if tfplan no change
+      run: |
+        terraform apply -auto-approve -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
+      env:
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.PAT }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
+        # GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
+        # GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
+
+    - name: Logout Azure
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az logout
+          az cache purge
+          az account clear
