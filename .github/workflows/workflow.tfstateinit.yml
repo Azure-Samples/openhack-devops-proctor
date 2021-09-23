@@ -25,6 +25,15 @@ jobs:
     #   uses: actions/download-artifact@v2
     #   with:
     #     name: TerraformRemoteState
+    
+    - name: Download TF State from Artifacts
+      uses: aochmann/actions-download-artifact@1.0.4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        name: TerraformRemoteState
+        latest: true
+#         path: extract_here
+#         repo: ${{github.repository}}
 
     - name: Azure Login
       uses: Azure/login@v1
