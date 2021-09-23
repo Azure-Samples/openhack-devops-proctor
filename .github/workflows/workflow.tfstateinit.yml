@@ -13,7 +13,6 @@ env:
   WORKDIR: 'provision-team/terraform-state-gh'
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.PAT }}
-  ARM_CLIENT_ID: $(echo "${{ secrets.AZURE_CREDENTIALS }}" | jq -r ".clientId")
 
 jobs:
   tfstateinit:
@@ -85,7 +84,7 @@ jobs:
       run: |      
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
       env:
-        # ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
@@ -98,7 +97,7 @@ jobs:
       run: |
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
-        # ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
