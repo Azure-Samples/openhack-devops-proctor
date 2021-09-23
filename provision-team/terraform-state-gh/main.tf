@@ -50,7 +50,7 @@ resource "github_actions_secret" "actions_secret_resources_prefix" {
 resource "github_actions_secret" "actions_secret_location" {
   repository      = data.github_repository.repo.name
   secret_name     = "LOCATION"
-  plaintext_value = local.location
+  plaintext_value = azurerm_resource_group.resource_group.location
 }
 
 resource "github_actions_secret" "actions_secret_resource_group_name" {

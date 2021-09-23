@@ -13,8 +13,8 @@ resource "azurerm_resource_group" "resource_group" {
 
 resource "azurerm_key_vault" "key_vault" {
   name                = local.key_vault_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
 }
@@ -87,8 +87,8 @@ resource "azurerm_key_vault_secret" "key_vault_secret_sqldbname" {
 
 resource "azurerm_container_registry" "container_registry" {
   name                = local.container_registry_name
-  resource_group_name = local.resource_group_name
-  location            = local.location
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   sku                 = "Standard"
   admin_enabled       = true
 }
@@ -99,8 +99,8 @@ resource "azurerm_container_registry" "container_registry" {
 
 resource "azurerm_mssql_server" "mssql_server" {
   name                         = local.mssql_server_name
-  resource_group_name          = local.resource_group_name
-  location                     = local.location
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   version                      = "12.0"
   administrator_login          = local.mssql_server_administrator_login
   administrator_login_password = local.mssql_server_administrator_login_password
@@ -134,8 +134,8 @@ resource "azurerm_mssql_database" "mssql_database" {
 
 resource "azurerm_app_service_plan" "app_service_plan" {
   name                = local.app_service_plan_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   kind                = "linux"
   reserved            = true
 
@@ -154,8 +154,8 @@ resource "azurerm_app_service" "app_service_tripviewer" {
     null_resource.docker_tripviewer
   ]
   name                = local.app_service_tripviewer_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
   identity {
@@ -205,8 +205,8 @@ resource "azurerm_app_service" "app_service_api-poi" {
     null_resource.db_seed
   ]
   name                = local.app_service_api-poi_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
   identity {
@@ -257,8 +257,8 @@ resource "azurerm_app_service" "app_service_api-trips" {
     null_resource.db_seed
   ]
   name                = local.app_service_api-trips_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
   identity {
@@ -308,8 +308,8 @@ resource "azurerm_app_service" "app_service_api-user-java" {
     null_resource.db_seed
   ]
   name                = local.app_service_api-user-java_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
   identity {
@@ -359,8 +359,8 @@ resource "azurerm_app_service" "app_service_api-userprofile" {
     null_resource.db_seed
   ]
   name                = local.app_service_api-userprofile_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
   identity {
@@ -410,8 +410,8 @@ resource "azurerm_container_group" "container_group_simulator" {
     null_resource.db_seed
   ]
   name                = local.container_group_simulator_name
-  location            = local.location
-  resource_group_name = local.resource_group_name
+  location            = azurerm_resource_group.resource_group.location
+  resource_group_name = azurerm_resource_group.resource_group.name
   ip_address_type     = "public"
   dns_name_label      = local.container_group_simulator_name
   os_type             = "Linux"

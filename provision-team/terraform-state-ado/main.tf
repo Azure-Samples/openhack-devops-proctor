@@ -54,7 +54,7 @@ resource "azuredevops_variable_group" "variablegroup" {
 
   variable {
     name  = "LOCATION"
-    value = local.location
+    value = azurerm_resource_group.resource_group.location
   }
 
   variable {
