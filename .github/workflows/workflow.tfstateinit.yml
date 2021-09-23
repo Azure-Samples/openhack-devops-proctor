@@ -70,6 +70,9 @@ jobs:
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
         
+        pwd
+        ls
+        
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
         # -out="provision-team/terraform-state-gh/terraform.tfplan"
       env:
@@ -89,6 +92,9 @@ jobs:
         read -a strarr <<< "${GITHUB_REPOSITORY}"
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
+        
+        pwd
+        ls
         
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
