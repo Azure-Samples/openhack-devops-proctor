@@ -6,6 +6,9 @@ on:
   #   - main
   # pull_request:
   workflow_dispatch:
+  
+env:
+  WORKDIR: 'provision-team/terraform-state-gh'
 
 jobs:
   terraform:
@@ -15,7 +18,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: provision-team/terraform-state-gh
+        working-directory: ${{ env.WORKDIR }}
 
     steps:
     - name: Checkout
@@ -32,7 +35,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         name: TerraformRemoteState
         latest: true
-        path: provision-team/terraform-state-gh
+        path: ${{ env.WORKDIR }}
 #         repo: ${{github.repository}}
 
     - name: Azure Login
@@ -70,9 +73,6 @@ jobs:
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
         
-        pwd
-        ls
-        
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
         # -out="provision-team/terraform-state-gh/terraform.tfplan"
       env:
@@ -93,9 +93,6 @@ jobs:
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
         
-        pwd
-        ls
-        
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
@@ -107,4 +104,4 @@ jobs:
       with:
         name: TerraformRemoteState
         path: |
-         provision-team/terraform-state-gh/terraform.tfplan
+         ${{ env.WORKDIR }}/terraform.tfstate
