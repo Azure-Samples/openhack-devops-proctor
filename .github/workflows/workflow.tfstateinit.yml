@@ -50,6 +50,11 @@ jobs:
         export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
         export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
         export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+        
+        echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
+        echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
+        echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
+        echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
 
         az login --service-principal -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
         az account set -s "${ARM_SUBSCRIPTION_ID}"
