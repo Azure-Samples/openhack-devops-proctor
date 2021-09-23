@@ -32,23 +32,21 @@ jobs:
 
     - name: Login Azure
       id: azure-login
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
-          export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
-          export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
-          export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
-
-          echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
-          echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
-          echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
-          echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
-
-          az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-          az account set --subscription "${ARM_SUBSCRIPTION_ID}"
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      run: |
+        export ARM_CLIENT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientId")
+        export ARM_CLIENT_SECRET=$(echo "${AZURE_CREDENTIALS}" | jq -r ".clientSecret")
+        export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
+        export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
+
+        echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
+        echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
+        echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
+        echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
+
+        az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+        az account set --subscription "${ARM_SUBSCRIPTION_ID}"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
