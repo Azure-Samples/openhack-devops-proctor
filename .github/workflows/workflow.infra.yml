@@ -43,6 +43,8 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_wrapper: false
 
     - name: Terraform Init
       run: |
@@ -55,10 +57,17 @@ jobs:
 
     - name: Terraform Plan
       run: |      
-        terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
+        terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}" --detailed-exitcode
+        if [ $? -eq 2 ] 
+        then 
+          echo "TERRAFORM_PLAN_HAS_CHANGES=true}" >> "${GITHUB_ENV}"
+        else 
+          echo "TERRAFORM_PLAN_HAS_CHANGES=false}" >> "${GITHUB_ENV}"
+        fi
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       # TODO: condition -> no run if tfplan no change
+      if: ${{ env.TERRAFORM_PLAN_HAS_CHANGES == 'true' }}
       run: |
         terraform apply -auto-approve -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
