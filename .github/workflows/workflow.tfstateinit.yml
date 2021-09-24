@@ -78,11 +78,9 @@ jobs:
 
         echo $GITHUB_OWNER
         echo $GH_REPO_NAME
-
+        
         echo "GITHUB_OWNER=${GITHUB_OWNER}" >> $GITHUB_ENV
-        echo $GITHUB_OWNER
         echo "GH_REPO_NAME=${GH_REPO_NAME}" >> $GITHUB_ENV
-        echo $GH_REPO_NAME
         
         # echo "::set-output name=GITHUB_OWNER::${GITHUB_OWNER}"
         # echo "::set-output name=GH_REPO_NAME::${GH_REPO_NAME}"
