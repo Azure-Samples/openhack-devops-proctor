@@ -25,11 +25,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-#     - name: Azure Login
-#       uses: Azure/login@v1
-#       with:
-#         creds: ${{ secrets.AZURE_CREDENTIALS }}
-
     - name: Login Azure
       id: azure-login
       env:
@@ -40,13 +35,12 @@ jobs:
         export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
         export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
 
-        echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
-        echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
-        echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
-        echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
+        echo "ARM_CLIENT_ID=${ARM_CLIENT_ID}" >> "${GITHUB_ENV}"
+        echo "ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}" >> "${GITHUB_ENV}"
+        echo "ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}" >> "${GITHUB_ENV}"
+        echo "ARM_TENANT_ID=${ARM_TENANT_ID}" >> "${GITHUB_ENV}"
 
-        az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-        az account set --subscription "${ARM_SUBSCRIPTION_ID}"
+        echo "::add-mask::$ARM_CLIENT_SECRET"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -54,41 +48,18 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init -backend-config=storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME} -backend-config=container_name=${TFSTATE_STORAGE_CONTAINER_NAME} -backend-config=key=${TFSTATE_KEY} -backend-config=resource_group_name=${TFSTATE_RESOURCES_GROUP_NAME}
-        # -backend-config=subscription_id=${ARM_SUBSCRIPTION_ID} -backend-config=tenant_id=${ARM_TENANT_ID} -backend-config=client_id=${ARM_CLIENT_ID} -backend-config=client_secret=${ARM_CLIENT_SECRET}
       env:
         TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
         TFSTATE_STORAGE_CONTAINER_NAME: ${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}
         TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
         TFSTATE_RESOURCES_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCES_GROUP_NAME }}
-        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
 
     - name: Terraform Plan
       run: |      
         terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
-      env:
-        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       # TODO: condition -> no run if tfplan no change
       run: |
         terraform apply -auto-approve -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}"
-      env:
-        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
-
-    - name: Logout Azure
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az logout
-          az cache purge
-          az account clear
