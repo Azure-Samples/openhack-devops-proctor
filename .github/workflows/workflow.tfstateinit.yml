@@ -32,7 +32,7 @@ jobs:
         latest: true
         path: ${{ env.WORKDIR }}
 
-    - name: Login Azure
+    - name: Prepare Azure Service Principals
       id: azure-login
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
