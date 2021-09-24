@@ -46,14 +46,19 @@ jobs:
       with:
         terraform_wrapper: false
 
+    - name: Terraform Fmt
+      run: terraform fmt -recursive
+
     - name: Terraform Init
-      run: |
-        terraform init -backend-config=storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME} -backend-config=container_name=${TFSTATE_STORAGE_CONTAINER_NAME} -backend-config=key=${TFSTATE_KEY} -backend-config=resource_group_name=${TFSTATE_RESOURCES_GROUP_NAME}
+      run: terraform init -backend-config=storage_account_name=${TFSTATE_STORAGE_ACCOUNT_NAME} -backend-config=container_name=${TFSTATE_STORAGE_CONTAINER_NAME} -backend-config=key=${TFSTATE_KEY} -backend-config=resource_group_name=${TFSTATE_RESOURCES_GROUP_NAME}
       env:
         TFSTATE_STORAGE_ACCOUNT_NAME: ${{ secrets.TFSTATE_STORAGE_ACCOUNT_NAME }}
         TFSTATE_STORAGE_CONTAINER_NAME: ${{ secrets.TFSTATE_STORAGE_CONTAINER_NAME }}
         TFSTATE_KEY: ${{ secrets.TFSTATE_KEY }}
         TFSTATE_RESOURCES_GROUP_NAME: ${{ secrets.TFSTATE_RESOURCES_GROUP_NAME }}
+
+    - name: Terraform Validate
+      run: terraform validate
 
     - name: Terraform Plan
       run: |      
