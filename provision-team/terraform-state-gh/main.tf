@@ -42,41 +42,41 @@ data "github_repository" "repo" {
 }
 
 data "github_actions_public_key" "actions_public_key" {
-  repository = data.github_repository.repo.full_name
+  repository = data.github_repository.repo.name
 }
 
 resource "github_actions_secret" "actions_secret_resources_prefix" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "RESOURCES_PREFIX"
   plaintext_value = local.resources_prefix
 }
 
 resource "github_actions_secret" "actions_secret_location" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "LOCATION"
   plaintext_value = azurerm_resource_group.resource_group.location
 }
 
 resource "github_actions_secret" "actions_secret_resource_group_name" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "TFSTATE_RESOURCES_GROUP_NAME"
   plaintext_value = azurerm_resource_group.resource_group.name
 }
 
 resource "github_actions_secret" "actions_secret_storage_account_name" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "TFSTATE_STORAGE_ACCOUNT_NAME"
   plaintext_value = azurerm_storage_account.storage_account.name
 }
 
 resource "github_actions_secret" "actions_secret_storage_container_name" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "TFSTATE_STORAGE_CONTAINER_NAME"
   plaintext_value = azurerm_storage_container.storage_container.name
 }
 
 resource "github_actions_secret" "actions_secret_tfstate_key" {
-  repository      = data.github_repository.repo.full_name
+  repository      = data.github_repository.repo.name
   secret_name     = "TFSTATE_KEY"
   plaintext_value = local.tfstate_key
 }
