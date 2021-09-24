@@ -49,16 +49,16 @@ jobs:
 
         echo "::add-mask::$ARM_CLIENT_SECRET"
         
-    # - name: Set Vars
-    #   id: vars
-    #   run: |
-    #     IFS='/'
-    #     read -a strarr <<< "${GITHUB_REPOSITORY}"
-    #     export GITHUB_OWNER="${strarr[0]}"
-    #     export GH_REPO_NAME="${strarr[1]}"
+    - name: Set Vars
+      id: vars
+      run: |
+        IFS='/'
+        read -a strarr <<< "${GITHUB_REPOSITORY}"
+        export GITHUB_OWNER="${strarr[0]}"
+        export GH_REPO_NAME="${strarr[1]}"
         
-    #     echo "GITHUB_OWNER=${GITHUB_OWNER}" >> "${GITHUB_ENV}"
-    #     echo "GH_REPO_NAME=${GH_REPO_NAME}" >> "${GITHUB_ENV}"
+        echo "GITHUB_OWNER=${GITHUB_OWNER}" >> "${GITHUB_ENV}"
+        echo "GH_REPO_NAME=${GH_REPO_NAME}" >> "${GITHUB_ENV}"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -68,8 +68,7 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        ghrepo="Azure-Samples//openhack-devops-proctor"
-        terraform plan -var="gh_repo_name=${ghrepo}"
+        terraform plan -var="gh_repo_name=${GITHUB_REPOSITORY}"
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
