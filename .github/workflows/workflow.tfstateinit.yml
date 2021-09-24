@@ -76,6 +76,9 @@ jobs:
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
 
+        echo $GITHUB_OWNER
+        echo $GH_REPO_NAME
+
         echo "GITHUB_OWNER=${GITHUB_OWNER}" >> $GITHUB_ENV
         echo $GITHUB_OWNER
         echo "GH_REPO_NAME=${GH_REPO_NAME}" >> $GITHUB_ENV
