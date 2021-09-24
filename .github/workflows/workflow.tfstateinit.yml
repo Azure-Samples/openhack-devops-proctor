@@ -45,6 +45,8 @@ jobs:
         echo "ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}" >> "${GITHUB_ENV}"
         echo "ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}" >> "${GITHUB_ENV}"
         echo "ARM_TENANT_ID=${ARM_TENANT_ID}" >> "${GITHUB_ENV}"
+
+        echo "::add-mask::$ARM_CLIENT_SECRET"
         
     - name: Set Vars
       id: vars
