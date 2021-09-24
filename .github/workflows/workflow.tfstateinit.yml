@@ -67,8 +67,9 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan
-      run: |      
-        terraform plan -var="gh_repo_name='"${GITHUB_REPOSITORY}"'"
+      run: |
+        ghrepo="Azure-Samples//openhack-devops-proctor"
+        terraform plan -var="gh_repo_name=${ghrepo}"
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
