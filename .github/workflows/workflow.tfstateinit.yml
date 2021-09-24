@@ -3,7 +3,7 @@ name: 'tfstate-init'
 on:
   workflow_dispatch:
 
-# permissions: write-all
+permissions: write-all
 
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
