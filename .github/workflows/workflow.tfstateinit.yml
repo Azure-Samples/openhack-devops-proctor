@@ -7,9 +7,9 @@ permissions: write-all
 
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-  # GITHUB_TOKEN: ${{ secrets.PAT }}
+  GITHUB_TOKEN: ${{ secrets.PAT }}
 
 jobs:
   tfstateinit:
