@@ -68,7 +68,7 @@ jobs:
 
     - name: Terraform Plan
       run: |      
-        terraform plan -var="gh_repo_name=${GITHUB_REPOSITORY}"
+        terraform plan -var='gh_repo_name="${GITHUB_REPOSITORY}"'
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
