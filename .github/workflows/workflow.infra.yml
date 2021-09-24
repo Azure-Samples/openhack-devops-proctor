@@ -57,7 +57,8 @@ jobs:
 
     - name: Terraform Plan
       run: |      
-        terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}" --detailed-exitcode
+        terraform plan -var="resources_prefix=${RESOURCES_PREFIX}" -var="location=${LOCATION}" # --detailed-exitcode
+        echo $?
         if [ $? -eq 2 ] 
         then 
           echo "TERRAFORM_PLAN_HAS_CHANGES=true" >> "${GITHUB_ENV}"
