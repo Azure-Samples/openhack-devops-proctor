@@ -7,9 +7,9 @@ on:
 
 env:
   WORKDIR: 'provision-team/terraform-state-gh'
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-  # GITHUB_TOKEN: ${{ secrets.PAT }}
+  GITHUB_TOKEN: ${{ secrets.PAT }}
 
 jobs:
   tfstateinit:
@@ -68,13 +68,13 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        terraform plan -var="gh_repo_name=${GITHUB_REPOSITORY}"
+        terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       # TODO: condition -> no run if tfplan no change
       run: |
-        terraform apply -auto-approve -var="gh_repo_name=${GITHUB_REPOSITORY}"
+        terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
 
     - name: Publish TF State to Artifacts
       uses: actions/upload-artifact@v2
