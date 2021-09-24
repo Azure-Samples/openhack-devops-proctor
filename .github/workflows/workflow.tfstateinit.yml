@@ -55,13 +55,18 @@ jobs:
         export ARM_SUBSCRIPTION_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".subscriptionId")
         export ARM_TENANT_ID=$(echo "${AZURE_CREDENTIALS}" | jq -r ".tenantId")
 
-        echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
-        echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
-        echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
-        echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
+        echo "ARM_CLIENT_ID=${ARM_CLIENT_ID}" >> $GITHUB_ENV
+        echo "ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}" >> $GITHUB_ENV
+        echo "ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}" >> $GITHUB_ENV
+        echo "ARM_TENANT_ID=${ARM_TENANT_ID}" >> $GITHUB_ENV
 
-        az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-        az account set --subscription "${ARM_SUBSCRIPTION_ID}"
+        # echo "::set-output name=ARM_CLIENT_ID::${ARM_CLIENT_ID}"
+        # echo "::set-output name=ARM_CLIENT_SECRET::${ARM_CLIENT_SECRET}"
+        # echo "::set-output name=ARM_SUBSCRIPTION_ID::${ARM_SUBSCRIPTION_ID}"
+        # echo "::set-output name=ARM_TENANT_ID::${ARM_TENANT_ID}"
+
+        # az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+        # az account set --subscription "${ARM_SUBSCRIPTION_ID}"
         
     - name: Set Vars
       id: vars
@@ -70,9 +75,12 @@ jobs:
         read -a strarr <<< "${GITHUB_REPOSITORY}"
         export GITHUB_OWNER=${strarr[0]}
         export GH_REPO_NAME=${strarr[1]}
+
+        echo "GITHUB_OWNER=${GITHUB_OWNER}" >> $GITHUB_ENV
+        echo "GH_REPO_NAME=${GH_REPO_NAME}" >> $GITHUB_ENV
         
-        echo "::set-output name=GITHUB_OWNER::${GITHUB_OWNER}"
-        echo "::set-output name=GH_REPO_NAME::${GH_REPO_NAME}"
+        # echo "::set-output name=GITHUB_OWNER::${GITHUB_OWNER}"
+        # echo "::set-output name=GH_REPO_NAME::${GH_REPO_NAME}"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -83,26 +91,26 @@ jobs:
     - name: Terraform Plan
       run: |      
         terraform plan -var="gh_repo_name=${GH_REPO_NAME}"
-      env:
-        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
-        GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
-        GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
+      # env:
+      #   ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+      #   ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+      #   ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+      #   ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
+      #   GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
+      #   GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
 
     - name: Terraform Apply
       # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       # TODO: condition -> no run if tfplan no change
       run: |
         terraform apply -auto-approve -var="gh_repo_name=${GH_REPO_NAME}"
-      env:
-        ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
-        GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
-        GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
+      # env:
+      #   ARM_CLIENT_ID: ${{ steps.azure-login.outputs.ARM_CLIENT_ID }}
+      #   ARM_CLIENT_SECRET: ${{ steps.azure-login.outputs.ARM_CLIENT_SECRET }}
+      #   ARM_SUBSCRIPTION_ID: ${{ steps.azure-login.outputs.ARM_SUBSCRIPTION_ID }}
+      #   ARM_TENANT_ID: ${{ steps.azure-login.outputs.ARM_TENANT_ID }}
+      #   GITHUB_OWNER: ${{ steps.vars.outputs.GITHUB_OWNER }}
+      #   GH_REPO_NAME: ${{ steps.vars.outputs.GH_REPO_NAME }}
 
     - name: Publish TF State to Artifacts
       uses: actions/upload-artifact@v2
@@ -111,10 +119,10 @@ jobs:
         path: |
          ${{ env.WORKDIR }}/terraform.tfstate
 
-    - name: Logout Azure
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az logout
-          az cache purge
-          az account clear
+    # - name: Logout Azure
+    #   uses: azure/CLI@v1
+    #   with:
+    #     inlineScript: |
+    #       az logout
+    #       az cache purge
+    #       az account clear
