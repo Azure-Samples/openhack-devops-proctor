@@ -82,12 +82,12 @@ data "github_repository" "repo" {
 # }
 
 resource "github_repository_environment" "repository_environment" {
-  repository       = data.github_repository.repo.full_name
+  repository       = data.github_repository.repo.name
   environment      = "default"
 }
 
 resource "github_actions_environment_secret" "test_secret" {
-  repository       = data.github_repository.repo.full_name
+  repository       = data.github_repository.repo.name
   environment      = github_repository_environment.repository_environment.environment
   secret_name      = "test_secret_name"
   plaintext_value  = "test"
