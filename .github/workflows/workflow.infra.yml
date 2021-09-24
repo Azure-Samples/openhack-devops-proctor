@@ -25,8 +25,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Login Azure
-      id: azure-login
+    - name: Prepare Azure Service Principals
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       run: |
