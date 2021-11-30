@@ -4,14 +4,9 @@
 namespace SendCredentials
 {
     using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
+    using System.Threading.Tasks;
     using Azure.Messaging.ServiceBus;
-    using Newtonsoft.Json;
 
     class Program
     {
@@ -58,23 +53,19 @@ namespace SendCredentials
 
         static async Task SendMessagesAsync(string recipientEmail, string messageBody)
         {
-            //Random rnd = new Random();
             try
             {
                 Console.WriteLine($"SendMessagesAsync");
                     // Create a new message to send to the queue
-                    var message = new Dictionary<string, string>
+                    var data = new Dictionary<string, string>
                     {
                         { "ReceiverEmail", recipientEmail },
                         { "Message", messageBody }
                     };
 
-                    string data = JsonConvert.SerializeObject(message);
-
-                    ServiceBusMessage sendMessage = new ServiceBusMessage(data);
+                    ServiceBusMessage sendMessage = new ServiceBusMessage(new BinaryData(data));
 
                     await sender.SendMessageAsync(sendMessage);
-
 
             }
             catch (Exception exception)
