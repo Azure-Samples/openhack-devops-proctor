@@ -42,7 +42,7 @@ namespace SendCredentials
         static async Task MainAsync(string ServiceBusConnectionString, string QueueName, string recipientEmail, string MessageBody)
         {
             Console.WriteLine($"mainAsync");
-            ServiceBusClient client = new ServiceBusClient(ServiceBusConnectionString);
+            var client = new ServiceBusClient(ServiceBusConnectionString);
             sender = client.CreateSender(QueueName);
             Console.WriteLine($"before send ansync");
             // Send Messages
@@ -63,7 +63,7 @@ namespace SendCredentials
                         { "Message", messageBody }
                     };
 
-                    ServiceBusMessage sendMessage = new ServiceBusMessage(new BinaryData(data));
+                    var sendMessage = new ServiceBusMessage(new BinaryData(data));
 
                     await sender.SendMessageAsync(sendMessage);
 
