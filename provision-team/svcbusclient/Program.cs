@@ -3,21 +3,16 @@
 
 namespace SendCredentials
 {
-    using Microsoft.Azure.ServiceBus;
-    using Microsoft.Azure.ServiceBus.InteropExtensions;
     using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
+    using System.Threading.Tasks;
+    using Azure.Messaging.ServiceBus;
 
     class Program
     {
         // Connection String for the namespace can be obtained from the Azure portal under the 
         // 'Shared Access policies' section.
-        static IQueueClient queueClient;
+        static ServiceBusSender sender;
 
         static void Main(string[] args)
         {
@@ -47,38 +42,30 @@ namespace SendCredentials
         static async Task MainAsync(string ServiceBusConnectionString, string QueueName, string recipientEmail, string MessageBody)
         {
             Console.WriteLine($"mainAsync");
-            queueClient = new Microsoft.Azure.ServiceBus.QueueClient(ServiceBusConnectionString, QueueName);
+            var client = new ServiceBusClient(ServiceBusConnectionString);
+            sender = client.CreateSender(QueueName);
             Console.WriteLine($"before send ansync");
             // Send Messages
             await SendMessagesAsync(recipientEmail, MessageBody);
 
-            await queueClient.CloseAsync();
+            await sender.CloseAsync();
         }
 
         static async Task SendMessagesAsync(string recipientEmail, string messageBody)
         {
-            Random rnd = new Random();
             try
             {
                 Console.WriteLine($"SendMessagesAsync");
                     // Create a new message to send to the queue
-                    var message = new Dictionary<string, string>
+                    var data = new Dictionary<string, string>
                     {
                         { "ReceiverEmail", recipientEmail },
                         { "Message", messageBody }
                     };
 
-                    var serializer = DataContractBinarySerializer<Dictionary<string, string>>.Instance;
-                    byte[] data;
+                    var sendMessage = new ServiceBusMessage(new BinaryData(data));
 
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        serializer.WriteObject(stream, message);
-                        data = stream.ToArray();
-                    }
-
-                   var sbmessage = new Message(data);
-                   await queueClient.SendAsync(sbmessage);
+                    await sender.SendMessageAsync(sendMessage);
 
             }
             catch (Exception exception)
