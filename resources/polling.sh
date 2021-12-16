@@ -53,7 +53,7 @@ while [[ true ]]; do
    if [[ -z $result ]]; then 
       status="N/A"
    else
-      status=${result:9:3}
+      status=${result:7:3}
    fi 
    timestamp=$(date "+%Y%m%d-%H%M%S")
    if [[ -z $hasUrl ]]; then
